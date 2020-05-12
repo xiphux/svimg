@@ -2,9 +2,17 @@
   "name": "svimg",
   "version": "0.0.1",
   "description": "Svelte image component with image preprocessing and lazy loading",
-  "main": "index.js",
+  "main": "dist/index.js",
+  "module": "dist/index.es.js",
+  "svelte": "src/Image.svelte",
+  "files": [
+    "dist"
+  ],
+  "types": "dist/index.d.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "rollup -c",
+    "watch": "rollup -cw"
   },
   "keywords": [
     "svelte",
@@ -13,6 +21,14 @@
     "lazy",
     "load"
   ],
-  "author": "Chris Han",
-  "license": "ISC"
+  "author": "Chris Han <christopher.f.han@gmail.com>",
+  "license": "ISC",
+  "devDependencies": {
+    "rollup": "^2.9.1",
+    "rollup-plugin-node-resolve": "^5.2.0",
+    "rollup-plugin-svelte": "^5.2.1",
+    "rollup-plugin-typescript2": "^0.27.0",
+    "svelte": "^3.22.2",
+    "typescript": "^3.8.3"
+  }
 }

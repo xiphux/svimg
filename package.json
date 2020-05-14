@@ -10,7 +10,7 @@
   ],
   "types": "dist/index.d.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
     "build": "rollup -c",
     "watch": "rollup -cw"
   },
@@ -24,11 +24,19 @@
   "author": "Chris Han <christopher.f.han@gmail.com>",
   "license": "ISC",
   "devDependencies": {
+    "@types/jest": "^25.2.1",
+    "@types/sharp": "^0.25.0",
+    "jest": "^26.0.1",
     "rollup": "^2.9.1",
     "rollup-plugin-node-resolve": "^5.2.0",
     "rollup-plugin-svelte": "^5.2.1",
     "rollup-plugin-typescript2": "^0.27.0",
     "svelte": "^3.22.2",
+    "ts-jest": "^25.5.1",
     "typescript": "^3.8.3"
+  },
+  "dependencies": {
+    "md5-file": "^5.0.0",
+    "sharp": "^0.25.2"
   }
 }

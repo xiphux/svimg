@@ -4,7 +4,7 @@ import sharp from 'sharp';
 import md5file from 'md5-file';
 import getProcessImageOptions from '../../src/image-processing/get-process-image-options';
 import resizeImageMultiple from '../../src/image-processing/resize-image-multiple';
-import getImageOptionsHash from '../../src/image-processing/get-image-options-hash';
+import getOptionsHash from '../../src/image-processing/get-options-hash';
 
 jest.mock('fs');
 jest.mock('sharp', () => ({
@@ -15,7 +15,7 @@ jest.mock('md5-file', () => ({
 }));
 jest.mock('../../src/image-processing/get-process-image-options');
 jest.mock('../../src/image-processing/resize-image-multiple');
-jest.mock('../../src/image-processing/get-image-options-hash');
+jest.mock('../../src/image-processing/get-options-hash');
 
 describe('processImage', () => {
 
@@ -101,7 +101,7 @@ describe('processImage', () => {
                 height: 300,
             }
         ]));
-        (getImageOptionsHash as jest.Mock).mockReturnValue('optionshash');
+        (getOptionsHash as jest.Mock).mockReturnValue('optionshash');
 
         expect(await processImage('/in/file.jpg', '/out/dir', { widths: [100, 200], quality: 85, webp: false })).toEqual({
             images: [
@@ -168,7 +168,7 @@ describe('processImage', () => {
                 height: 300,
             }
         ]));
-        (getImageOptionsHash as jest.Mock).mockReturnValue('optionshash');
+        (getOptionsHash as jest.Mock).mockReturnValue('optionshash');
 
         expect(await processImage('/in/file.jpg', '/out/dir', { widths: [100, 200], quality: 85, webp: true })).toEqual({
             images: [

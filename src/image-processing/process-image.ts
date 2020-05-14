@@ -4,7 +4,7 @@ import md5file from 'md5-file';
 import { basename, extname } from 'path';
 import sharp from 'sharp';
 import resizeImageMultiple from './resize-image-multiple';
-import getImageOptionsHash from './get-image-options-hash';
+import getOptionsHash from './get-options-hash';
 import getProcessImageOptions from './get-process-image-options';
 
 const mkdirPromise = promisify(mkdir);
@@ -51,12 +51,12 @@ export default async function processImage(inputFile: string, outputDir: string,
     const images = await resizeImageMultiple(inputFile, outputDir, {
         widths,
         quality,
-        filenameGenerator: ({ width, quality }) => `${baseFilename}.${getImageOptionsHash({ width, quality })}.${fileHash}${extension}`,
+        filenameGenerator: ({ width, quality }) => `${baseFilename}.${getOptionsHash({ width, quality }, 7)}.${fileHash}${extension}`,
     });
     const webpImages = webp ? await resizeImageMultiple(inputFile, outputDir, {
         widths,
         quality,
-        filenameGenerator: ({ width, quality }) => `${baseFilename}.${getImageOptionsHash({ width, quality })}.${fileHash}.webp`,
+        filenameGenerator: ({ width, quality }) => `${baseFilename}.${getOptionsHash({ width, quality }, 7)}.${fileHash}.webp`,
     }) : [];
 
     return {

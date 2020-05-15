@@ -94,7 +94,7 @@ describe('resizeImage', () => {
         });
 
         expect(existsSync).toHaveBeenCalledWith('/out/file.jpg');
-        expect(sharp).toHaveBeenCalledWith('/in/file.jpg');
+        expect(sharp).toHaveBeenCalledWith('/out/file.jpg');
         expect(toFile).not.toHaveBeenCalled();
         expect(metadata).toHaveBeenCalled();
     });

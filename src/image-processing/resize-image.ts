@@ -18,7 +18,7 @@ export default async function resizeImage(inputFile: string, outputFile: string,
     let width;
     let height;
     if (existsSync(outputFile)) {
-        ({ width, height } = await sharp(inputFile).metadata());
+        ({ width, height } = await sharp(outputFile).metadata());
     } else {
         ({ width, height } = await sharp(inputFile).jpeg({
             quality: options.quality,

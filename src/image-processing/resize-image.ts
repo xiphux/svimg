@@ -1,6 +1,7 @@
 import { existsSync } from 'fs';
 import sharp from 'sharp';
 import Image from './image';
+import getImageMetadata from '../core/get-image-metadata';
 
 interface ResizeImageOptions {
     width: number;
@@ -18,7 +19,7 @@ export default async function resizeImage(inputFile: string, outputFile: string,
     let width;
     let height;
     if (existsSync(outputFile)) {
-        ({ width, height } = await sharp(outputFile).metadata());
+        ({ width, height } = await getImageMetadata(outputFile));
     } else {
         ({ width, height } = await sharp(inputFile).jpeg({
             quality: options.quality,

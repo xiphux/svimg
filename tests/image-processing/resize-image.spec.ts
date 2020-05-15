@@ -1,15 +1,16 @@
 import resizeImage from '../../src/image-processing/resize-image';
 import { existsSync } from 'fs';
 import sharp from 'sharp';
+import getImageMetadata from '../../src/core/get-image-metadata';
 
 jest.mock('fs');
 jest.mock('sharp', () => ({
     default: jest.fn(),
 }));
+jest.mock('../../src/core/get-image-metadata');
 
 describe('resizeImage', () => {
 
-    let metadata: jest.Mock;
     let jpeg: jest.Mock;
     let png: jest.Mock;
     let webp: jest.Mock;
@@ -17,8 +18,8 @@ describe('resizeImage', () => {
     let toFile: jest.Mock;
     beforeEach(() => {
         (existsSync as jest.Mock).mockReset();
+        (getImageMetadata as jest.Mock).mockReset();
         (sharp as any as jest.Mock).mockReset();
-        metadata = jest.fn();
         jpeg = jest.fn(() => ({
             jpeg,
             png,
@@ -49,7 +50,6 @@ describe('resizeImage', () => {
         }));
         toFile = jest.fn();
         (sharp as any as jest.Mock).mockReturnValue({
-            metadata,
             jpeg,
             png,
             webp,
@@ -73,10 +73,10 @@ describe('resizeImage', () => {
     });
 
     it('returns metadata if the file exists', async () => {
-        metadata.mockReturnValue({
+        (getImageMetadata as jest.Mock).mockImplementation(() => Promise.resolve({
             width: 300,
             height: 200,
-        });
+        }));
 
         (existsSync as jest.Mock).mockReturnValue(true);
 
@@ -94,9 +94,8 @@ describe('resizeImage', () => {
         });
 
         expect(existsSync).toHaveBeenCalledWith('/out/file.jpg');
-        expect(sharp).toHaveBeenCalledWith('/out/file.jpg');
+        expect(getImageMetadata).toHaveBeenCalledWith('/out/file.jpg');
         expect(toFile).not.toHaveBeenCalled();
-        expect(metadata).toHaveBeenCalled();
     });
 
     it('converts to specified width and quality if file doesn\'t exist', async () => {
@@ -135,7 +134,7 @@ describe('resizeImage', () => {
             force: false,
         });
         expect(toFile).toHaveBeenCalledWith('/out/file.jpg');
-        expect(metadata).not.toHaveBeenCalled();
+        expect(getImageMetadata).not.toHaveBeenCalled();
     });
 
 });

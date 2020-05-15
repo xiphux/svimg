@@ -1,36 +1,29 @@
 import processImage from '../../src/image-processing/process-image';
 import { existsSync, mkdir } from 'fs';
-import sharp from 'sharp';
 import md5file from 'md5-file';
 import getProcessImageOptions from '../../src/image-processing/get-process-image-options';
 import resizeImageMultiple from '../../src/image-processing/resize-image-multiple';
 import getOptionsHash from '../../src/image-processing/get-options-hash';
+import getImageMetadata from '../../src/core/get-image-metadata';
 
 jest.mock('fs');
-jest.mock('sharp', () => ({
-    default: jest.fn(),
-}));
 jest.mock('md5-file', () => ({
     default: jest.fn(),
 }));
 jest.mock('../../src/image-processing/get-process-image-options');
 jest.mock('../../src/image-processing/resize-image-multiple');
 jest.mock('../../src/image-processing/get-options-hash');
+jest.mock('../../src/core/get-image-metadata');
 
 describe('processImage', () => {
 
-    let metadata: jest.Mock;
     beforeEach(() => {
         (existsSync as jest.Mock).mockReset();
         (mkdir as any as jest.Mock).mockReset().mockImplementation((dir, opts, callback) => callback());
-        (sharp as any as jest.Mock).mockReset();
-        metadata = jest.fn();
-        (sharp as any as jest.Mock).mockImplementation(() => ({
-            metadata,
-        }));
         (md5file as any as jest.Mock).mockReset();
         (getProcessImageOptions as jest.Mock).mockReset();
         (resizeImageMultiple as jest.Mock).mockReset();
+        (getImageMetadata as jest.Mock).mockReset();
     });
 
     it('requires an input file', async () => {
@@ -49,7 +42,7 @@ describe('processImage', () => {
 
     it('creates the dir if it doesn\'t exist', async () => {
         (existsSync as jest.Mock).mockReturnValue(false);
-        metadata.mockImplementation(() => Promise.resolve({
+        (getImageMetadata as jest.Mock).mockImplementation(() => Promise.resolve({
             width: 300,
         }));
         (getProcessImageOptions as jest.Mock).mockReturnValue({
@@ -65,7 +58,7 @@ describe('processImage', () => {
 
     it('won\'t create the dir if it exists', async () => {
         (existsSync as jest.Mock).mockReturnValue(true);
-        metadata.mockImplementation(() => Promise.resolve({
+        (getImageMetadata as jest.Mock).mockImplementation(() => Promise.resolve({
             width: 300,
         }));
         (getProcessImageOptions as jest.Mock).mockReturnValue({
@@ -85,7 +78,7 @@ describe('processImage', () => {
             widths: [200, 300],
             quality: 85,
         });
-        metadata.mockImplementation(() => Promise.resolve({
+        (getImageMetadata as jest.Mock).mockImplementation(() => Promise.resolve({
             width: 300,
         }));
         (md5file as any as jest.Mock).mockImplementation(() => Promise.resolve('filehash'));
@@ -119,8 +112,7 @@ describe('processImage', () => {
             webpImages: [],
         });
 
-        expect(sharp).toHaveBeenCalledWith('/in/file.jpg');
-        expect(metadata).toHaveBeenCalled();
+        expect(getImageMetadata).toHaveBeenCalledWith('/in/file.jpg');
 
         expect(getProcessImageOptions).toHaveBeenCalledWith(300, { widths: [100, 200], quality: 85 })
 
@@ -141,7 +133,7 @@ describe('processImage', () => {
             widths: [200, 300],
             quality: 85,
         });
-        metadata.mockImplementation(() => Promise.resolve({
+        (getImageMetadata as jest.Mock).mockImplementation(() => Promise.resolve({
             width: 300,
         }));
         (md5file as any as jest.Mock).mockImplementation(() => Promise.resolve('filehash'));
@@ -197,8 +189,7 @@ describe('processImage', () => {
             ],
         });
 
-        expect(sharp).toHaveBeenCalledWith('/in/file.jpg');
-        expect(metadata).toHaveBeenCalled();
+        expect(getImageMetadata).toHaveBeenCalledWith('/in/file.jpg');
 
         expect(getProcessImageOptions).toHaveBeenCalledWith(300, { widths: [100, 200], quality: 85 })
 

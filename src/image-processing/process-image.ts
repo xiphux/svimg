@@ -2,11 +2,11 @@ import { existsSync, mkdir } from 'fs';
 import { promisify } from 'util';
 import md5file from 'md5-file';
 import { basename, extname } from 'path';
-import sharp from 'sharp';
 import resizeImageMultiple from './resize-image-multiple';
 import getOptionsHash from './get-options-hash';
 import getProcessImageOptions from './get-process-image-options';
 import Image from './image';
+import getImageMetadata from '../core/get-image-metadata';
 
 const mkdirPromise = promisify(mkdir);
 
@@ -35,7 +35,7 @@ export default async function processImage(inputFile: string, outputDir: string,
 
     let { widths, quality, webp } = options;
 
-    const metadata = await sharp(inputFile).metadata();
+    const metadata = await getImageMetadata(inputFile);
     ({ widths, quality } = getProcessImageOptions(metadata.width, { widths, quality }));
 
     const filename = basename(inputFile);

@@ -6,6 +6,7 @@ import sharp from 'sharp';
 import resizeImageMultiple from './resize-image-multiple';
 import getOptionsHash from './get-options-hash';
 import getProcessImageOptions from './get-process-image-options';
+import Image from './image';
 
 const mkdirPromise = promisify(mkdir);
 
@@ -13,12 +14,6 @@ export interface ProcessImageOptions {
     widths?: number[];
     quality?: number;
     webp?: boolean;
-}
-
-export interface Image {
-    path: string;
-    width: number;
-    height: number;
 }
 
 export interface ProcessImageOutput {

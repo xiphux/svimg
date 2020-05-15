@@ -1,15 +1,10 @@
 import { existsSync } from 'fs';
 import sharp from 'sharp';
+import Image from './image';
 
 interface ResizeImageOptions {
     width: number;
     quality: number;
-}
-
-interface Image {
-    path: string;
-    width: number;
-    height: number;
 }
 
 export default async function resizeImage(inputFile: string, outputFile: string, options: ResizeImageOptions): Promise<Image> {

@@ -1,16 +1,11 @@
 import resizeImage from './resize-image';
 import { join } from 'path';
+import Image from './image';
 
 interface ResizeImageMultipleOptions {
     widths: number[];
     quality: number;
     filenameGenerator: (options: { width: number; quality: number; inputFile: string }) => string;
-}
-
-interface Image {
-    path: string;
-    width: number;
-    height: number;
 }
 
 export default async function resizeImageMultiple(inputFile: string, outputDir: string, options: ResizeImageMultipleOptions): Promise<Image[]> {

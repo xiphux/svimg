@@ -1,4 +1,4 @@
-import resizeImage from './resize-image';
+import ensureResizeImage from './ensure-resize-image';
 import { join } from 'path';
 import Image from './image';
 
@@ -26,7 +26,7 @@ export default async function resizeImageMultiple(inputFile: string, outputDir: 
         }
 
         const path = join(outputDir, outFile);
-        images.push(await resizeImage(inputFile, path, { width, quality: options.quality }));
+        images.push(await ensureResizeImage(inputFile, path, { width, quality: options.quality }));
     }
 
     return images;

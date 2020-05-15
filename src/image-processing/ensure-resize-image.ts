@@ -8,7 +8,7 @@ interface ResizeImageOptions {
     quality: number;
 }
 
-export default async function resizeImage(inputFile: string, outputFile: string, options: ResizeImageOptions): Promise<Image> {
+export default async function ensureResizeImage(inputFile: string, outputFile: string, options: ResizeImageOptions): Promise<Image> {
     if (!inputFile) {
         throw new Error('Input file is required');
     }

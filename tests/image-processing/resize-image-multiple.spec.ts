@@ -1,13 +1,13 @@
 import resizeImageMultiple from '../../src/image-processing/resize-image-multiple';
-import resizeImage from '../../src/image-processing/resize-image';
+import ensureResizeImage from '../../src/image-processing/ensure-resize-image';
 import { join } from 'path';
 
-jest.mock('../../src/image-processing/resize-image');
+jest.mock('../../src/image-processing/ensure-resize-image');
 
 describe('resizeImageMultiple', () => {
 
     beforeEach(() => {
-        (resizeImage as jest.Mock).mockReset();
+        (ensureResizeImage as jest.Mock).mockReset();
     })
 
     it('requires input file', async () => {
@@ -17,7 +17,7 @@ describe('resizeImageMultiple', () => {
             filenameGenerator: ({ width, quality }) => `${width}.${quality}.jpg`,
         })).rejects.toThrow();
 
-        expect(resizeImage).not.toHaveBeenCalled();
+        expect(ensureResizeImage).not.toHaveBeenCalled();
     });
 
     it('requires output dir', async () => {
@@ -27,7 +27,7 @@ describe('resizeImageMultiple', () => {
             filenameGenerator: ({ width, quality }) => `${width}.${quality}.jpg`,
         })).rejects.toThrow();
 
-        expect(resizeImage).not.toHaveBeenCalled();
+        expect(ensureResizeImage).not.toHaveBeenCalled();
     });
 
     it('doesn\'t generate without widths', async () => {
@@ -37,7 +37,7 @@ describe('resizeImageMultiple', () => {
             filenameGenerator: ({ width, quality }) => `${width}.${quality}.jpg`,
         })).toEqual([]);
 
-        expect(resizeImage).not.toHaveBeenCalled();
+        expect(ensureResizeImage).not.toHaveBeenCalled();
     });
 
     it('requires filename generator to return filenames', async () => {
@@ -47,11 +47,11 @@ describe('resizeImageMultiple', () => {
             filenameGenerator: ({ width, quality }) => null,
         })).rejects.toThrow();
 
-        expect(resizeImage).not.toHaveBeenCalled();
+        expect(ensureResizeImage).not.toHaveBeenCalled();
     });
 
     it('generates filenames and resizes', async () => {
-        (resizeImage as jest.Mock).mockReturnValueOnce({
+        (ensureResizeImage as jest.Mock).mockReturnValueOnce({
             path: '/out/dir/100.75.jpg',
             width: 100,
             height: 50,
@@ -78,9 +78,9 @@ describe('resizeImageMultiple', () => {
             },
         ]);
 
-        expect(resizeImage).toHaveBeenCalledTimes(2);
-        expect(resizeImage).toHaveBeenCalledWith('/in/file', join('/out/dir', '100.75.jpg'), { width: 100, quality: 75 });
-        expect(resizeImage).toHaveBeenCalledWith('/in/file', join('/out/dir', '200.75.jpg'), { width: 200, quality: 75 });
+        expect(ensureResizeImage).toHaveBeenCalledTimes(2);
+        expect(ensureResizeImage).toHaveBeenCalledWith('/in/file', join('/out/dir', '100.75.jpg'), { width: 100, quality: 75 });
+        expect(ensureResizeImage).toHaveBeenCalledWith('/in/file', join('/out/dir', '200.75.jpg'), { width: 200, quality: 75 });
     });
 
 });

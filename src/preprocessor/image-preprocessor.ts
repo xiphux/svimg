@@ -33,8 +33,6 @@ export default function imagePreprocessor(options?: ImagePreprocessorOptions): P
                 }, options));
             }
 
-            console.log(content);
-
             return {
                 code: content,
             };

@@ -26,6 +26,7 @@
   "devDependencies": {
     "@types/jest": "^25.2.1",
     "@types/sharp": "^0.25.0",
+    "@types/uuid": "^7.0.3",
     "jest": "^26.0.1",
     "rollup": "^2.9.1",
     "rollup-plugin-node-resolve": "^5.2.0",
@@ -37,6 +38,8 @@
   },
   "dependencies": {
     "md5-file": "^5.0.0",
-    "sharp": "^0.25.2"
+    "mini-svg-data-uri": "^1.2.3",
+    "sharp": "^0.25.2",
+    "uuid": "^8.0.0"
   }
 }

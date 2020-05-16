@@ -6,3 +6,8 @@ declare module 'md5-file' {
 
     export = md5Promise;
 }
+
+declare module 'mini-svg-data-uri' {
+    function svgDataUri(svg: string): string;
+    export default svgDataUri;
+}

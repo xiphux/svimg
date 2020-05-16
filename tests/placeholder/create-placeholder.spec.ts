@@ -1,4 +1,4 @@
-import getPlaceholder from '../../src/placeholder/get-placeholder';
+import createPlaceholder from '../../src/placeholder/create-placeholder';
 import getImageMetadata from '../../src/core/get-image-metadata';
 import resizeImage from '../../src/core/resize-image';
 import getBlurSvg from '../../src/placeholder/get-blur-svg';
@@ -13,7 +13,7 @@ jest.mock('mini-svg-data-uri', () => ({
     default: jest.fn(),
 }));
 
-describe('getPlaceholder', () => {
+describe('createPlaceholder', () => {
 
     beforeEach(() => {
         (getImageMetadata as jest.Mock).mockReset();
@@ -24,7 +24,7 @@ describe('getPlaceholder', () => {
     });
 
     it('requires input file', async () => {
-        await expect(getPlaceholder('')).rejects.toThrow();
+        await expect(createPlaceholder('')).rejects.toThrow();
     });
 
     it('creates an svg with default blur', async () => {
@@ -40,7 +40,7 @@ describe('getPlaceholder', () => {
         (getBlurSvg as jest.Mock).mockReturnValue('<svg />');
         (svgDataUri as any as jest.Mock).mockReturnValue('<optimizedsvg />');
 
-        expect(await getPlaceholder('/in/file.jpg')).toEqual('<optimizedsvg />');
+        expect(await createPlaceholder('/in/file.jpg')).toEqual('<optimizedsvg />');
 
         expect(getImageMetadata).toHaveBeenCalledWith('/in/file.jpg');
         expect(resizeImage).toHaveBeenCalledWith('/in/file.jpg', { width: 64 });
@@ -62,7 +62,7 @@ describe('getPlaceholder', () => {
         (getBlurSvg as jest.Mock).mockReturnValue('<svg />');
         (svgDataUri as any as jest.Mock).mockReturnValue('<optimizedsvg />');
 
-        expect(await getPlaceholder('/in/file.jpg', { blur: 30 })).toEqual('<optimizedsvg />');
+        expect(await createPlaceholder('/in/file.jpg', { blur: 30 })).toEqual('<optimizedsvg />');
 
         expect(getImageMetadata).toHaveBeenCalledWith('/in/file.jpg');
         expect(resizeImage).toHaveBeenCalledWith('/in/file.jpg', { width: 64 });

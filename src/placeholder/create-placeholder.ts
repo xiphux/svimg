@@ -4,13 +4,13 @@ import resizeImage from '../core/resize-image';
 import getImageMetadata from '../core/get-image-metadata';
 import getBlurSvg from './get-blur-svg';
 
-interface CreatePlaceholderOptions {
+export interface CreatePlaceholderOptions {
     blur?: number;
 }
 
 const BLUR_WIDTH = 64;
 
-export default async function getPlaceholder(inputFile: string, options?: CreatePlaceholderOptions): Promise<string> {
+export default async function createPlaceholder(inputFile: string, options?: CreatePlaceholderOptions): Promise<string> {
     if (!inputFile) {
         throw new Error('Input file is required');
     }

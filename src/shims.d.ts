@@ -8,6 +8,9 @@ declare module 'md5-file' {
 }
 
 declare module 'mini-svg-data-uri' {
-    function svgDataUri(svg: string): string;
-    export default svgDataUri;
+    var svgDataUri: {
+        (svg: string): string;
+        toSrcset: (svg: string) => string;
+    };
+    export = svgDataUri;
 }

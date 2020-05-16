@@ -17,7 +17,8 @@
     <source data-srcset={srcsetWebp} />
   {/if}
   <img
-    src={placeholder}
+    {src}
+    srcset={placeholder}
     data-srcset={srcset}
     data-sizes="auto"
     {alt}

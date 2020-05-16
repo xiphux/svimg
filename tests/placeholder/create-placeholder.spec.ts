@@ -10,7 +10,9 @@ jest.mock('../../src/core/resize-image');
 jest.mock('../../src/placeholder/get-blur-svg');
 jest.mock('../../src/core/get-mime-type');
 jest.mock('mini-svg-data-uri', () => ({
-    default: jest.fn(),
+    default: {
+        toSrcset: jest.fn(),
+    }
 }));
 
 describe('createPlaceholder', () => {
@@ -20,7 +22,7 @@ describe('createPlaceholder', () => {
         (resizeImage as jest.Mock).mockReset();
         (getBlurSvg as jest.Mock).mockReset();
         (getMimeType as jest.Mock).mockReset();
-        (svgDataUri as any as jest.Mock).mockReset();
+        (svgDataUri.toSrcset as jest.Mock).mockReset();
     });
 
     it('requires input file', async () => {
@@ -38,7 +40,7 @@ describe('createPlaceholder', () => {
         }));
         (getMimeType as jest.Mock).mockReturnValue('image/jpeg');
         (getBlurSvg as jest.Mock).mockReturnValue('<svg />');
-        (svgDataUri as any as jest.Mock).mockReturnValue('<optimizedsvg />');
+        (svgDataUri.toSrcset as jest.Mock).mockReturnValue('<optimizedsvg />');
 
         expect(await createPlaceholder('/in/file.jpg')).toEqual('<optimizedsvg />');
 
@@ -46,7 +48,7 @@ describe('createPlaceholder', () => {
         expect(resizeImage).toHaveBeenCalledWith('/in/file.jpg', { width: 64 });
         expect(getMimeType).toHaveBeenCalledWith('jpeg');
         expect(getBlurSvg).toHaveBeenCalledWith('data:image/jpeg;base64,base64data', 300, 200, 40);
-        expect(svgDataUri).toHaveBeenCalledWith('<svg />');
+        expect(svgDataUri.toSrcset).toHaveBeenCalledWith('<svg />');
     });
 
     it('creates an svg with custom blur', async () => {
@@ -60,7 +62,7 @@ describe('createPlaceholder', () => {
         }));
         (getMimeType as jest.Mock).mockReturnValue('image/jpeg');
         (getBlurSvg as jest.Mock).mockReturnValue('<svg />');
-        (svgDataUri as any as jest.Mock).mockReturnValue('<optimizedsvg />');
+        (svgDataUri.toSrcset as jest.Mock).mockReturnValue('<optimizedsvg />');
 
         expect(await createPlaceholder('/in/file.jpg', { blur: 30 })).toEqual('<optimizedsvg />');
 
@@ -68,7 +70,7 @@ describe('createPlaceholder', () => {
         expect(resizeImage).toHaveBeenCalledWith('/in/file.jpg', { width: 64 });
         expect(getMimeType).toHaveBeenCalledWith('jpeg');
         expect(getBlurSvg).toHaveBeenCalledWith('data:image/jpeg;base64,base64data', 300, 200, 30);
-        expect(svgDataUri).toHaveBeenCalledWith('<svg />');
+        expect(svgDataUri.toSrcset).toHaveBeenCalledWith('<svg />');
     });
 
 });

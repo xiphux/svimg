@@ -25,5 +25,5 @@ export default async function createPlaceholder(inputFile: string, options?: Cre
 
     const svg = getBlurSvg(href, width, height, blur);
 
-    return svgDataUri(svg);
+    return svgDataUri.toSrcset(svg);
 }

@@ -16,40 +16,18 @@ describe('ImageProcessingQueue', () => {
         queue = new ImageProcessingQueue();
     });
 
-    it('won\'t process without input file', async () => {
-        await expect(queue.process(
-            '',
-            '/output/dir',
-            {
-                widths: [100, 200],
-                quality: 75,
-            }
-        )).rejects.toThrow();
-    });
-
-    it('won\'t process without output dir', async () => {
-        await expect(queue.process(
-            '/input/file.jpg',
-            '',
-            {
-                widths: [100, 200],
-                quality: 75,
-            }
-        )).rejects.toThrow();
-    });
-
     it('will process an image', async () => {
         (processImage as jest.Mock).mockImplementation(() => Promise.resolve([{ path: 'image.jpg' }]));
         (md5file as any as jest.Mock).mockImplementation(() => Promise.resolve('filehash1'))
 
-        expect(await queue.process(
-            '/input/file.jpg',
-            '/output/dir',
-            {
+        expect(await queue.process({
+            inputFile: '/input/file.jpg',
+            outputDir: '/output/dir',
+            options: {
                 widths: [100, 200],
                 quality: 75,
             }
-        )).toEqual([{ path: 'image.jpg' }]);
+        })).toEqual([{ path: 'image.jpg' }]);
 
         expect(processImage).toHaveBeenCalledTimes(1);
         expect(processImage).toHaveBeenCalledWith(
@@ -69,22 +47,22 @@ describe('ImageProcessingQueue', () => {
         (processImage as jest.Mock).mockImplementationOnce(() => p);
         (md5file as any as jest.Mock).mockImplementation(() => Promise.resolve('filehash1'))
 
-        expect(await queue.process(
-            '/input/file.jpg',
-            '/output/dir',
-            {
+        expect(await queue.process({
+            inputFile: '/input/file.jpg',
+            outputDir: '/output/dir',
+            options: {
                 widths: [100, 200],
                 quality: 75,
             }
-        )).toEqual([{ path: 'image.jpg' }]);
-        expect(await queue.process(
-            '/input/file.jpg',
-            '/output/dir',
-            {
+        })).toEqual([{ path: 'image.jpg' }]);
+        expect(await queue.process({
+            inputFile: '/input/file.jpg',
+            outputDir: '/output/dir',
+            options: {
                 widths: [100, 200],
                 quality: 75,
             }
-        )).toEqual([{ path: 'image.jpg' }]);
+        })).toEqual([{ path: 'image.jpg' }]);
 
         expect(processImage).toHaveBeenCalledTimes(1);
         expect(processImage).toHaveBeenCalledWith(
@@ -105,22 +83,22 @@ describe('ImageProcessingQueue', () => {
         );
         (md5file as any as jest.Mock).mockImplementation(() => Promise.resolve('filehash1'))
 
-        expect(await queue.process(
-            '/input/file.jpg',
-            '/output/dir',
-            {
+        expect(await queue.process({
+            inputFile: '/input/file.jpg',
+            outputDir: '/output/dir',
+            options: {
                 widths: [100, 200],
                 quality: 75,
             }
-        )).toEqual([{ path: 'image.jpg' }]);
-        expect(await queue.process(
-            '/input/file2.jpg',
-            '/output/dir',
-            {
+        })).toEqual([{ path: 'image.jpg' }]);
+        expect(await queue.process({
+            inputFile: '/input/file2.jpg',
+            outputDir: '/output/dir',
+            options: {
                 widths: [100, 200],
                 quality: 75,
             }
-        )).toEqual([{ path: 'image2.jpg' }]);
+        })).toEqual([{ path: 'image2.jpg' }]);
 
         expect(processImage).toHaveBeenCalledTimes(2);
         expect(processImage).toHaveBeenCalledWith(
@@ -149,22 +127,22 @@ describe('ImageProcessingQueue', () => {
         );
         (md5file as any as jest.Mock).mockImplementation(() => Promise.resolve('filehash1'))
 
-        expect(await queue.process(
-            '/input/file.jpg',
-            '/output/dir',
-            {
+        expect(await queue.process({
+            inputFile: '/input/file.jpg',
+            outputDir: '/output/dir',
+            options: {
                 widths: [100, 200],
                 quality: 75,
             }
-        )).toEqual([{ path: 'image.jpg' }]);
-        expect(await queue.process(
-            '/input/file.jpg',
-            '/output/dir2',
-            {
+        })).toEqual([{ path: 'image.jpg' }]);
+        expect(await queue.process({
+            inputFile: '/input/file.jpg',
+            outputDir: '/output/dir2',
+            options: {
                 widths: [100, 200],
                 quality: 75,
             }
-        )).toEqual([{ path: 'image2.jpg' }]);
+        })).toEqual([{ path: 'image2.jpg' }]);
 
         expect(processImage).toHaveBeenCalledTimes(2);
         expect(processImage).toHaveBeenCalledWith(
@@ -195,29 +173,29 @@ describe('ImageProcessingQueue', () => {
         );
         (md5file as any as jest.Mock).mockImplementation(() => Promise.resolve('filehash1'))
 
-        expect(await queue.process(
-            '/input/file.jpg',
-            '/output/dir',
-            {
+        expect(await queue.process({
+            inputFile: '/input/file.jpg',
+            outputDir: '/output/dir',
+            options: {
                 widths: [100, 200],
                 quality: 75,
             }
-        )).toEqual([{ path: 'image.jpg' }]);
-        expect(await queue.process(
-            '/input/file.jpg',
-            '/output/dir',
-            {
+        })).toEqual([{ path: 'image.jpg' }]);
+        expect(await queue.process({
+            inputFile: '/input/file.jpg',
+            outputDir: '/output/dir',
+            options: {
                 widths: [200, 300],
                 quality: 75,
             }
-        )).toEqual([{ path: 'image2.jpg' }]);
-        expect(await queue.process(
-            '/input/file.jpg',
-            '/output/dir',
-            {
+        })).toEqual([{ path: 'image2.jpg' }]);
+        expect(await queue.process({
+            inputFile: '/input/file.jpg',
+            outputDir: '/output/dir',
+            options: {
                 quality: 75,
             }
-        )).toEqual([{ path: 'image3.jpg' }]);
+        })).toEqual([{ path: 'image3.jpg' }]);
 
         expect(processImage).toHaveBeenCalledTimes(3);
         expect(processImage).toHaveBeenCalledWith(
@@ -255,29 +233,29 @@ describe('ImageProcessingQueue', () => {
         );
         (md5file as any as jest.Mock).mockImplementation(() => Promise.resolve('filehash1'))
 
-        expect(await queue.process(
-            '/input/file.jpg',
-            '/output/dir',
-            {
+        expect(await queue.process({
+            inputFile: '/input/file.jpg',
+            outputDir: '/output/dir',
+            options: {
                 widths: [100, 200],
                 quality: 75,
             }
-        )).toEqual([{ path: 'image.jpg' }]);
-        expect(await queue.process(
-            '/input/file.jpg',
-            '/output/dir',
-            {
+        })).toEqual([{ path: 'image.jpg' }]);
+        expect(await queue.process({
+            inputFile: '/input/file.jpg',
+            outputDir: '/output/dir',
+            options: {
                 widths: [100, 200],
                 quality: 85,
             }
-        )).toEqual([{ path: 'image2.jpg' }]);
-        expect(await queue.process(
-            '/input/file.jpg',
-            '/output/dir',
-            {
+        })).toEqual([{ path: 'image2.jpg' }]);
+        expect(await queue.process({
+            inputFile: '/input/file.jpg',
+            outputDir: '/output/dir',
+            options: {
                 widths: [100, 200],
             }
-        )).toEqual([{ path: 'image3.jpg' }]);
+        })).toEqual([{ path: 'image3.jpg' }]);
 
         expect(processImage).toHaveBeenCalledTimes(3);
         expect(processImage).toHaveBeenCalledWith(
@@ -317,22 +295,22 @@ describe('ImageProcessingQueue', () => {
             () => Promise.resolve('filehash2')
         )
 
-        expect(await queue.process(
-            '/input/file.jpg',
-            '/output/dir',
-            {
+        expect(await queue.process({
+            inputFile: '/input/file.jpg',
+            outputDir: '/output/dir',
+            options: {
                 widths: [100, 200],
                 quality: 75,
             }
-        )).toEqual([{ path: 'image.jpg' }]);
-        expect(await queue.process(
-            '/input/file.jpg',
-            '/output/dir',
-            {
+        })).toEqual([{ path: 'image.jpg' }]);
+        expect(await queue.process({
+            inputFile: '/input/file.jpg',
+            outputDir: '/output/dir',
+            options: {
                 widths: [100, 200],
                 quality: 75,
             }
-        )).toEqual([{ path: 'image2.jpg' }]);
+        })).toEqual([{ path: 'image2.jpg' }]);
 
         expect(processImage).toHaveBeenCalledTimes(2);
         expect(processImage).toHaveBeenCalledWith(

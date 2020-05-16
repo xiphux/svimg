@@ -2,36 +2,18 @@ import { ProcessImageOptions, ProcessImageOutput } from "./process-image";
 import md5file from 'md5-file';
 import processImage from "./process-image";
 import getOptionsHash from "./get-options-hash";
+import ProcessingQueue from "../core/processing-queue";
 
-export default class ImageProcessingQueue {
-    constructor() {
-        this.cache = new Map();
-    }
+interface ImageProcessingQueueInput {
+    inputFile: string;
+    outputDir: string;
+    options?: ProcessImageOptions;
+}
 
-    private cache: Map<string, Promise<ProcessImageOutput>>;
+export default class ImageProcessingQueue extends ProcessingQueue<ImageProcessingQueueInput, ProcessImageOutput> {
 
-    public async process(inputFile: string, outputDir: string, options?: ProcessImageOptions): Promise<ProcessImageOutput> {
-        if (!inputFile) {
-            throw new Error('Input file is required');
-        }
-        if (!outputDir) {
-            throw new Error('Output dir is required');
-        }
-
+    protected async getHashKey({ inputFile, outputDir, options }: ImageProcessingQueueInput): Promise<string> {
         const fileHash = await md5file(inputFile);
-
-        const cacheKey = this.getHashKey(inputFile, outputDir, fileHash, options);
-
-        if (this.cache.has(cacheKey)) {
-            return this.cache.get(cacheKey);
-        }
-
-        const p = processImage(inputFile, outputDir, options);
-        this.cache.set(cacheKey, p);
-        return p;
-    }
-
-    private getHashKey(inputFile: string, outputDir: string, fileHash: string, options?: ProcessImageOptions): string {
         return getOptionsHash({
             inputFile,
             outputDir,
@@ -42,5 +24,9 @@ export default class ImageProcessingQueue {
                 webp: options.webp,
             }) : undefined,
         });
+    }
+
+    protected async run({ inputFile, outputDir, options }: ImageProcessingQueueInput): Promise<ProcessImageOutput> {
+        return processImage(inputFile, outputDir, options);
     }
 }

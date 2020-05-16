@@ -1,9 +1,7 @@
-import { createHash } from 'crypto';
+import getHash from '../core/get-hash';
 
 export default function getOptionsHash(options: { [key: string]: number | string | boolean }, length?: number): string {
-    const hash = createHash('md5').update(
-        Object.entries(options).map(([k, v]) => `${k}=${v}`).join(',')
-    ).digest('hex');
+    const hash = getHash(Object.entries(options).map(([k, v]) => `${k}=${v}`).join(','));
 
     return length ? hash.substring(0, length) : hash;
 }

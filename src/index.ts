@@ -6,3 +6,5 @@ import PlaceholderQueue from './placeholder/placeholder-queue';
 export { PlaceholderQueue };
 import getComponentAttributes from './component/get-component-attributes';
 export { getComponentAttributes };
+import imagePreprocessor from './preprocessor/image-preprocessor';
+export { imagePreprocessor };

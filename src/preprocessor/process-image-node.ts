@@ -38,7 +38,7 @@ export default async function processImageNode(
             inputFile,
             outputDir,
             options: {
-                webp: options?.webp,
+                webp: options && options.webp !== undefined ? options.webp : true,
                 widths: forceWidth ? [forceWidth] : undefined,
             }
         }),

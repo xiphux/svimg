@@ -7,7 +7,7 @@ import getImageNodes from './get-image-nodes';
 export interface ImagePreprocessorOptions {
     publicDir: string;
     outputDir: string;
-    webp: boolean;
+    webp?: boolean;
 }
 
 export default function imagePreprocessor(options?: ImagePreprocessorOptions): PreprocessorGroup {

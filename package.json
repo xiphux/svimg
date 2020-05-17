@@ -7,7 +7,8 @@
   "module": "dist/index.es.js",
   "svelte": "src/Image.svelte",
   "files": [
-    "dist"
+    "dist",
+    "src/Image.svelte"
   ],
   "types": "dist/index.d.ts",
   "scripts": {

@@ -1,5 +1,5 @@
 {
-  "name": "svelte-lazyimage",
+  "name": "svimg",
   "version": "0.0.1",
   "description": "Svelte image component with image preprocessing and lazy loading",
   "main": "dist/index.js",
@@ -17,9 +17,13 @@
   "keywords": [
     "svelte",
     "image",
-    "processing",
+    "img",
+    "images",
     "lazy",
-    "load"
+    "load",
+    "responsive",
+    "srcset",
+    "sharp"
   ],
   "author": "Chris Han <christopher.f.han@gmail.com>",
   "license": "ISC",

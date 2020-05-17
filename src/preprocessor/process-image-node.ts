@@ -20,13 +20,15 @@ export default async function processImageNode(
     },
     options?: ImagePreprocessorOptions
 ): Promise<{ content: string, offset: number }> {
-    const { src } = getNodeAttributes(node);
+    const { src, width } = getNodeAttributes(node);
     if (!src) {
         return {
             content,
             offset,
         };
     }
+
+    const forceWidth = width && /^[0-9]+$/.test(width) ? parseInt(width, 10) : undefined;
 
     const inputFile = join(options.publicDir, src);
     const outputDir = join(options.outputDir, dirname(src));
@@ -37,6 +39,7 @@ export default async function processImageNode(
             outputDir,
             options: {
                 webp: options?.webp,
+                widths: forceWidth ? [forceWidth] : undefined,
             }
         }),
         queues.placeholder.process({

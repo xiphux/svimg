@@ -1,9 +1,7 @@
-name: Build
+name: Publish
 
 on:
   push:
-    branches:
-      - master
     tags:
       - '*'
 
@@ -41,7 +39,6 @@ jobs:
   publish-npm:
     needs: test
     runs-on: ubuntu-latest
-    if: github.event.ref_type == 'tag'
     
     steps:
       - name: Checkout
@@ -75,7 +72,6 @@ jobs:
   publish-gpr:
     needs: test
     runs-on: ubuntu-latest
-    if: github.event.ref_type == 'tag'
 
     steps:
       - name: Checkout

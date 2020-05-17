@@ -5,7 +5,7 @@ import processImageNode from './process-image-node';
 import getImageNodes from './get-image-nodes';
 
 export interface ImagePreprocessorOptions {
-    publicDir: string;
+    inputDir: string;
     outputDir: string;
     webp?: boolean;
 }

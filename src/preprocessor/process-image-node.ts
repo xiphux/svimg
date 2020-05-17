@@ -30,7 +30,7 @@ export default async function processImageNode(
 
     const forceWidth = width && /^[0-9]+$/.test(width) ? parseInt(width, 10) : undefined;
 
-    const inputFile = join(options.publicDir, src);
+    const inputFile = join(options.inputDir, src);
     const outputDir = join(options.outputDir, dirname(src));
 
     const [{ images, webpImages }, placeholder] = await Promise.all([
@@ -50,11 +50,11 @@ export default async function processImageNode(
     const attributes = getComponentAttributes({
         images: images.map((i) => ({
             ...i,
-            path: pathToUrl(i.path, options.publicDir),
+            path: pathToUrl(i.path, options.inputDir),
         })),
         webpImages: webpImages.map((i) => ({
             ...i,
-            path: pathToUrl(i.path, options.publicDir),
+            path: pathToUrl(i.path, options.inputDir),
         })),
         placeholder
     });

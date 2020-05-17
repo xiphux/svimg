@@ -18,7 +18,7 @@ describe('imagePreprocessor', () => {
         (getImageNodes as jest.Mock).mockReturnValue([]);
 
         const processor = imagePreprocessor({
-            publicDir: 'static',
+            inputDir: 'static',
             outputDir: 'static/g',
             webp: true,
         });
@@ -46,7 +46,7 @@ describe('imagePreprocessor', () => {
         );
 
         const processor = imagePreprocessor({
-            publicDir: 'static',
+            inputDir: 'static',
             outputDir: 'static/g',
             webp: true,
         });
@@ -69,7 +69,7 @@ describe('imagePreprocessor', () => {
                 placeholder: expect.any(PlaceholderQueue),
             },
             {
-                publicDir: 'static',
+                inputDir: 'static',
                 outputDir: 'static/g',
                 webp: true,
             }
@@ -84,7 +84,7 @@ describe('imagePreprocessor', () => {
                 placeholder: expect.any(PlaceholderQueue),
             },
             {
-                publicDir: 'static',
+                inputDir: 'static',
                 outputDir: 'static/g',
                 webp: true,
             }

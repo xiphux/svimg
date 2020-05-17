@@ -27,7 +27,7 @@ export default {
         svelte({
             preprocess: [
                 imagePreprocessor({
-                    publicDir: 'public',
+                    inputDir: 'public',
                     outputDir: 'public/g',
                     webp: true
                 })
@@ -44,7 +44,7 @@ import imagePreprocessor from 'svimg';
 
 const preprocess = [
     imagePreprocessor({
-        publicDir: 'static',
+        inputDir: 'static',
         outputDir: 'static/g',
         webp: true
     })
@@ -105,6 +105,6 @@ The following properties will be automatically populated by the preprocessor:
 
 | Option    | Default    |            |
 | --------- | ---------- | ---------- |
-| publicDir | *required* | The static asset directory where image urls are retrieved from |
+| inputDir | *required* | The static asset directory where image urls are retrieved from |
 | outputDir | *required* | The output directory where resized image files should be written to. This should usually be a subfolder within the normal static asset directory |
 | webp      | true       | Whether to generate WebP versions of images in addition to the original image formats |

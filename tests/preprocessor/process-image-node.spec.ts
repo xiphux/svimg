@@ -22,7 +22,7 @@ describe('processImageNode', () => {
                 placeholder: { process: placeholder } as any,
             },
             {
-                publicDir: 'static',
+                inputDir: 'static',
                 outputDir: 'static/g',
                 webp: false,
             },
@@ -64,7 +64,7 @@ describe('processImageNode', () => {
                 placeholder: { process: placeholder } as any,
             },
             {
-                publicDir: 'static',
+                inputDir: 'static',
                 outputDir: 'static/g',
                 webp: false,
             },
@@ -126,7 +126,7 @@ describe('processImageNode', () => {
                 placeholder: { process: placeholder } as any,
             },
             {
-                publicDir: 'static',
+                inputDir: 'static',
                 outputDir: 'static/g',
                 webp: false,
             },
@@ -195,7 +195,7 @@ describe('processImageNode', () => {
                 placeholder: { process: placeholder } as any,
             },
             {
-                publicDir: 'static',
+                inputDir: 'static',
                 outputDir: 'static/g',
                 webp: true,
             },
@@ -271,7 +271,7 @@ describe('processImageNode', () => {
                 placeholder: { process: placeholder } as any,
             },
             {
-                publicDir: 'static',
+                inputDir: 'static',
                 outputDir: 'static/g',
                 webp: true,
             },
@@ -348,7 +348,7 @@ describe('processImageNode', () => {
                 placeholder: { process: placeholder } as any,
             },
             {
-                publicDir: 'static',
+                inputDir: 'static',
                 outputDir: 'static/g',
                 webp: true,
             },
@@ -424,7 +424,7 @@ describe('processImageNode', () => {
                 placeholder: { process: placeholder } as any,
             },
             {
-                publicDir: 'static',
+                inputDir: 'static',
                 outputDir: 'static/g',
                 webp: true,
             },

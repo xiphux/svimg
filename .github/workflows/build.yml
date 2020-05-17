@@ -64,6 +64,9 @@ jobs:
       - name: Installing packages
         run: npm ci
 
+      - name: Build
+        run: npm run build
+
       - name: Publish to NPM
         run: npm publish
         env:
@@ -94,6 +97,9 @@ jobs:
 
       - name: Installing packages
         run: npm ci
+        
+      - name: Build
+        run: npm run build
 
       - name: Publish to NPM
         run: npm publish

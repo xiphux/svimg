@@ -1,6 +1,4 @@
-import { sep } from 'path';
-
-const pathSepPattern = new RegExp('\\' + sep, 'g');
+const pathSepPattern = /\\/g;
 
 export default function pathToUrl(path: string, baseDir?: string): string {
     path = path.replace(pathSepPattern, '/');

@@ -1,21 +1,21 @@
 # svimg
 
-svimg is an image preprocessing and lazy loading component for Svelte. It consists of:
+svimg is an image preprocessing and lazy loading component for [Svelte](https://svelte.dev). It consists of:
 
 * A Svelte preprocessor that automatically resizes your images to multiple resolutions in a `srcset`, creates additional [WebP](https://developers.google.com/speed/webp) versions, and generates blurred placeholder images
 * A Svelte component that displays the blurred placeholder and automatically lazy loads the proper resolution image when it comes into view
 
-svimg uses [lazysizes](https://github.com/aFarkas/lazysizes) to do lazy loading and takes advantage of lazysizes' automatic `sizes` calculation. Some other Svelte image components do not set a proper `sizes` attribute, which can cause the browser to download a much larger resolution image than necessary if you are resizing the image with CSS. svimg will also use a literal width if specified to control image preprocessing and only generate the necessary image files for that width.
+svimg uses [lazysizes](https://github.com/aFarkas/lazysizes) to do lazy loading and takes advantage of lazysizes' automatic `sizes` calculation. Some other image components do not set a proper `sizes` attribute, which can cause the browser to download a much larger resolution image than necessary if you are resizing the image with CSS. svimg will also use a literal width if specified to control image preprocessing and only generate the necessary image files for that width.
 
-This project is inspired by [Gridsome's](https://gridsome.org/docs/images/) image processing component. It's also inspired by [svelte-image](https://github.com/matyunya/svelte-image), and was originally going to be a fork of that project but ended up needing to diverge significantly in functionality.
+## Getting Started
 
-## Installation
+### Installation
+
+Since svimg is an external Svelte component, you'll want to make sure it gets bundled by Svelte during compile by installing it as a dev dependency (or modifying your rollup/webpack config to not treat it as an external). 
 
 ```bash
 npm install -D svimg
 ```
-
-Since svimg is an external Svelte component, you'll want to make sure it gets bundled by Svelte during compile by installing it as a dev dependency (or modifying your rollup/webpack config to not treat it as an external). 
 
 In `rollup.config.js`, add `imagePreprocessor` as a preprocessor for `rollup-plugin-svelte`:
 
@@ -68,7 +68,7 @@ export default {
 };
 ```
 
-## Usage
+### Usage
 
 ```html
 <script>
@@ -82,9 +82,9 @@ import Image from 'svimg';
 
 The `Image` component will render a blurred placeholder, a srcset with multiple resolutions, a sizes attribute, and a source of type `image/webp` with webp images. It'll use the original `src` for legacy browsers that don't support srcset.
 
-## Options
+### Configuration
 
-### Component attributes
+#### Component attributes
 
 | Property | Default    |           |
 | -------- | ---------- | --------- |
@@ -101,10 +101,29 @@ The following properties will be automatically populated by the preprocessor:
 | srcsetWebp  | Responsive WebP images and widths |
 | placeholder | Blurred placeholder image |
 
-### Preprocessor options
+#### Preprocessor options
 
 | Option    | Default    |            |
 | --------- | ---------- | ---------- |
 | inputDir | *required* | The static asset directory where image urls are retrieved from |
 | outputDir | *required* | The output directory where resized image files should be written to. This should usually be a subfolder within the normal static asset directory |
 | webp      | true       | Whether to generate WebP versions of images in addition to the original image formats |
+
+## Built With
+
+* [Svelte](https://svelte.dev)
+* [sharp](https://sharp.pixelplumbing.com)
+* [lazysizes](https://github.com/aFarkas/lazysizes)
+
+## Authors
+
+* **Chris Han** - *Initial work* - [xiphux](https://github.com/xiphux)
+
+## License
+
+This project is licensed under the ISC License - see the [LICENSE.md](LICENSE.md) file for details
+
+## Acknowledgements
+
+* [Gridsome](https://gridsome.org/docs/images/)
+* [svelte-image](https://github.com/matyunya/svelte-image)

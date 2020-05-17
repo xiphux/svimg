@@ -39,23 +39,23 @@
   },
   "license": "ISC",
   "devDependencies": {
-    "@types/jest": "^25.2.1",
+    "@types/jest": "^25.2.2",
     "@types/sharp": "^0.25.0",
     "@types/uuid": "^7.0.3",
     "jest": "^26.0.1",
-    "rollup": "^2.9.1",
+    "rollup": "^2.10.2",
     "rollup-plugin-node-resolve": "^5.2.0",
-    "rollup-plugin-svelte": "^5.2.1",
-    "rollup-plugin-typescript2": "^0.27.0",
-    "svelte": "^3.22.2",
-    "ts-jest": "^25.5.1",
-    "typescript": "^3.8.3"
+    "rollup-plugin-svelte": "^5.2.2",
+    "rollup-plugin-typescript2": "^0.27.1",
+    "svelte": "^3.22.3",
+    "ts-jest": "^26.0.0",
+    "typescript": "^3.9.2"
   },
   "dependencies": {
     "lazysizes": "^5.2.0",
     "md5-file": "^5.0.0",
     "mini-svg-data-uri": "^1.2.3",
-    "sharp": "^0.25.2",
+    "sharp": "^0.25.3",
     "uuid": "^8.0.0"
   }
 }

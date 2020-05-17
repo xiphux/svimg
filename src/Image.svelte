@@ -18,6 +18,7 @@
 <picture>
   {#if srcsetWebp}
     <source
+      type="image/webp"
       data-srcset={srcsetWebp}
       sizes={fixedWidth ? width + 'px' : undefined} />
   {/if}

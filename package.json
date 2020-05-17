@@ -1,6 +1,7 @@
 {
   "name": "svimg",
   "version": "0.0.1",
+  "private": false,
   "description": "Svelte image component with image preprocessing and lazy loading",
   "main": "dist/index.js",
   "module": "dist/index.es.js",
@@ -25,7 +26,16 @@
     "srcset",
     "sharp"
   ],
-  "author": "Chris Han <christopher.f.han@gmail.com>",
+  "author": "Chris Han <christopher.f.han@gmail.com> (chris-han.com)",
+  "homepage": "https://github.com/xiphux/svimg",
+  "bugs": {
+    "url": "https://github.com/xiphux/svimg/issues",
+    "email": "christopher.f.han@gmail.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/xiphux/svimg.git"
+  },
   "license": "ISC",
   "devDependencies": {
     "@types/jest": "^25.2.1",

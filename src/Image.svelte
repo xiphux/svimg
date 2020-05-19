@@ -12,11 +12,17 @@
 
   let clientWidth;
   let intersecting = false;
+  let native = false;
   let container;
 
   const expand = 100;
 
   onMount(() => {
+    native = "loading" in HTMLImageElement.prototype;
+    if (native) {
+      return;
+    }
+
     if (typeof IntersectionObserver !== "undefined") {
       const observer = new IntersectionObserver(
         entries => {
@@ -68,14 +74,15 @@
     {#if srcsetWebp}
       <source
         type="image/webp"
-        srcset={intersecting ? srcsetWebp : undefined}
+        srcset={intersecting || native ? srcsetWebp : undefined}
         {sizes} />
     {/if}
     <img
       {src}
-      srcset={intersecting ? srcset : placeholder}
+      srcset={intersecting || native ? srcset : placeholder}
       {sizes}
       {alt}
-      {width} />
+      {width}
+      loading="lazy" />
   </picture>
 </div>

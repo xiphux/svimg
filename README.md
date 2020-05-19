@@ -5,7 +5,7 @@ svimg is an image preprocessing and lazy loading component for [Svelte](https://
 * A Svelte preprocessor that automatically resizes your images to multiple resolutions in a `srcset`, creates additional [WebP](https://developers.google.com/speed/webp) versions, and generates blurred placeholder images
 * A Svelte component that displays the blurred placeholder and automatically lazy loads the proper resolution image when it comes into view
 
-svimg uses IntersectionObserver with a fallback to a scroll listener to do lazy loading, and automatically calculates the appropriate `sizes` attribute. Some other image components do not set a proper `sizes` attribute, which can cause the browser to download a much larger resolution image than necessary if you are resizing the image with CSS. svimg will also use a literal width if specified to control image preprocessing and only generate the necessary image files for that width.
+svimg uses native browser lazy loading, with a fallback to IntersectionObserver or scroll listener, and automatically calculates the appropriate `sizes` attribute. Some other image components do not set a proper `sizes` attribute, which can cause the browser to download a much larger resolution image than necessary if you are resizing the image with CSS. svimg will also use a literal width if specified to control image preprocessing and only generate the necessary image files for that width.
 
 ## Getting Started
 

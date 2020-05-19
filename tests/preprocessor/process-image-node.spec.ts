@@ -166,7 +166,7 @@ describe('processImageNode', () => {
         (getComponentAttributes as jest.Mock).mockReturnValue({
             srcset: 'test',
             placeholder: 'test2',
-            srcsetWebp: 'test3',
+            srcsetwebp: 'test3',
         });
         const process = jest.fn(() => Promise.resolve({
             images: [
@@ -200,7 +200,7 @@ describe('processImageNode', () => {
                 webp: true,
             },
         )).toEqual({
-            content: '<div><Image srcset="test" placeholder="test2" srcsetWebp="test3" src="img/test.jpg" /></div>',
+            content: '<div><Image srcset="test" placeholder="test2" srcsetwebp="test3" src="img/test.jpg" /></div>',
             offset: 53,
         });
 
@@ -242,7 +242,7 @@ describe('processImageNode', () => {
         (getComponentAttributes as jest.Mock).mockReturnValue({
             srcset: 'test',
             placeholder: 'test2',
-            srcsetWebp: 'test3',
+            srcsetwebp: 'test3',
         });
         const process = jest.fn(() => Promise.resolve({
             images: [
@@ -276,7 +276,7 @@ describe('processImageNode', () => {
                 webp: true,
             },
         )).toEqual({
-            content: '<div><Image srcset="test" placeholder="test2" srcsetWebp="test3" src="img/test.jpg" /></div>',
+            content: '<div><Image srcset="test" placeholder="test2" srcsetwebp="test3" src="img/test.jpg" /></div>',
             offset: 53,
         });
 
@@ -319,7 +319,7 @@ describe('processImageNode', () => {
         (getComponentAttributes as jest.Mock).mockReturnValue({
             srcset: 'test',
             placeholder: 'test2',
-            srcsetWebp: 'test3',
+            srcsetwebp: 'test3',
         });
         const process = jest.fn(() => Promise.resolve({
             images: [
@@ -353,7 +353,7 @@ describe('processImageNode', () => {
                 webp: true,
             },
         )).toEqual({
-            content: '<div><Image srcset="test" placeholder="test2" srcsetWebp="test3" src="img/test.jpg" /></div>',
+            content: '<div><Image srcset="test" placeholder="test2" srcsetwebp="test3" src="img/test.jpg" /></div>',
             offset: 53,
         });
 
@@ -395,7 +395,7 @@ describe('processImageNode', () => {
         (getComponentAttributes as jest.Mock).mockReturnValue({
             srcset: 'test',
             placeholder: 'test2',
-            srcsetWebp: 'test3',
+            srcsetwebp: 'test3',
         });
         const process = jest.fn(() => Promise.resolve({
             images: [
@@ -429,7 +429,7 @@ describe('processImageNode', () => {
                 webp: true,
             },
         )).toEqual({
-            content: '<div><Image srcset="test" placeholder="test2" srcsetWebp="test3" src="img/test.jpg" /></div>',
+            content: '<div><Image srcset="test" placeholder="test2" srcsetwebp="test3" src="img/test.jpg" /></div>',
             offset: 53,
         });
 

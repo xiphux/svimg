@@ -98,7 +98,7 @@ The following properties will be automatically populated by the preprocessor:
 | Property    |         |
 | ----------- | ------- |
 | srcset      | Responsive images and widths |
-| srcsetWebp  | Responsive WebP images and widths |
+| srcsetwebp  | Responsive WebP images and widths |
 | placeholder | Blurred placeholder image |
 
 #### Preprocessor options

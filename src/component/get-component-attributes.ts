@@ -3,7 +3,7 @@ import getSrcset from "./get-srcset";
 
 interface GetComponentAttributesOutput {
     srcset: string;
-    srcsetWebp?: string;
+    srcsetwebp?: string;
     placeholder?: string;
 }
 
@@ -16,7 +16,7 @@ interface GetComponentAttributesInput {
 export default function getComponentAttributes(input: GetComponentAttributesInput): GetComponentAttributesOutput {
     return {
         srcset: getSrcset(input.images),
-        srcsetWebp: input.webpImages.length ? getSrcset(input.webpImages) : undefined,
+        srcsetwebp: input.webpImages.length ? getSrcset(input.webpImages) : undefined,
         placeholder: input.placeholder,
     };
 }

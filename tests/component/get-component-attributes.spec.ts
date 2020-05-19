@@ -41,7 +41,7 @@ describe('getComponentAttributes', () => {
                 height: 300,
             },
         ]);
-        expect(attributes.srcsetWebp).toBeUndefined();
+        expect(attributes.srcsetwebp).toBeUndefined();
     });
 
     it('returns webp srcset', () => {
@@ -87,7 +87,7 @@ describe('getComponentAttributes', () => {
                 height: 300,
             },
         ]);
-        expect(attributes.srcsetWebp).toEqual('srcset2');
+        expect(attributes.srcsetwebp).toEqual('srcset2');
         expect(getSrcset).toHaveBeenCalledWith([
             {
                 path: 'one.webp',

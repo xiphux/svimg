@@ -31,7 +31,7 @@ describe('getComponentAttributes', () => {
             webpImages: [{ path: 'image1.webp', width: 200, height: 200 }],
         })).toEqual({
             srcset: 'image1.jpg 200w',
-            srcsetWebp: 'image1.webp 200w',
+            srcsetwebp: 'image1.webp 200w',
         });
 
         expect(getSrcset).toHaveBeenCalledTimes(2);

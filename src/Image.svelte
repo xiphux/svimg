@@ -6,7 +6,7 @@
   let className;
   export { className as class };
   export let srcset;
-  export let srcsetWebp;
+  export let srcsetwebp;
   export let placeholder;
   export let width;
 
@@ -71,10 +71,10 @@
   style={fixedWidth ? `width:${width}px` : undefined}
   class={className}>
   <picture>
-    {#if srcsetWebp}
+    {#if srcsetwebp}
       <source
         type="image/webp"
-        srcset={intersecting || native ? srcsetWebp : undefined}
+        srcset={intersecting || native ? srcsetwebp : undefined}
         {sizes} />
     {/if}
     <img

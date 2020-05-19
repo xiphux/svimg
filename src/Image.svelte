@@ -16,6 +16,7 @@
 
   $: fixedWidth = !!(width && /^[0-9]+$/.test(width));
   $: imageWidth = fixedWidth ? width : clientWidth;
+  $: sizes = `${imageWidth}px`;
 </script>
 
 <div
@@ -24,16 +25,13 @@
   class={className}>
   <picture>
     {#if srcsetWebp}
-      <source
-        type="image/webp"
-        data-srcset={srcsetWebp}
-        sizes="{imageWidth}px" />
+      <source type="image/webp" data-srcset={srcsetWebp} {sizes} />
     {/if}
     <img
       {src}
       srcset={placeholder}
       data-srcset={srcset}
-      sizes="{imageWidth}px"
+      {sizes}
       {alt}
       {width}
       class="lazyload" />

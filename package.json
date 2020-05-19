@@ -52,7 +52,6 @@
     "typescript": "^3.9.2"
   },
   "dependencies": {
-    "lazysizes": "^5.2.0",
     "md5-file": "^5.0.0",
     "mini-svg-data-uri": "^1.2.3",
     "sharp": "^0.25.3",

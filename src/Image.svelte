@@ -12,23 +12,30 @@
   export let placeholder;
   export let width;
 
+  let clientWidth;
+
   $: fixedWidth = !!(width && /^[0-9]+$/.test(width));
+  $: imageWidth = fixedWidth ? width : clientWidth;
 </script>
 
-<picture>
-  {#if srcsetWebp}
-    <source
-      type="image/webp"
-      data-srcset={srcsetWebp}
-      sizes={fixedWidth ? width + 'px' : undefined} />
-  {/if}
-  <img
-    {src}
-    srcset={placeholder}
-    data-srcset={srcset}
-    sizes={fixedWidth ? width + 'px' : undefined}
-    data-sizes={fixedWidth ? undefined : 'auto'}
-    {alt}
-    {width}
-    class="lazyload {className}" />
-</picture>
+<div
+  bind:clientWidth
+  style={fixedWidth ? `width:${width}px` : undefined}
+  class={className}>
+  <picture>
+    {#if srcsetWebp}
+      <source
+        type="image/webp"
+        data-srcset={srcsetWebp}
+        sizes="{imageWidth}px" />
+    {/if}
+    <img
+      {src}
+      srcset={placeholder}
+      data-srcset={srcset}
+      sizes="{imageWidth}px"
+      {alt}
+      {width}
+      class="lazyload" />
+  </picture>
+</div>

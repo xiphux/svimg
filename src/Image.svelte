@@ -42,7 +42,7 @@
   $: fixedWidth = !!(width && /^[0-9]+$/.test(width));
   $: imageWidth = fixedWidth ? width : clientWidth;
   $: sizes = `${imageWidth}px`;
-  $: showPlaceholder = (native && !loaded) || (!native && !intersecting);
+  $: showPlaceholder = !loaded;
 </script>
 
 <style>

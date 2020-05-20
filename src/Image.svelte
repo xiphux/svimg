@@ -16,49 +16,27 @@
   let container;
   let loaded = false;
 
-  const expand = 100;
-
   onMount(() => {
     native = "loading" in HTMLImageElement.prototype;
     if (native) {
       return;
     }
 
-    if (typeof IntersectionObserver !== "undefined") {
-      const observer = new IntersectionObserver(
-        entries => {
-          intersecting = entries[0].isIntersecting;
-          if (intersecting) {
-            observer.unobserve(container);
-          }
-        },
-        {
-          rootMargin: `${expand}px`
+    const observer = new IntersectionObserver(
+      entries => {
+        intersecting = entries[0].isIntersecting;
+        if (intersecting) {
+          observer.unobserve(container);
         }
-      );
-
-      observer.observe(container);
-
-      return () => observer.unobserve(container);
-    }
-
-    function handler() {
-      const rect = container.getBoundingClientRect();
-
-      intersecting =
-        rect.bottom + expand > 0 &&
-        rect.right + expand > 0 &&
-        rect.top - expand < window.innerHeight &&
-        rect.left - expand < window.innerWidth;
-
-      if (intersecting) {
-        window.removeEventListener("scroll", handler);
+      },
+      {
+        rootMargin: `100px`
       }
-    }
+    );
 
-    window.addEventListener("scroll", handler);
-    handler();
-    return () => window.removeEventListener("scroll", handler);
+    observer.observe(container);
+
+    return () => observer.unobserve(container);
   });
 
   $: fixedWidth = !!(width && /^[0-9]+$/.test(width));

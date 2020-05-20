@@ -1,7 +1,7 @@
 <script>
   import { onMount } from "svelte";
 
-  export let src;
+  //export let src;
   export let alt;
   let className;
   export { className as class };

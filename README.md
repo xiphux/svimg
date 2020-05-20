@@ -80,7 +80,7 @@ import Image from 'svimg';
 <Image src="images/avatar.jpg" width="150" alt="Avatar" class="blue-border" />
 ```
 
-The `Image` component will render a blurred placeholder, a srcset with multiple resolutions, a sizes attribute, and a source of type `image/webp` with webp images. It'll use the original `src` for legacy browsers that don't support srcset.
+The `Image` component will render a blurred placeholder, a srcset with multiple resolutions, a sizes attribute, and a source of type `image/webp` with webp images.
 
 ### Configuration
 

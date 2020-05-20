@@ -14,6 +14,7 @@
   let intersecting = false;
   let native = false;
   let container;
+  let loaded = false;
 
   const expand = 100;
 
@@ -63,13 +64,31 @@
   $: fixedWidth = !!(width && /^[0-9]+$/.test(width));
   $: imageWidth = fixedWidth ? width : clientWidth;
   $: sizes = `${imageWidth}px`;
+  $: showPlaceholder = (native && !loaded) || (!native && !intersecting);
 </script>
+
+<style>
+  div.wrapper {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr;
+    grid-column-gap: 0px;
+    grid-row-gap: 0px;
+  }
+  picture,
+  img {
+    grid-area: 1 / 1 / 2 / 2;
+  }
+  img.placeholder {
+    z-index: -1;
+  }
+</style>
 
 <div
   bind:this={container}
   bind:clientWidth
   style={fixedWidth ? `width:${width}px` : undefined}
-  class={className}>
+  class="wrapper {className}">
   <picture>
     {#if srcsetwebp}
       <source
@@ -78,11 +97,14 @@
         {sizes} />
     {/if}
     <img
-      {src}
-      srcset={intersecting || native ? srcset : placeholder}
+      srcset={intersecting || native ? srcset : undefined}
       {sizes}
-      {alt}
+      alt={!showPlaceholder ? alt : undefined}
       {width}
-      loading="lazy" />
+      loading={native ? 'lazy' : undefined}
+      on:load={() => (loaded = true)} />
   </picture>
+  {#if showPlaceholder}
+    <img class="placeholder" src={placeholder} {alt} {width} />
+  {/if}
 </div>

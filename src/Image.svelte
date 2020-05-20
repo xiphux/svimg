@@ -42,7 +42,6 @@
   $: fixedWidth = !!(width && /^[0-9]+$/.test(width));
   $: imageWidth = fixedWidth ? width : clientWidth;
   $: sizes = `${imageWidth}px`;
-  $: showPlaceholder = !loaded;
 </script>
 
 <style>
@@ -77,12 +76,10 @@
     <img
       srcset={intersecting || native ? srcset : undefined}
       {sizes}
-      alt={!showPlaceholder ? alt : undefined}
+      alt={loaded ? alt : undefined}
       {width}
       loading={native ? 'lazy' : undefined}
       on:load={() => (loaded = true)} />
   </picture>
-  {#if showPlaceholder}
-    <img class="placeholder" src={placeholder} {alt} {width} />
-  {/if}
+  <img class="placeholder" src={placeholder} {alt} {width} />
 </div>

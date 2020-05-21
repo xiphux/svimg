@@ -47,7 +47,7 @@
 </script>
 
 <style>
-  div.wrapper {
+  .wrapper {
     display: grid;
     grid-template-columns: 1fr;
     grid-template-rows: 1fr;
@@ -59,7 +59,7 @@
   img {
     grid-area: 1 / 1 / 2 / 2;
   }
-  img.placeholder {
+  .placeholder {
     z-index: -1;
   }
 </style>

@@ -81,7 +81,7 @@
       {sizes}
       alt={loaded ? alt : undefined}
       {width}
-      loading={native ? 'lazy' : undefined}
+      loading="lazy"
       on:load={() => (loaded = true)} />
   </picture>
   <img class="placeholder" src={placeholder} {alt} {width} />

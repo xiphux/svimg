@@ -1,7 +1,7 @@
 <script>
   import { onMount } from "svelte";
 
-  //export let src;
+  export let src;
   export let alt;
   let className;
   export { className as class };
@@ -9,6 +9,8 @@
   export let srcsetwebp;
   export let placeholder;
   export let width;
+
+  const srcLocal = src; // suppress unused-export-let
 
   let clientWidth;
   let intersecting = false;

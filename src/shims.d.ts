@@ -14,3 +14,5 @@ declare module 'mini-svg-data-uri' {
     };
     export = svgDataUri;
 }
+
+declare module '*.svelte';

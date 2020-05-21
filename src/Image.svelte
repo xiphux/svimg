@@ -64,6 +64,8 @@
   }
 </style>
 
+<svelte:options tag={null} />
+
 <div
   bind:this={container}
   bind:clientWidth

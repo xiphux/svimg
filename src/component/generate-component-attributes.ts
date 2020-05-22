@@ -6,8 +6,8 @@ import pathToUrl from '../core/path-to-url';
 
 interface GenerateComponentAttributesOptions {
     src: string;
-    processingQueue: ImageProcessingQueue;
-    placeholderQueue: PlaceholderQueue;
+    processingQueue?: ImageProcessingQueue;
+    placeholderQueue?: PlaceholderQueue;
     inputDir: string;
     outputDir: string;
     webp?: boolean;
@@ -32,6 +32,9 @@ export default async function generateComponentAttributes({
     if (!outputDir) {
         throw new Error('Output dir is required');
     }
+
+    processingQueue = processingQueue || new ImageProcessingQueue();
+    placeholderQueue = placeholderQueue || new PlaceholderQueue();
 
     const inputFile = join(inputDir, src);
     const outputDirReal = join(outputDir, dirname(src));

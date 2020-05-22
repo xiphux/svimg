@@ -86,5 +86,5 @@
       loading="lazy"
       on:load={() => (loaded = true)} />
   </picture>
-  <img class="placeholder" src={placeholder} {alt} {width} />
+  <img class="placeholder" src={placeholder} {alt} width={imageWidth} />
 </div>

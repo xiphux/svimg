@@ -1,7 +1,7 @@
 import Image from "../image-processing/image";
 import getSrcset from "./get-srcset";
 
-interface GetComponentAttributesOutput {
+export interface GetComponentAttributesOutput {
     srcset: string;
     srcsetwebp?: string;
     placeholder?: string;

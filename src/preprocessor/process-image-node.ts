@@ -3,10 +3,8 @@ import getNodeAttributes from "./get-node-attributes";
 import { ImagePreprocessorOptions } from "./image-preprocessor";
 import ImageProcessingQueue from "../image-processing/image-processing-queue";
 import PlaceholderQueue from "../placeholder/placeholder-queue";
-import { join, dirname } from 'path';
-import getComponentAttributes from "../component/get-component-attributes";
-import pathToUrl from "../core/path-to-url";
 import formatAttribute from "../core/format-attribute";
+import generateComponentAttributes from "../component/generate-component-attributes";
 
 const TAG_START = '<Image';
 
@@ -30,33 +28,14 @@ export default async function processImageNode(
 
     const forceWidth = width && /^[0-9]+$/.test(width) ? parseInt(width, 10) : undefined;
 
-    const inputFile = join(options.inputDir, src);
-    const outputDir = join(options.outputDir, dirname(src));
-
-    const [{ images, webpImages }, placeholder] = await Promise.all([
-        queues.processing.process({
-            inputFile,
-            outputDir,
-            options: {
-                webp: options && options.webp !== undefined ? options.webp : true,
-                widths: forceWidth ? [forceWidth] : undefined,
-            }
-        }),
-        queues.placeholder.process({
-            inputFile,
-        }),
-    ]);
-
-    const attributes = getComponentAttributes({
-        images: images.map((i) => ({
-            ...i,
-            path: pathToUrl(i.path, options.inputDir),
-        })),
-        webpImages: webpImages.map((i) => ({
-            ...i,
-            path: pathToUrl(i.path, options.inputDir),
-        })),
-        placeholder
+    const attributes = await generateComponentAttributes({
+        src,
+        processingQueue: queues.processing,
+        placeholderQueue: queues.placeholder,
+        inputDir: options.inputDir,
+        outputDir: options.outputDir,
+        webp: options.webp,
+        widths: forceWidth ? [forceWidth] : undefined,
     });
 
     const attrString = Object.entries(attributes).map(([attr, val]) => formatAttribute(attr, val)).join(' ');

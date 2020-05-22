@@ -1,25 +1,28 @@
 import processImageNode from '../../src/preprocessor/process-image-node';
 import getNodeAttributes from '../../src/preprocessor/get-node-attributes';
-import getComponentAttributes from '../../src/component/get-component-attributes';
-import { join } from 'path';
+import generateComponentAttributes from '../../src/component/generate-component-attributes';
 
 jest.mock('../../src/preprocessor/get-node-attributes');
-jest.mock('../../src/component/get-component-attributes');
+jest.mock('../../src/component/generate-component-attributes');
 
 describe('processImageNode', () => {
 
+    beforeEach(() => {
+        (generateComponentAttributes as jest.Mock).mockReset();
+    });
+
     it('returns unmodified without a src', async () => {
         (getNodeAttributes as jest.Mock).mockReturnValue({});
-        const process = jest.fn();
-        const placeholder = jest.fn();
+        const processingQueue = { process: jest.fn() };
+        const placeholderQueue = { process: jest.fn() };
 
         expect(await processImageNode(
             '<div><Image /></div>',
             0,
             { start: 5 } as any,
             {
-                processing: { process } as any,
-                placeholder: { process: placeholder } as any,
+                processing: processingQueue as any,
+                placeholder: placeholderQueue as any,
             },
             {
                 inputDir: 'static',
@@ -31,37 +34,28 @@ describe('processImageNode', () => {
             offset: 0,
         });
 
-        expect(process).not.toHaveBeenCalled();
-        expect(placeholder).not.toHaveBeenCalled();
+        expect(getNodeAttributes).toHaveBeenCalledWith({ start: 5 });
+        expect(generateComponentAttributes).not.toHaveBeenCalled();
     });
 
     it('processes node', async () => {
         (getNodeAttributes as jest.Mock).mockReturnValue({
             src: 'img/test.jpg',
         });
-        (getComponentAttributes as jest.Mock).mockReturnValue({
-            srcset: 'test',
-            placeholder: 'test2',
-        });
-        const process = jest.fn(() => Promise.resolve({
-            images: [
-                {
-                    path: join('static', 'g', 'img', 'test1.jpg'),
-                    width: 300,
-                    height: 300,
-                },
-            ],
-            webpImages: [],
+        (generateComponentAttributes as jest.Mock).mockImplementation(() => Promise.resolve({
+            srcset: 'g/img/test1.jpg 300w',
+            placeholder: '<svg />',
         }));
-        const placeholder = jest.fn(() => Promise.resolve('<svg />'));
+        const processingQueue = { process: jest.fn() };
+        const placeholderQueue = { process: jest.fn() };
 
         expect(await processImageNode(
             '<div><Image src="img/test.jpg" /></div>',
             0,
             { start: 5 } as any,
             {
-                processing: { process } as any,
-                placeholder: { process: placeholder } as any,
+                processing: processingQueue as any,
+                placeholder: placeholderQueue as any,
             },
             {
                 inputDir: 'static',
@@ -69,31 +63,18 @@ describe('processImageNode', () => {
                 webp: false,
             },
         )).toEqual({
-            content: '<div><Image srcset="test" placeholder="test2" src="img/test.jpg" /></div>',
-            offset: 34,
+            content: '<div><Image srcset="g/img/test1.jpg 300w" placeholder="<svg />" src="img/test.jpg" /></div>',
+            offset: 52,
         });
 
         expect(getNodeAttributes).toHaveBeenCalledWith({ start: 5 });
-        expect(process).toHaveBeenCalledWith({
-            inputFile: join('static', 'img', 'test.jpg'),
-            outputDir: join('static', 'g', 'img'),
-            options: {
-                webp: false,
-            },
-        });
-        expect(placeholder).toHaveBeenCalledWith({
-            inputFile: join('static', 'img', 'test.jpg'),
-        });
-        expect(getComponentAttributes).toHaveBeenCalledWith({
-            images: [
-                {
-                    path: 'g/img/test1.jpg',
-                    width: 300,
-                    height: 300,
-                },
-            ],
-            webpImages: [],
-            placeholder: '<svg />',
+        expect(generateComponentAttributes).toHaveBeenCalledWith({
+            src: 'img/test.jpg',
+            processingQueue,
+            placeholderQueue,
+            inputDir: 'static',
+            outputDir: 'static/g',
+            webp: false,
         });
     });
 
@@ -101,29 +82,20 @@ describe('processImageNode', () => {
         (getNodeAttributes as jest.Mock).mockReturnValue({
             src: 'img/test.jpg',
         });
-        (getComponentAttributes as jest.Mock).mockReturnValue({
-            srcset: 'test',
-            placeholder: 'test2',
-        });
-        const process = jest.fn(() => Promise.resolve({
-            images: [
-                {
-                    path: join('static', 'g', 'img', 'test1.jpg'),
-                    width: 300,
-                    height: 300,
-                },
-            ],
-            webpImages: [],
+        (generateComponentAttributes as jest.Mock).mockImplementation(() => Promise.resolve({
+            srcset: 'g/img/test1.jpg 300w',
+            placeholder: '<svg />',
         }));
-        const placeholder = jest.fn(() => Promise.resolve('<svg />'));
+        const processingQueue = { process: jest.fn() };
+        const placeholderQueue = { process: jest.fn() };
 
         expect(await processImageNode(
             '<div><Image src="img/test.jpg" /></div>',
             5,
             { start: 0 } as any,
             {
-                processing: { process } as any,
-                placeholder: { process: placeholder } as any,
+                processing: processingQueue as any,
+                placeholder: placeholderQueue as any,
             },
             {
                 inputDir: 'static',
@@ -131,31 +103,18 @@ describe('processImageNode', () => {
                 webp: false,
             },
         )).toEqual({
-            content: '<div><Image srcset="test" placeholder="test2" src="img/test.jpg" /></div>',
-            offset: 39,
+            content: '<div><Image srcset="g/img/test1.jpg 300w" placeholder="<svg />" src="img/test.jpg" /></div>',
+            offset: 57,
         });
 
         expect(getNodeAttributes).toHaveBeenCalledWith({ start: 5 });
-        expect(process).toHaveBeenCalledWith({
-            inputFile: join('static', 'img', 'test.jpg'),
-            outputDir: join('static', 'g', 'img'),
-            options: {
-                webp: false,
-            },
-        });
-        expect(placeholder).toHaveBeenCalledWith({
-            inputFile: join('static', 'img', 'test.jpg'),
-        });
-        expect(getComponentAttributes).toHaveBeenCalledWith({
-            images: [
-                {
-                    path: 'g/img/test1.jpg',
-                    width: 300,
-                    height: 300,
-                },
-            ],
-            webpImages: [],
-            placeholder: '<svg />',
+        expect(generateComponentAttributes).toHaveBeenCalledWith({
+            src: 'img/test.jpg',
+            processingQueue,
+            placeholderQueue,
+            inputDir: 'static',
+            outputDir: 'static/g',
+            webp: false,
         });
     });
 
@@ -163,36 +122,21 @@ describe('processImageNode', () => {
         (getNodeAttributes as jest.Mock).mockReturnValue({
             src: 'img/test.jpg',
         });
-        (getComponentAttributes as jest.Mock).mockReturnValue({
-            srcset: 'test',
-            placeholder: 'test2',
-            srcsetwebp: 'test3',
-        });
-        const process = jest.fn(() => Promise.resolve({
-            images: [
-                {
-                    path: join('static', 'g', 'img', 'test1.jpg'),
-                    width: 300,
-                    height: 300,
-                },
-            ],
-            webpImages: [
-                {
-                    path: join('static', 'g', 'img', 'test1.webp'),
-                    width: 300,
-                    height: 300,
-                },
-            ],
+        (generateComponentAttributes as jest.Mock).mockImplementation(() => Promise.resolve({
+            srcset: 'g/img/test1.jpg 300w',
+            srcsetwebp: 'g/img/test1.webp 300w',
+            placeholder: '<svg />',
         }));
-        const placeholder = jest.fn(() => Promise.resolve('<svg />'));
+        const processingQueue = { process: jest.fn() };
+        const placeholderQueue = { process: jest.fn() };
 
         expect(await processImageNode(
             '<div><Image src="img/test.jpg" /></div>',
             0,
             { start: 5 } as any,
             {
-                processing: { process } as any,
-                placeholder: { process: placeholder } as any,
+                processing: processingQueue as any,
+                placeholder: placeholderQueue as any,
             },
             {
                 inputDir: 'static',
@@ -200,37 +144,18 @@ describe('processImageNode', () => {
                 webp: true,
             },
         )).toEqual({
-            content: '<div><Image srcset="test" placeholder="test2" srcsetwebp="test3" src="img/test.jpg" /></div>',
-            offset: 53,
+            content: '<div><Image srcset="g/img/test1.jpg 300w" srcsetwebp="g/img/test1.webp 300w" placeholder="<svg />" src="img/test.jpg" /></div>',
+            offset: 87,
         });
 
         expect(getNodeAttributes).toHaveBeenCalledWith({ start: 5 });
-        expect(process).toHaveBeenCalledWith({
-            inputFile: join('static', 'img', 'test.jpg'),
-            outputDir: join('static', 'g', 'img'),
-            options: {
-                webp: true,
-            },
-        });
-        expect(placeholder).toHaveBeenCalledWith({
-            inputFile: join('static', 'img', 'test.jpg'),
-        });
-        expect(getComponentAttributes).toHaveBeenCalledWith({
-            images: [
-                {
-                    path: 'g/img/test1.jpg',
-                    width: 300,
-                    height: 300,
-                },
-            ],
-            webpImages: [
-                {
-                    path: 'g/img/test1.webp',
-                    width: 300,
-                    height: 300,
-                }
-            ],
-            placeholder: '<svg />',
+        expect(generateComponentAttributes).toHaveBeenCalledWith({
+            src: 'img/test.jpg',
+            processingQueue,
+            placeholderQueue,
+            inputDir: 'static',
+            outputDir: 'static/g',
+            webp: true,
         });
     });
 
@@ -239,36 +164,21 @@ describe('processImageNode', () => {
             src: 'img/test.jpg',
             width: '150',
         });
-        (getComponentAttributes as jest.Mock).mockReturnValue({
-            srcset: 'test',
-            placeholder: 'test2',
-            srcsetwebp: 'test3',
-        });
-        const process = jest.fn(() => Promise.resolve({
-            images: [
-                {
-                    path: join('static', 'g', 'img', 'test1.jpg'),
-                    width: 150,
-                    height: 150,
-                },
-            ],
-            webpImages: [
-                {
-                    path: join('static', 'g', 'img', 'test1.webp'),
-                    width: 150,
-                    height: 150,
-                },
-            ],
+        (generateComponentAttributes as jest.Mock).mockImplementation(() => Promise.resolve({
+            srcset: 'g/img/test1.jpg 150w',
+            srcsetwebp: 'g/img/test1.webp 150w',
+            placeholder: '<svg />',
         }));
-        const placeholder = jest.fn(() => Promise.resolve('<svg />'));
+        const processingQueue = { process: jest.fn() };
+        const placeholderQueue = { process: jest.fn() };
 
         expect(await processImageNode(
             '<div><Image src="img/test.jpg" /></div>',
             0,
             { start: 5 } as any,
             {
-                processing: { process } as any,
-                placeholder: { process: placeholder } as any,
+                processing: processingQueue as any,
+                placeholder: placeholderQueue as any,
             },
             {
                 inputDir: 'static',
@@ -276,38 +186,19 @@ describe('processImageNode', () => {
                 webp: true,
             },
         )).toEqual({
-            content: '<div><Image srcset="test" placeholder="test2" srcsetwebp="test3" src="img/test.jpg" /></div>',
-            offset: 53,
+            content: '<div><Image srcset="g/img/test1.jpg 150w" srcsetwebp="g/img/test1.webp 150w" placeholder="<svg />" src="img/test.jpg" /></div>',
+            offset: 87,
         });
 
         expect(getNodeAttributes).toHaveBeenCalledWith({ start: 5 });
-        expect(process).toHaveBeenCalledWith({
-            inputFile: join('static', 'img', 'test.jpg'),
-            outputDir: join('static', 'g', 'img'),
-            options: {
-                webp: true,
-                widths: [150],
-            },
-        });
-        expect(placeholder).toHaveBeenCalledWith({
-            inputFile: join('static', 'img', 'test.jpg'),
-        });
-        expect(getComponentAttributes).toHaveBeenCalledWith({
-            images: [
-                {
-                    path: 'g/img/test1.jpg',
-                    width: 150,
-                    height: 150,
-                },
-            ],
-            webpImages: [
-                {
-                    path: 'g/img/test1.webp',
-                    width: 150,
-                    height: 150,
-                }
-            ],
-            placeholder: '<svg />',
+        expect(generateComponentAttributes).toHaveBeenCalledWith({
+            src: 'img/test.jpg',
+            processingQueue,
+            placeholderQueue,
+            inputDir: 'static',
+            outputDir: 'static/g',
+            webp: true,
+            widths: [150],
         });
     });
 
@@ -316,36 +207,21 @@ describe('processImageNode', () => {
             src: 'img/test.jpg',
             width: '100%',
         });
-        (getComponentAttributes as jest.Mock).mockReturnValue({
-            srcset: 'test',
-            placeholder: 'test2',
-            srcsetwebp: 'test3',
-        });
-        const process = jest.fn(() => Promise.resolve({
-            images: [
-                {
-                    path: join('static', 'g', 'img', 'test1.jpg'),
-                    width: 300,
-                    height: 300,
-                },
-            ],
-            webpImages: [
-                {
-                    path: join('static', 'g', 'img', 'test1.webp'),
-                    width: 300,
-                    height: 300,
-                },
-            ],
+        (generateComponentAttributes as jest.Mock).mockImplementation(() => Promise.resolve({
+            srcset: 'g/img/test1.jpg 300w',
+            srcsetwebp: 'g/img/test1.webp 300w',
+            placeholder: '<svg />',
         }));
-        const placeholder = jest.fn(() => Promise.resolve('<svg />'));
+        const processingQueue = { process: jest.fn() };
+        const placeholderQueue = { process: jest.fn() };
 
         expect(await processImageNode(
             '<div><Image src="img/test.jpg" /></div>',
             0,
             { start: 5 } as any,
             {
-                processing: { process } as any,
-                placeholder: { process: placeholder } as any,
+                processing: processingQueue as any,
+                placeholder: placeholderQueue as any,
             },
             {
                 inputDir: 'static',
@@ -353,37 +229,18 @@ describe('processImageNode', () => {
                 webp: true,
             },
         )).toEqual({
-            content: '<div><Image srcset="test" placeholder="test2" srcsetwebp="test3" src="img/test.jpg" /></div>',
-            offset: 53,
+            content: '<div><Image srcset="g/img/test1.jpg 300w" srcsetwebp="g/img/test1.webp 300w" placeholder="<svg />" src="img/test.jpg" /></div>',
+            offset: 87,
         });
 
         expect(getNodeAttributes).toHaveBeenCalledWith({ start: 5 });
-        expect(process).toHaveBeenCalledWith({
-            inputFile: join('static', 'img', 'test.jpg'),
-            outputDir: join('static', 'g', 'img'),
-            options: {
-                webp: true,
-            },
-        });
-        expect(placeholder).toHaveBeenCalledWith({
-            inputFile: join('static', 'img', 'test.jpg'),
-        });
-        expect(getComponentAttributes).toHaveBeenCalledWith({
-            images: [
-                {
-                    path: 'g/img/test1.jpg',
-                    width: 300,
-                    height: 300,
-                },
-            ],
-            webpImages: [
-                {
-                    path: 'g/img/test1.webp',
-                    width: 300,
-                    height: 300,
-                }
-            ],
-            placeholder: '<svg />',
+        expect(generateComponentAttributes).toHaveBeenCalledWith({
+            src: 'img/test.jpg',
+            processingQueue,
+            placeholderQueue,
+            inputDir: 'static',
+            outputDir: 'static/g',
+            webp: true,
         });
     });
 
@@ -392,36 +249,21 @@ describe('processImageNode', () => {
             src: 'img/test.jpg',
             width: '{width}',
         });
-        (getComponentAttributes as jest.Mock).mockReturnValue({
-            srcset: 'test',
-            placeholder: 'test2',
-            srcsetwebp: 'test3',
-        });
-        const process = jest.fn(() => Promise.resolve({
-            images: [
-                {
-                    path: join('static', 'g', 'img', 'test1.jpg'),
-                    width: 300,
-                    height: 300,
-                },
-            ],
-            webpImages: [
-                {
-                    path: join('static', 'g', 'img', 'test1.webp'),
-                    width: 300,
-                    height: 300,
-                },
-            ],
+        (generateComponentAttributes as jest.Mock).mockImplementation(() => Promise.resolve({
+            srcset: 'g/img/test1.jpg 300w',
+            srcsetwebp: 'g/img/test1.webp 300w',
+            placeholder: '<svg />',
         }));
-        const placeholder = jest.fn(() => Promise.resolve('<svg />'));
+        const processingQueue = { process: jest.fn() };
+        const placeholderQueue = { process: jest.fn() };
 
         expect(await processImageNode(
             '<div><Image src="img/test.jpg" /></div>',
             0,
             { start: 5 } as any,
             {
-                processing: { process } as any,
-                placeholder: { process: placeholder } as any,
+                processing: processingQueue as any,
+                placeholder: placeholderQueue as any,
             },
             {
                 inputDir: 'static',
@@ -429,37 +271,18 @@ describe('processImageNode', () => {
                 webp: true,
             },
         )).toEqual({
-            content: '<div><Image srcset="test" placeholder="test2" srcsetwebp="test3" src="img/test.jpg" /></div>',
-            offset: 53,
+            content: '<div><Image srcset="g/img/test1.jpg 300w" srcsetwebp="g/img/test1.webp 300w" placeholder="<svg />" src="img/test.jpg" /></div>',
+            offset: 87,
         });
 
         expect(getNodeAttributes).toHaveBeenCalledWith({ start: 5 });
-        expect(process).toHaveBeenCalledWith({
-            inputFile: join('static', 'img', 'test.jpg'),
-            outputDir: join('static', 'g', 'img'),
-            options: {
-                webp: true,
-            },
-        });
-        expect(placeholder).toHaveBeenCalledWith({
-            inputFile: join('static', 'img', 'test.jpg'),
-        });
-        expect(getComponentAttributes).toHaveBeenCalledWith({
-            images: [
-                {
-                    path: 'g/img/test1.jpg',
-                    width: 300,
-                    height: 300,
-                },
-            ],
-            webpImages: [
-                {
-                    path: 'g/img/test1.webp',
-                    width: 300,
-                    height: 300,
-                }
-            ],
-            placeholder: '<svg />',
+        expect(generateComponentAttributes).toHaveBeenCalledWith({
+            src: 'img/test.jpg',
+            processingQueue,
+            placeholderQueue,
+            inputDir: 'static',
+            outputDir: 'static/g',
+            webp: true,
         });
     });
 

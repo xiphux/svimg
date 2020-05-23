@@ -1,5 +1,5 @@
 <script>
-  import { onMount } from "svelte";
+  import { onMount, tick } from "svelte";
 
   export let src;
   export let alt;
@@ -23,49 +23,51 @@
   $: sizes = `${imageWidth}px`;
 
   onMount(() => {
-    let ro;
-    if (!fixedWidth) {
-      ro = new ResizeObserver(entries => {
-        const entry = entries[0];
-        if (entry.contentBoxSize) {
-          clientWidth = entry.contentBoxSize.inlineSize;
-        } else if (entry.contectRect) {
-          clientWidth = entry.contentRect.width;
+    tick().then(() => {
+      let ro;
+      if (!fixedWidth) {
+        ro = new ResizeObserver(entries => {
+          const entry = entries[0];
+          if (entry.contentBoxSize) {
+            clientWidth = entry.contentBoxSize.inlineSize;
+          } else if (entry.contectRect) {
+            clientWidth = entry.contentRect.width;
+          }
+        });
+
+        ro.observe(container);
+      }
+
+      native = "loading" in HTMLImageElement.prototype;
+      if (native) {
+        return () => {
+          if (ro) {
+            ro.unobserve(container);
+          }
+        };
+      }
+
+      const io = new IntersectionObserver(
+        entries => {
+          intersecting = entries[0].isIntersecting;
+          if (intersecting) {
+            io.unobserve(container);
+          }
+        },
+        {
+          rootMargin: `100px`
         }
-      });
+      );
 
-      ro.observe(container);
-    }
+      io.observe(container);
 
-    native = "loading" in HTMLImageElement.prototype;
-    if (native) {
       return () => {
+        io.unobserve(container);
         if (ro) {
           ro.unobserve(container);
         }
       };
-    }
-
-    const io = new IntersectionObserver(
-      entries => {
-        intersecting = entries[0].isIntersecting;
-        if (intersecting) {
-          io.unobserve(container);
-        }
-      },
-      {
-        rootMargin: `100px`
-      }
-    );
-
-    io.observe(container);
-
-    return () => {
-      io.unobserve(container);
-      if (ro) {
-        ro.unobserve(container);
-      }
-    };
+    });
   });
 </script>
 

@@ -3,7 +3,7 @@
 
   export let src;
   export let alt;
-  let className;
+  let className = "";
   export { className as class };
   export let srcset;
   export let srcsetwebp;

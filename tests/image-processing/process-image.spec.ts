@@ -72,14 +72,34 @@ describe('processImage', () => {
         expect(mkdir).not.toHaveBeenCalled();
     });
 
+    it('won\'t create the dir if skipping generation', async () => {
+        (existsSync as jest.Mock).mockReturnValue(false);
+        (getImageMetadata as jest.Mock).mockImplementation(() => Promise.resolve({
+            width: 300,
+        }));
+        (getProcessImageOptions as jest.Mock).mockReturnValue({
+            widths: [200, 300],
+            quality: 85,
+        });
+
+        await processImage('/in/file.jpg', '/out/dir', {
+            skipGeneration: true,
+        });
+
+        expect(existsSync).not.toHaveBeenCalled();
+        expect(mkdir).not.toHaveBeenCalled();
+    });
+
     it('resizes images with hashed filename generator', async () => {
         (existsSync as jest.Mock).mockReturnValue(true);
         (getProcessImageOptions as jest.Mock).mockReturnValue({
             widths: [200, 300],
             quality: 85,
+            webp: false,
         });
         (getImageMetadata as jest.Mock).mockImplementation(() => Promise.resolve({
             width: 300,
+            height: 300,
         }));
         (md5file as any as jest.Mock).mockImplementation(() => Promise.resolve('filehash'));
         (resizeImageMultiple as jest.Mock).mockImplementation(() => Promise.resolve([
@@ -114,7 +134,7 @@ describe('processImage', () => {
 
         expect(getImageMetadata).toHaveBeenCalledWith('/in/file.jpg');
 
-        expect(getProcessImageOptions).toHaveBeenCalledWith(300, { widths: [100, 200], quality: 85 })
+        expect(getProcessImageOptions).toHaveBeenCalledWith(300, { widths: [100, 200], quality: 85, webp: false })
 
         expect(md5file).toHaveBeenCalledWith('/in/file.jpg');
         expect(resizeImageMultiple).toHaveBeenCalledTimes(1);
@@ -122,6 +142,7 @@ describe('processImage', () => {
             widths: [200, 300],
             quality: 85,
             filenameGenerator: expect.any(Function),
+            aspectRatio: 1,
         });
         const filenameGenerator = (resizeImageMultiple as jest.Mock).mock.calls[0][2].filenameGenerator;
         expect(filenameGenerator({ width: 300, quality: 85 })).toEqual('file.optionshash.filehash.jpg');
@@ -132,9 +153,11 @@ describe('processImage', () => {
         (getProcessImageOptions as jest.Mock).mockReturnValue({
             widths: [200, 300],
             quality: 85,
+            webp: true,
         });
         (getImageMetadata as jest.Mock).mockImplementation(() => Promise.resolve({
             width: 300,
+            height: 300,
         }));
         (md5file as any as jest.Mock).mockImplementation(() => Promise.resolve('filehash'));
         (resizeImageMultiple as jest.Mock).mockImplementationOnce(() => Promise.resolve([
@@ -191,7 +214,7 @@ describe('processImage', () => {
 
         expect(getImageMetadata).toHaveBeenCalledWith('/in/file.jpg');
 
-        expect(getProcessImageOptions).toHaveBeenCalledWith(300, { widths: [100, 200], quality: 85 })
+        expect(getProcessImageOptions).toHaveBeenCalledWith(300, { widths: [100, 200], quality: 85, webp: true })
 
         expect(md5file).toHaveBeenCalledWith('/in/file.jpg');
 
@@ -200,6 +223,7 @@ describe('processImage', () => {
             widths: [200, 300],
             quality: 85,
             filenameGenerator: expect.any(Function),
+            aspectRatio: 1,
         });
         const filenameGenerator = (resizeImageMultiple as jest.Mock).mock.calls[0][2].filenameGenerator;
         expect(filenameGenerator({ width: 300, quality: 85 })).toEqual('file.optionshash.filehash.jpg');
@@ -208,6 +232,99 @@ describe('processImage', () => {
             widths: [200, 300],
             quality: 85,
             filenameGenerator: expect.any(Function),
+            aspectRatio: 1,
+        });
+        const filenameGeneratorWebp = (resizeImageMultiple as jest.Mock).mock.calls[1][2].filenameGenerator;
+        expect(filenameGeneratorWebp({ width: 300, quality: 85 })).toEqual('file.optionshash.filehash.webp');
+    });
+
+    it('skips generation', async () => {
+        (existsSync as jest.Mock).mockReturnValue(true);
+        (getProcessImageOptions as jest.Mock).mockReturnValue({
+            widths: [200, 300],
+            quality: 85,
+            webp: true,
+        });
+        (getImageMetadata as jest.Mock).mockImplementation(() => Promise.resolve({
+            width: 300,
+            height: 100,
+        }));
+        (md5file as any as jest.Mock).mockImplementation(() => Promise.resolve('filehash'));
+        (resizeImageMultiple as jest.Mock).mockImplementationOnce(() => Promise.resolve([
+            {
+                path: '/out/dir/file.1.jpg',
+                width: 200,
+                height: 200,
+            },
+            {
+                path: '/out/dir/file.2.jpg',
+                width: 300,
+                height: 300,
+            }
+        ])).mockImplementationOnce(() => Promise.resolve([
+            {
+                path: '/out/dir/file.1.webp',
+                width: 200,
+                height: 200,
+            },
+            {
+                path: '/out/dir/file.2.webp',
+                width: 300,
+                height: 300,
+            }
+        ]));
+        (getOptionsHash as jest.Mock).mockReturnValue('optionshash');
+
+        expect(await processImage('/in/file.jpg', '/out/dir', { widths: [100, 200], quality: 85, webp: true, skipGeneration: true })).toEqual({
+            images: [
+                {
+                    path: '/out/dir/file.1.jpg',
+                    width: 200,
+                    height: 200,
+                },
+                {
+                    path: '/out/dir/file.2.jpg',
+                    width: 300,
+                    height: 300,
+                }
+            ],
+            webpImages: [
+                {
+                    path: '/out/dir/file.1.webp',
+                    width: 200,
+                    height: 200,
+                },
+                {
+                    path: '/out/dir/file.2.webp',
+                    width: 300,
+                    height: 300,
+                }
+            ],
+        });
+
+        expect(getImageMetadata).toHaveBeenCalledWith('/in/file.jpg');
+
+        expect(getProcessImageOptions).toHaveBeenCalledWith(300, { widths: [100, 200], quality: 85, webp: true })
+
+        expect(md5file).toHaveBeenCalledWith('/in/file.jpg');
+
+        expect(resizeImageMultiple).toHaveBeenCalledTimes(2);
+        expect(resizeImageMultiple).toHaveBeenCalledWith('/in/file.jpg', '/out/dir', {
+            widths: [200, 300],
+            quality: 85,
+            filenameGenerator: expect.any(Function),
+            aspectRatio: 300 / 100,
+            skipGeneration: true,
+        });
+        const filenameGenerator = (resizeImageMultiple as jest.Mock).mock.calls[0][2].filenameGenerator;
+        expect(filenameGenerator({ width: 300, quality: 85 })).toEqual('file.optionshash.filehash.jpg');
+
+        expect(resizeImageMultiple).toHaveBeenCalledWith('/in/file.jpg', '/out/dir', {
+            widths: [200, 300],
+            quality: 85,
+            filenameGenerator: expect.any(Function),
+            aspectRatio: 300 / 100,
+            skipGeneration: true,
         });
         const filenameGeneratorWebp = (resizeImageMultiple as jest.Mock).mock.calls[1][2].filenameGenerator;
         expect(filenameGeneratorWebp({ width: 300, quality: 85 })).toEqual('file.optionshash.filehash.webp');

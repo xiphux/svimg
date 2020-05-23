@@ -335,4 +335,61 @@ describe('generateComponentAttributes', () => {
         expect(PlaceholderQueue).toHaveBeenCalled();
     });
 
+    it('will skip image generation', async () => {
+        process.mockImplementation(() => Promise.resolve({
+            images: [
+                {
+                    path: 'static/g/assets/images/avatar.1.jpg',
+                    width: 300,
+                    height: 300,
+                },
+                {
+                    path: 'static/g/assets/images/avatar.2.jpg',
+                    width: 500,
+                    height: 500,
+                },
+            ],
+            webpImages: [
+                {
+                    path: 'static/g/assets/images/avatar.1.webp',
+                    width: 300,
+                    height: 300,
+                },
+                {
+                    path: 'static/g/assets/images/avatar.2.webp',
+                    width: 500,
+                    height: 500,
+                },
+            ]
+        }));
+        placeholderProcess.mockImplementation(() => Promise.resolve('<svg />'));
+
+        expect(await generateComponentAttributes({
+            src: 'assets/images/avatar.jpg',
+            processingQueue: processingQueue as any,
+            placeholderQueue: placeholderQueue as any,
+            inputDir: 'static',
+            outputDir: 'static/g',
+            skipGeneration: true,
+        })).toEqual({
+            srcset: 'g/assets/images/avatar.1.jpg 300w, g/assets/images/avatar.2.jpg 500w',
+            srcsetwebp: 'g/assets/images/avatar.1.webp 300w, g/assets/images/avatar.2.webp 500w',
+            placeholder: '<svg />',
+        });
+
+        expect(process).toHaveBeenCalledWith({
+            inputFile: join('static', 'assets', 'images', 'avatar.jpg'),
+            outputDir: join('static', 'g', 'assets', 'images'),
+            options: {
+                webp: true,
+                skipGeneration: true,
+            },
+        });
+        expect(placeholderProcess).toHaveBeenCalledWith({
+            inputFile: join('static', 'assets', 'images', 'avatar.jpg'),
+        });
+        expect(ImageProcessingQueue).not.toHaveBeenCalled();
+        expect(PlaceholderQueue).not.toHaveBeenCalled();
+    });
+
 });

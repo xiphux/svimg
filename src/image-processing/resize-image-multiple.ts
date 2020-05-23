@@ -6,6 +6,8 @@ interface ResizeImageMultipleOptions {
     widths: number[];
     quality: number;
     filenameGenerator: (options: { width: number; quality: number; inputFile: string }) => string;
+    skipGeneration?: boolean;
+    aspectRatio: number;
 }
 
 export default async function resizeImageMultiple(inputFile: string, outputDir: string, options: ResizeImageMultipleOptions): Promise<Image[]> {
@@ -26,7 +28,16 @@ export default async function resizeImageMultiple(inputFile: string, outputDir: 
         }
 
         const path = join(outputDir, outFile);
-        images.push(await ensureResizeImage(inputFile, path, { width, quality: options.quality }));
+
+        if (options?.skipGeneration) {
+            images.push({
+                path,
+                width,
+                height: Math.round((width / options.aspectRatio + Number.EPSILON) * 100) / 100,
+            });
+        } else {
+            images.push(await ensureResizeImage(inputFile, path, { width, quality: options.quality }));
+        }
     }
 
     return images;

@@ -3,6 +3,7 @@ import md5file from 'md5-file';
 import processImage from "./process-image";
 import getOptionsHash from "./get-options-hash";
 import ProcessingQueue from "../core/processing-queue";
+import { DEFAULT_WIDTHS, DEFAULT_QUALITY, DEFAULT_WEBP } from "../constants/defaults";
 
 interface ImageProcessingQueueInput {
     inputFile: string;
@@ -18,11 +19,12 @@ export default class ImageProcessingQueue extends ProcessingQueue<ImageProcessin
             inputFile,
             outputDir,
             fileHash,
-            options: options ? getOptionsHash({
-                widths: options.widths ? options.widths.slice().sort().join(',') : undefined,
-                quality: options.quality,
-                webp: options.webp,
-            }) : undefined,
+            options: getOptionsHash({
+                widths: (options?.widths || DEFAULT_WIDTHS).slice().sort().join(','),
+                quality: options?.quality || DEFAULT_QUALITY,
+                webp: options?.webp ?? DEFAULT_WEBP,
+                skipGeneration: options?.skipGeneration || false,
+            }),
         });
     }
 

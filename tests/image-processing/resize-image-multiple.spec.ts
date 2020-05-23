@@ -1,6 +1,6 @@
 import resizeImageMultiple from '../../src/image-processing/resize-image-multiple';
 import ensureResizeImage from '../../src/image-processing/ensure-resize-image';
-import { join } from 'path';
+import { join, sep } from 'path';
 
 jest.mock('../../src/image-processing/ensure-resize-image');
 
@@ -15,6 +15,7 @@ describe('resizeImageMultiple', () => {
             widths: [100, 200],
             quality: 75,
             filenameGenerator: ({ width, quality }) => `${width}.${quality}.jpg`,
+            aspectRatio: 3 / 2,
         })).rejects.toThrow();
 
         expect(ensureResizeImage).not.toHaveBeenCalled();
@@ -25,6 +26,7 @@ describe('resizeImageMultiple', () => {
             widths: [100, 200],
             quality: 75,
             filenameGenerator: ({ width, quality }) => `${width}.${quality}.jpg`,
+            aspectRatio: 3 / 2
         })).rejects.toThrow();
 
         expect(ensureResizeImage).not.toHaveBeenCalled();
@@ -35,6 +37,7 @@ describe('resizeImageMultiple', () => {
             widths: [],
             quality: 75,
             filenameGenerator: ({ width, quality }) => `${width}.${quality}.jpg`,
+            aspectRatio: 3 / 2
         })).toEqual([]);
 
         expect(ensureResizeImage).not.toHaveBeenCalled();
@@ -45,6 +48,7 @@ describe('resizeImageMultiple', () => {
             widths: [100, 200],
             quality: 75,
             filenameGenerator: ({ width, quality }) => null,
+            aspectRatio: 3 / 2
         })).rejects.toThrow();
 
         expect(ensureResizeImage).not.toHaveBeenCalled();
@@ -65,6 +69,7 @@ describe('resizeImageMultiple', () => {
             widths: [100, 200],
             quality: 75,
             filenameGenerator: ({ width, quality }) => `${width}.${quality}.jpg`,
+            aspectRatio: 3 / 2
         })).toEqual([
             {
                 path: '/out/dir/100.75.jpg',
@@ -81,6 +86,29 @@ describe('resizeImageMultiple', () => {
         expect(ensureResizeImage).toHaveBeenCalledTimes(2);
         expect(ensureResizeImage).toHaveBeenCalledWith('/in/file', join('/out/dir', '100.75.jpg'), { width: 100, quality: 75 });
         expect(ensureResizeImage).toHaveBeenCalledWith('/in/file', join('/out/dir', '200.75.jpg'), { width: 200, quality: 75 });
+    });
+
+    it('skips generation', async () => {
+        expect(await resizeImageMultiple('/in/file', '/out/dir', {
+            widths: [100, 200],
+            quality: 75,
+            filenameGenerator: ({ width, quality }) => `${width}.${quality}.jpg`,
+            aspectRatio: 3 / 2,
+            skipGeneration: true,
+        })).toEqual([
+            {
+                path: sep + join('out', 'dir', '100.75.jpg'),
+                width: 100,
+                height: 66.67,
+            },
+            {
+                path: sep + join('out', 'dir', '200.75.jpg'),
+                width: 200,
+                height: 133.33,
+            },
+        ]);
+
+        expect(ensureResizeImage).not.toHaveBeenCalled();
     });
 
 });

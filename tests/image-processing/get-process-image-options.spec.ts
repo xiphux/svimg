@@ -36,4 +36,22 @@ describe('getProcessImageOptions', () => {
         expect(quality).toEqual(80);
     });
 
+    it('returns passed webp', () => {
+        const opts = getProcessImageOptions(500, {
+            webp: true,
+        });
+        expect(opts.webp).toEqual(true);
+        const opts2 = getProcessImageOptions(500, {
+            webp: false,
+        });
+        expect(opts2.webp).toEqual(false);
+    });
+
+    it('defaults webp to true', () => {
+        const opts = getProcessImageOptions(500, {});
+        expect(opts.webp).toEqual(true);
+        const opts2 = getProcessImageOptions(500);
+        expect(opts2.webp).toEqual(true);
+    });
+
 });

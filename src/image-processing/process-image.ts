@@ -14,6 +14,7 @@ export interface ProcessImageOptions {
     widths?: number[];
     quality?: number;
     webp?: boolean;
+    skipGeneration?: boolean;
 }
 
 export interface ProcessImageOutput {
@@ -29,29 +30,34 @@ export default async function processImage(inputFile: string, outputDir: string,
         throw new Error('Output dir is required');
     }
 
-    if (!existsSync(outputDir)) {
+    if (!options?.skipGeneration && !existsSync(outputDir)) {
         await mkdirPromise(outputDir, { recursive: true });
     }
 
-    let { widths, quality, webp } = options;
-
     const metadata = await getImageMetadata(inputFile);
-    ({ widths, quality } = getProcessImageOptions(metadata.width, { widths, quality }));
+
+    const { skipGeneration, ...restOpts } = options;
+    const { widths, quality, webp } = getProcessImageOptions(metadata.width, restOpts);
 
     const filename = basename(inputFile);
     const extension = extname(filename);
     const baseFilename = filename.substring(0, filename.length - extension.length);
     const fileHash = await md5file(inputFile);
+    const aspectRatio = metadata.width / metadata.height;
 
     const images = await resizeImageMultiple(inputFile, outputDir, {
         widths,
         quality,
         filenameGenerator: ({ width, quality }) => `${baseFilename}.${getOptionsHash({ width, quality }, 7)}.${fileHash}${extension}`,
+        aspectRatio,
+        skipGeneration,
     });
     const webpImages = webp ? await resizeImageMultiple(inputFile, outputDir, {
         widths,
         quality,
         filenameGenerator: ({ width, quality }) => `${baseFilename}.${getOptionsHash({ width, quality }, 7)}.${fileHash}.webp`,
+        aspectRatio,
+        skipGeneration,
     }) : [];
 
     return {

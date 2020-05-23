@@ -12,6 +12,7 @@ interface GenerateComponentAttributesOptions {
     outputDir: string;
     webp?: boolean;
     widths?: number[];
+    skipGeneration?: boolean;
 }
 
 export default async function generateComponentAttributes({
@@ -21,7 +22,8 @@ export default async function generateComponentAttributes({
     inputDir,
     outputDir,
     webp,
-    widths
+    widths,
+    skipGeneration
 }: GenerateComponentAttributesOptions): Promise<GetComponentAttributesOutput> {
     if (!src) {
         throw new Error('Src is required');
@@ -46,6 +48,7 @@ export default async function generateComponentAttributes({
             options: {
                 webp: webp ?? true,
                 widths,
+                skipGeneration
             }
         }),
         placeholderQueue.process({

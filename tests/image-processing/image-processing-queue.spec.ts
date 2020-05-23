@@ -228,8 +228,6 @@ describe('ImageProcessingQueue', () => {
             () => Promise.resolve([{ path: 'image.jpg' }])
         ).mockImplementationOnce(
             () => Promise.resolve([{ path: 'image2.jpg' }])
-        ).mockImplementationOnce(
-            () => Promise.resolve([{ path: 'image3.jpg' }])
         );
         (md5file as any as jest.Mock).mockImplementation(() => Promise.resolve('filehash1'))
 
@@ -255,9 +253,9 @@ describe('ImageProcessingQueue', () => {
             options: {
                 widths: [100, 200],
             }
-        })).toEqual([{ path: 'image3.jpg' }]);
+        })).toEqual([{ path: 'image.jpg' }]);
 
-        expect(processImage).toHaveBeenCalledTimes(3);
+        expect(processImage).toHaveBeenCalledTimes(2);
         expect(processImage).toHaveBeenCalledWith(
             '/input/file.jpg',
             '/output/dir',
@@ -272,13 +270,6 @@ describe('ImageProcessingQueue', () => {
             {
                 widths: [100, 200],
                 quality: 85,
-            }
-        );
-        expect(processImage).toHaveBeenCalledWith(
-            '/input/file.jpg',
-            '/output/dir',
-            {
-                widths: [100, 200],
             }
         );
     });
@@ -327,6 +318,57 @@ describe('ImageProcessingQueue', () => {
             {
                 widths: [100, 200],
                 quality: 75,
+            }
+        );
+    });
+
+    it('will reprocess if skipping generation', async () => {
+        (processImage as jest.Mock).mockImplementationOnce(
+            () => Promise.resolve([{ path: 'image.jpg' }])
+        ).mockImplementationOnce(
+            () => Promise.resolve([{ path: 'image2.jpg' }])
+        );
+        (md5file as any as jest.Mock).mockImplementation(() => Promise.resolve('filehash1'))
+
+        expect(await queue.process({
+            inputFile: '/input/file.jpg',
+            outputDir: '/output/dir',
+            options: {
+                widths: [100, 200],
+                skipGeneration: false,
+            }
+        })).toEqual([{ path: 'image.jpg' }]);
+        expect(await queue.process({
+            inputFile: '/input/file.jpg',
+            outputDir: '/output/dir',
+            options: {
+                widths: [100, 200],
+                skipGeneration: true,
+            }
+        })).toEqual([{ path: 'image2.jpg' }]);
+        expect(await queue.process({
+            inputFile: '/input/file.jpg',
+            outputDir: '/output/dir',
+            options: {
+                widths: [100, 200],
+            }
+        })).toEqual([{ path: 'image.jpg' }]);
+
+        expect(processImage).toHaveBeenCalledTimes(2);
+        expect(processImage).toHaveBeenCalledWith(
+            '/input/file.jpg',
+            '/output/dir',
+            {
+                widths: [100, 200],
+                skipGeneration: false,
+            }
+        );
+        expect(processImage).toHaveBeenCalledWith(
+            '/input/file.jpg',
+            '/output/dir',
+            {
+                widths: [100, 200],
+                skipGeneration: true,
             }
         );
     });

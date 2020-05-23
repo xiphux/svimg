@@ -1,10 +1,10 @@
+import { DEFAULT_WIDTHS, DEFAULT_QUALITY, DEFAULT_WEBP } from '../constants/defaults';
+
 interface ProcessImageOptions {
     widths: number[];
     quality: number;
+    webp: boolean;
 }
-
-const DEFAULT_WIDTHS = [480, 1024, 1920, 2560];
-const DEFAULT_QUALITY = 75;
 
 export default function getProcessImageOptions(imageWidth: number, options?: Partial<ProcessImageOptions>): ProcessImageOptions {
     let widths = options?.widths || DEFAULT_WIDTHS;
@@ -18,8 +18,11 @@ export default function getProcessImageOptions(imageWidth: number, options?: Par
 
     const quality = options?.quality || DEFAULT_QUALITY;
 
+    const webp = options?.webp ?? DEFAULT_WEBP;
+
     return {
         widths,
         quality,
+        webp,
     };
 }

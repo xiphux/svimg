@@ -18,17 +18,39 @@
   let container;
   let loaded = false;
 
+  $: fixedWidth = !!(width && /^[0-9]+$/.test(width));
+  $: imageWidth = fixedWidth ? width : clientWidth;
+  $: sizes = `${imageWidth}px`;
+
   onMount(() => {
-    native = "loading" in HTMLImageElement.prototype;
-    if (native) {
-      return;
+    let ro;
+    if (!fixedWidth) {
+      ro = new ResizeObserver(entries => {
+        const entry = entries[0];
+        if (entry.contentBoxSize) {
+          clientWidth = entry.contentBoxSize.inlineSize;
+        } else if (entry.contectRect) {
+          clientWidth = entry.contentRect.width;
+        }
+      });
+
+      ro.observe(container);
     }
 
-    const observer = new IntersectionObserver(
+    native = "loading" in HTMLImageElement.prototype;
+    if (native) {
+      return () => {
+        if (ro) {
+          ro.unobserve(container);
+        }
+      };
+    }
+
+    const io = new IntersectionObserver(
       entries => {
         intersecting = entries[0].isIntersecting;
         if (intersecting) {
-          observer.unobserve(container);
+          io.unobserve(container);
         }
       },
       {
@@ -36,14 +58,15 @@
       }
     );
 
-    observer.observe(container);
+    io.observe(container);
 
-    return () => observer.unobserve(container);
+    return () => {
+      io.unobserve(container);
+      if (ro) {
+        ro.unobserve(container);
+      }
+    };
   });
-
-  $: fixedWidth = !!(width && /^[0-9]+$/.test(width));
-  $: imageWidth = fixedWidth ? width : clientWidth;
-  $: sizes = `${imageWidth}px`;
 </script>
 
 <style>
@@ -68,7 +91,6 @@
 
 <div
   bind:this={container}
-  bind:clientWidth
   style={fixedWidth ? `width:${width}px` : undefined}
   class="wrapper {className}">
   <picture>

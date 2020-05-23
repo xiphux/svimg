@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.3
+
+* Fix some issues with automatic width calculation
+* Avoid adding bad class name 'undefined'
+
 ## 0.1.2
 
 * Replace lazyimages with native lazy loading and IntersectionObserver fallback

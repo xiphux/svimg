@@ -102,7 +102,7 @@
       srcset={intersecting || native ? srcset : undefined}
       {sizes}
       alt={loaded ? alt : undefined}
-      {width}
+      width={imageWidth}
       loading="lazy"
       on:load={() => (loaded = true)} />
   </picture>

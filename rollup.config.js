@@ -47,5 +47,27 @@ export default [
             }),
             resolve(),
         ],
-    }
+    },
+    {
+        input: 'src/process.ts',
+        output: [
+            {
+                file: 'dist/process.js',
+                format: 'cjs',
+            },
+            {
+                file: 'dist/process.es.js',
+                format: 'es',
+            },
+        ],
+        external: [
+            ...Object.keys(pkg.dependencies || {}),
+            ...Object.keys(pkg.peerDependencies || {}),
+        ],
+        plugins: [
+            typescript({
+                typescript: require('typescript'),
+            })
+        ],
+    },
 ];

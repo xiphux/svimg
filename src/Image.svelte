@@ -28,11 +28,7 @@
       if (!fixedWidth) {
         ro = new ResizeObserver(entries => {
           const entry = entries[0];
-          if (entry.contentBoxSize) {
-            clientWidth = entry.contentBoxSize.inlineSize;
-          } else if (entry.contectRect) {
-            clientWidth = entry.contentRect.width;
-          }
+          clientWidth = entry.contentRect.width;
         });
 
         ro.observe(container);

@@ -70,6 +70,8 @@ export default {
 
 ### Usage
 
+#### Svelte Component
+
 ```html
 <script>
 import Image from 'svimg';
@@ -82,9 +84,25 @@ import Image from 'svimg';
 
 The `Image` component will render a blurred placeholder, a srcset with multiple resolutions, a sizes attribute, and a source of type `image/webp` with webp images.
 
+#### Custom Element
+
+svimg is also exposed as a [custom element](https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_custom_elements), which means it can be used independently of Svelte with the `<s-image>` tag.
+
+Usage as a custom element expects that the attributes that would normally be filled in by the Svelte preprocessor (`srcset`, `srcsetwebp`, `placeholder`) are populated by another method.
+
+Generally, you'd use another tool to create these elements such as [rehype-svimg](https://github.com/xiphux/rehype-svimg) rather than using the custom element directly.
+
+```html
+<script>
+import 'svimg/dist/s-image';
+</script>
+
+<s-image srcset="images/splash-600.jpg 600w, images/splash-1200.jpg 1200w" srcsetwebp="images/splash-600.webp 600w, images/splash-1200.webp 1200w" />
+```
+
 ### Configuration
 
-#### Component attributes
+#### Component Attributes
 
 | Property | Default    |           |
 | -------- | ---------- | --------- |
@@ -101,7 +119,7 @@ The following properties will be automatically populated by the preprocessor:
 | srcsetwebp  | Responsive WebP images and widths |
 | placeholder | Blurred placeholder image |
 
-#### Preprocessor options
+#### Preprocessor Options
 
 | Option    | Default    |            |
 | --------- | ---------- | ---------- |

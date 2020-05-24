@@ -1,7 +1,7 @@
-import { existsSync } from 'fs';
 import Image from './image';
 import getImageMetadata from '../core/get-image-metadata';
 import resizeImageCore from '../core/resize-image';
+import exists from '../core/exists';
 
 interface ResizeImageOptions {
     width: number;
@@ -18,7 +18,7 @@ export default async function ensureResizeImage(inputFile: string, outputFile: s
 
     let width;
     let height;
-    if (existsSync(outputFile)) {
+    if (await exists(outputFile)) {
         ({ width, height } = await getImageMetadata(outputFile));
     } else {
         ({ width, height } = await resizeImageCore(

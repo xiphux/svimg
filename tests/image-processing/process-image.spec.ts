@@ -1,10 +1,11 @@
 import processImage from '../../src/image-processing/process-image';
-import { existsSync, mkdir } from 'fs';
+import { mkdir } from 'fs';
 import md5file from 'md5-file';
 import getProcessImageOptions from '../../src/image-processing/get-process-image-options';
 import resizeImageMultiple from '../../src/image-processing/resize-image-multiple';
 import getOptionsHash from '../../src/image-processing/get-options-hash';
 import getImageMetadata from '../../src/core/get-image-metadata';
+import exists from '../../src/core/exists';
 
 jest.mock('fs');
 jest.mock('md5-file', () => ({
@@ -14,11 +15,12 @@ jest.mock('../../src/image-processing/get-process-image-options');
 jest.mock('../../src/image-processing/resize-image-multiple');
 jest.mock('../../src/image-processing/get-options-hash');
 jest.mock('../../src/core/get-image-metadata');
+jest.mock('../../src/core/exists');
 
 describe('processImage', () => {
 
     beforeEach(() => {
-        (existsSync as jest.Mock).mockReset();
+        (exists as jest.Mock).mockReset();
         (mkdir as any as jest.Mock).mockReset().mockImplementation((dir, opts, callback) => callback());
         (md5file as any as jest.Mock).mockReset();
         (getProcessImageOptions as jest.Mock).mockReset();
@@ -41,7 +43,7 @@ describe('processImage', () => {
     });
 
     it('creates the dir if it doesn\'t exist', async () => {
-        (existsSync as jest.Mock).mockReturnValue(false);
+        (exists as jest.Mock).mockImplementation(() => Promise.resolve(false));
         (getImageMetadata as jest.Mock).mockImplementation(() => Promise.resolve({
             width: 300,
         }));
@@ -52,12 +54,12 @@ describe('processImage', () => {
 
         await processImage('/in/file.jpg', '/out/dir', {});
 
-        expect(existsSync).toHaveBeenCalledWith('/out/dir');
+        expect(exists).toHaveBeenCalledWith('/out/dir');
         expect(mkdir).toHaveBeenCalledWith('/out/dir', { recursive: true }, expect.anything());
     });
 
     it('won\'t create the dir if it exists', async () => {
-        (existsSync as jest.Mock).mockReturnValue(true);
+        (exists as jest.Mock).mockImplementation(() => Promise.resolve(true));
         (getImageMetadata as jest.Mock).mockImplementation(() => Promise.resolve({
             width: 300,
         }));
@@ -68,12 +70,12 @@ describe('processImage', () => {
 
         await processImage('/in/file.jpg', '/out/dir', {});
 
-        expect(existsSync).toHaveBeenCalledWith('/out/dir');
+        expect(exists).toHaveBeenCalledWith('/out/dir');
         expect(mkdir).not.toHaveBeenCalled();
     });
 
     it('won\'t create the dir if skipping generation', async () => {
-        (existsSync as jest.Mock).mockReturnValue(false);
+        (exists as jest.Mock).mockImplementation(() => Promise.resolve(false));
         (getImageMetadata as jest.Mock).mockImplementation(() => Promise.resolve({
             width: 300,
         }));
@@ -86,12 +88,12 @@ describe('processImage', () => {
             skipGeneration: true,
         });
 
-        expect(existsSync).not.toHaveBeenCalled();
+        expect(exists).not.toHaveBeenCalled();
         expect(mkdir).not.toHaveBeenCalled();
     });
 
     it('resizes images with hashed filename generator', async () => {
-        (existsSync as jest.Mock).mockReturnValue(true);
+        (exists as jest.Mock).mockImplementation(() => Promise.resolve(true));
         (getProcessImageOptions as jest.Mock).mockReturnValue({
             widths: [200, 300],
             quality: 85,
@@ -149,7 +151,7 @@ describe('processImage', () => {
     });
 
     it('generates webp images if requested', async () => {
-        (existsSync as jest.Mock).mockReturnValue(true);
+        (exists as jest.Mock).mockImplementation(() => Promise.resolve(true));
         (getProcessImageOptions as jest.Mock).mockReturnValue({
             widths: [200, 300],
             quality: 85,
@@ -239,7 +241,7 @@ describe('processImage', () => {
     });
 
     it('skips generation', async () => {
-        (existsSync as jest.Mock).mockReturnValue(true);
+        (exists as jest.Mock).mockImplementation(() => Promise.resolve(true));
         (getProcessImageOptions as jest.Mock).mockReturnValue({
             widths: [200, 300],
             quality: 85,

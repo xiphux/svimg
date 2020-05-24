@@ -1,6 +1,6 @@
 {
   "name": "svimg",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "private": false,
   "description": "Svelte image component with image preprocessing and lazy loading",
   "main": "dist/index.js",

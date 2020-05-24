@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.4
+
+* Custom element support
+
 ## 0.1.3
 
 * Fix some issues with automatic width calculation

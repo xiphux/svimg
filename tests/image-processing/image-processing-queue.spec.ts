@@ -1,10 +1,6 @@
 import ImageProcessingQueue from '../../src/image-processing/image-processing-queue';
-import md5file from 'md5-file';
 import processImage from '../../src/image-processing/process-image';
 
-jest.mock('md5-file', () => ({
-    default: jest.fn(),
-}));
 jest.mock('../../src/image-processing/process-image');
 
 describe('ImageProcessingQueue', () => {
@@ -12,13 +8,11 @@ describe('ImageProcessingQueue', () => {
     let queue: ImageProcessingQueue;
     beforeEach(() => {
         (processImage as jest.Mock).mockReset();
-        (md5file as any as jest.Mock).mockReset();
         queue = new ImageProcessingQueue();
     });
 
     it('will process an image', async () => {
         (processImage as jest.Mock).mockImplementation(() => Promise.resolve([{ path: 'image.jpg' }]));
-        (md5file as any as jest.Mock).mockImplementation(() => Promise.resolve('filehash1'))
 
         expect(await queue.process({
             inputFile: '/input/file.jpg',
@@ -45,7 +39,6 @@ describe('ImageProcessingQueue', () => {
             resolve([{ path: 'image.jpg' }]);
         });
         (processImage as jest.Mock).mockImplementationOnce(() => p);
-        (md5file as any as jest.Mock).mockImplementation(() => Promise.resolve('filehash1'))
 
         expect(await queue.process({
             inputFile: '/input/file.jpg',
@@ -81,7 +74,6 @@ describe('ImageProcessingQueue', () => {
         ).mockImplementationOnce(
             () => Promise.resolve([{ path: 'image2.jpg' }])
         );
-        (md5file as any as jest.Mock).mockImplementation(() => Promise.resolve('filehash1'))
 
         expect(await queue.process({
             inputFile: '/input/file.jpg',
@@ -125,7 +117,6 @@ describe('ImageProcessingQueue', () => {
         ).mockImplementationOnce(
             () => Promise.resolve([{ path: 'image2.jpg' }])
         );
-        (md5file as any as jest.Mock).mockImplementation(() => Promise.resolve('filehash1'))
 
         expect(await queue.process({
             inputFile: '/input/file.jpg',
@@ -171,7 +162,6 @@ describe('ImageProcessingQueue', () => {
         ).mockImplementationOnce(
             () => Promise.resolve([{ path: 'image3.jpg' }])
         );
-        (md5file as any as jest.Mock).mockImplementation(() => Promise.resolve('filehash1'))
 
         expect(await queue.process({
             inputFile: '/input/file.jpg',
@@ -229,7 +219,6 @@ describe('ImageProcessingQueue', () => {
         ).mockImplementationOnce(
             () => Promise.resolve([{ path: 'image2.jpg' }])
         );
-        (md5file as any as jest.Mock).mockImplementation(() => Promise.resolve('filehash1'))
 
         expect(await queue.process({
             inputFile: '/input/file.jpg',
@@ -270,54 +259,6 @@ describe('ImageProcessingQueue', () => {
             {
                 widths: [100, 200],
                 quality: 85,
-            }
-        );
-    });
-
-    it('will reprocess if the file contents change', async () => {
-        (processImage as jest.Mock).mockImplementationOnce(
-            () => Promise.resolve([{ path: 'image.jpg' }])
-        ).mockImplementationOnce(
-            () => Promise.resolve([{ path: 'image2.jpg' }])
-        );
-        (md5file as any as jest.Mock).mockImplementationOnce(
-            () => Promise.resolve('filehash1')
-        ).mockImplementationOnce(
-            () => Promise.resolve('filehash2')
-        )
-
-        expect(await queue.process({
-            inputFile: '/input/file.jpg',
-            outputDir: '/output/dir',
-            options: {
-                widths: [100, 200],
-                quality: 75,
-            }
-        })).toEqual([{ path: 'image.jpg' }]);
-        expect(await queue.process({
-            inputFile: '/input/file.jpg',
-            outputDir: '/output/dir',
-            options: {
-                widths: [100, 200],
-                quality: 75,
-            }
-        })).toEqual([{ path: 'image2.jpg' }]);
-
-        expect(processImage).toHaveBeenCalledTimes(2);
-        expect(processImage).toHaveBeenCalledWith(
-            '/input/file.jpg',
-            '/output/dir',
-            {
-                widths: [100, 200],
-                quality: 75,
-            }
-        );
-        expect(processImage).toHaveBeenCalledWith(
-            '/input/file.jpg',
-            '/output/dir',
-            {
-                widths: [100, 200],
-                quality: 75,
             }
         );
     });
@@ -328,7 +269,6 @@ describe('ImageProcessingQueue', () => {
         ).mockImplementationOnce(
             () => Promise.resolve([{ path: 'image2.jpg' }])
         );
-        (md5file as any as jest.Mock).mockImplementation(() => Promise.resolve('filehash1'))
 
         expect(await queue.process({
             inputFile: '/input/file.jpg',

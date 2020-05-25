@@ -1,10 +1,9 @@
 import InlineComponent from "svelte/types/compiler/compile/nodes/InlineComponent";
 import getNodeAttributes from "./get-node-attributes";
 import { ImagePreprocessorOptions } from "./image-preprocessor";
-import ImageProcessingQueue from "../image-processing/image-processing-queue";
-import PlaceholderQueue from "../placeholder/placeholder-queue";
 import formatAttribute from "../core/format-attribute";
 import generateComponentAttributes from "../component/generate-component-attributes";
+import Queue from "../core/queue";
 
 const TAG_START = '<Image';
 
@@ -12,10 +11,7 @@ export default async function processImageNode(
     content: string,
     offset: number,
     node: InlineComponent,
-    queues: {
-        processing: ImageProcessingQueue,
-        placeholder: PlaceholderQueue,
-    },
+    queue: Queue,
     options?: ImagePreprocessorOptions
 ): Promise<{ content: string, offset: number }> {
     const { src, width } = getNodeAttributes(node);
@@ -30,8 +26,7 @@ export default async function processImageNode(
 
     const attributes = await generateComponentAttributes({
         src,
-        processingQueue: queues.processing,
-        placeholderQueue: queues.placeholder,
+        queue,
         inputDir: options.inputDir,
         outputDir: options.outputDir,
         webp: options.webp,

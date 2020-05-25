@@ -1,46 +1,40 @@
 import ensureResizeImage from '../../src/image-processing/ensure-resize-image';
 import getImageMetadata from '../../src/core/get-image-metadata';
-import resizeImage from '../../src/core/resize-image';
+import { resizeImageToFile } from '../../src/core/resize-image';
 import exists from '../../src/core/exists';
 
 jest.mock('fs');
-jest.mock('../../src/core/get-image-metadata');
-jest.mock('../../src/core/resize-image');
-jest.mock('../../src/core/exists');
 
 describe('ensureResizeImage', () => {
 
-    beforeEach(() => {
-        (exists as jest.Mock).mockReset();
-        (getImageMetadata as jest.Mock).mockReset();
-        (resizeImage as jest.Mock).mockReset();
-    });
-
     it('requires input file', async () => {
-        await expect(ensureResizeImage('', '/out/file.jpg', { width: 300, quality: 75 })).rejects.toThrow();
+        const enqueue = jest.fn();
+        await expect(ensureResizeImage('', '/out/file.jpg', { enqueue } as any, { width: 300, quality: 75 })).rejects.toThrow();
 
-        expect(exists).not.toHaveBeenCalled();
-        expect(resizeImage).not.toHaveBeenCalled();
+        expect(enqueue).not.toHaveBeenCalled();
     });
 
     it('requires output file', async () => {
-        await expect(ensureResizeImage('/in/file.jpg', '', { width: 300, quality: 75 })).rejects.toThrow();
+        const enqueue = jest.fn();
+        await expect(ensureResizeImage('/in/file.jpg', '', { enqueue } as any, { width: 300, quality: 75 })).rejects.toThrow();
 
-        expect(exists).not.toHaveBeenCalled();
-        expect(resizeImage).not.toHaveBeenCalled();
+        expect(enqueue).not.toHaveBeenCalled();
     });
 
     it('returns metadata if the file exists', async () => {
-        (getImageMetadata as jest.Mock).mockImplementation(() => Promise.resolve({
-            width: 300,
-            height: 200,
-        }));
-
-        (exists as jest.Mock).mockImplementation(() => Promise.resolve(true));
+        const enqueue = jest.fn().mockImplementationOnce(
+            () => Promise.resolve(true)
+        ).mockImplementationOnce(
+            () => Promise.resolve({
+                width: 300,
+                height: 200,
+            })
+        );
 
         expect(await ensureResizeImage(
             '/in/file.jpg',
             '/out/file.jpg',
+            { enqueue } as any,
             {
                 width: 300,
                 quality: 75,
@@ -51,22 +45,25 @@ describe('ensureResizeImage', () => {
             height: 200,
         });
 
-        expect(exists).toHaveBeenCalledWith('/out/file.jpg');
-        expect(getImageMetadata).toHaveBeenCalledWith('/out/file.jpg');
-        expect(resizeImage).not.toHaveBeenCalled();
+        expect(enqueue).toHaveBeenCalledWith(exists, '/out/file.jpg');
+        expect(enqueue).toHaveBeenCalledWith(getImageMetadata, '/out/file.jpg');
+        expect(enqueue).not.toHaveBeenCalledWith(resizeImageToFile, expect.anything(), expect.anything(), expect.anything());
     });
 
     it('converts to specified width and quality if file doesn\'t exist', async () => {
-        (resizeImage as jest.Mock).mockImplementation(() => Promise.resolve({
-            width: 300,
-            height: 200,
-        }));
-
-        (exists as jest.Mock).mockImplementation(() => Promise.resolve(false));
+        const enqueue = jest.fn().mockImplementationOnce(
+            () => Promise.resolve(false)
+        ).mockImplementationOnce(
+            () => Promise.resolve({
+                width: 300,
+                height: 200,
+            })
+        );
 
         expect(await ensureResizeImage(
             '/in/file.jpg',
             '/out/file.jpg',
+            { enqueue } as any,
             {
                 width: 300,
                 quality: 75,
@@ -77,9 +74,9 @@ describe('ensureResizeImage', () => {
             height: 200,
         });
 
-        expect(exists).toHaveBeenCalledWith('/out/file.jpg');
-        expect(resizeImage).toHaveBeenCalledWith('/in/file.jpg', { width: 300, quality: 75 }, '/out/file.jpg');
-        expect(getImageMetadata).not.toHaveBeenCalled();
+        expect(enqueue).toHaveBeenCalledWith(exists, '/out/file.jpg');
+        expect(enqueue).toHaveBeenCalledWith(resizeImageToFile, '/in/file.jpg', { width: 300, quality: 75 }, '/out/file.jpg');
+        expect(enqueue).not.toHaveBeenCalledWith(getImageMetadata, expect.anything());
     });
 
 });

@@ -11,7 +11,8 @@ describe('resizeImageMultiple', () => {
     })
 
     it('requires input file', async () => {
-        await expect(resizeImageMultiple('', '/out/dir', {
+        const enqueue = jest.fn();
+        await expect(resizeImageMultiple('', '/out/dir', { enqueue } as any, {
             widths: [100, 200],
             quality: 75,
             filenameGenerator: ({ width, quality }) => `${width}.${quality}.jpg`,
@@ -22,7 +23,8 @@ describe('resizeImageMultiple', () => {
     });
 
     it('requires output dir', async () => {
-        await expect(resizeImageMultiple('/in/file', '', {
+        const enqueue = jest.fn();
+        await expect(resizeImageMultiple('/in/file', '', { enqueue } as any, {
             widths: [100, 200],
             quality: 75,
             filenameGenerator: ({ width, quality }) => `${width}.${quality}.jpg`,
@@ -33,7 +35,8 @@ describe('resizeImageMultiple', () => {
     });
 
     it('doesn\'t generate without widths', async () => {
-        expect(await resizeImageMultiple('/in/file', '/out/dir', {
+        const enqueue = jest.fn();
+        expect(await resizeImageMultiple('/in/file', '/out/dir', { enqueue } as any, {
             widths: [],
             quality: 75,
             filenameGenerator: ({ width, quality }) => `${width}.${quality}.jpg`,
@@ -44,7 +47,8 @@ describe('resizeImageMultiple', () => {
     });
 
     it('requires filename generator to return filenames', async () => {
-        await expect(resizeImageMultiple('/in/file', '/out/dir', {
+        const enqueue = jest.fn();
+        await expect(resizeImageMultiple('/in/file', '/out/dir', { enqueue } as any, {
             widths: [100, 200],
             quality: 75,
             filenameGenerator: ({ width, quality }) => null,
@@ -55,6 +59,7 @@ describe('resizeImageMultiple', () => {
     });
 
     it('generates filenames and resizes', async () => {
+        const enqueue = jest.fn();
         (ensureResizeImage as jest.Mock).mockReturnValueOnce({
             path: '/out/dir/100.75.jpg',
             width: 100,
@@ -65,7 +70,7 @@ describe('resizeImageMultiple', () => {
             height: 100,
         });
 
-        expect(await resizeImageMultiple('/in/file', '/out/dir', {
+        expect(await resizeImageMultiple('/in/file', '/out/dir', { enqueue } as any, {
             widths: [100, 200],
             quality: 75,
             filenameGenerator: ({ width, quality }) => `${width}.${quality}.jpg`,
@@ -84,12 +89,13 @@ describe('resizeImageMultiple', () => {
         ]);
 
         expect(ensureResizeImage).toHaveBeenCalledTimes(2);
-        expect(ensureResizeImage).toHaveBeenCalledWith('/in/file', join('/out/dir', '100.75.jpg'), { width: 100, quality: 75 });
-        expect(ensureResizeImage).toHaveBeenCalledWith('/in/file', join('/out/dir', '200.75.jpg'), { width: 200, quality: 75 });
+        expect(ensureResizeImage).toHaveBeenCalledWith('/in/file', join('/out/dir', '100.75.jpg'), { enqueue } as any, { width: 100, quality: 75 });
+        expect(ensureResizeImage).toHaveBeenCalledWith('/in/file', join('/out/dir', '200.75.jpg'), { enqueue } as any, { width: 200, quality: 75 });
     });
 
     it('skips generation', async () => {
-        expect(await resizeImageMultiple('/in/file', '/out/dir', {
+        const enqueue = jest.fn();
+        expect(await resizeImageMultiple('/in/file', '/out/dir', { enqueue } as any, {
             widths: [100, 200],
             quality: 75,
             filenameGenerator: ({ width, quality }) => `${width}.${quality}.jpg`,

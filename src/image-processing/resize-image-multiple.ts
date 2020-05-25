@@ -1,6 +1,7 @@
 import ensureResizeImage from './ensure-resize-image';
 import { join } from 'path';
 import Image from './image';
+import Queue from '../core/queue';
 
 interface ResizeImageMultipleOptions {
     widths: number[];
@@ -10,7 +11,7 @@ interface ResizeImageMultipleOptions {
     aspectRatio: number;
 }
 
-export default async function resizeImageMultiple(inputFile: string, outputDir: string, options: ResizeImageMultipleOptions): Promise<Image[]> {
+export default async function resizeImageMultiple(inputFile: string, outputDir: string, queue: Queue, options: ResizeImageMultipleOptions): Promise<Image[]> {
     if (!inputFile) {
         throw new Error('Input file is required');
     }
@@ -18,27 +19,28 @@ export default async function resizeImageMultiple(inputFile: string, outputDir: 
         throw new Error('Output file is required');
     }
 
-    const images: Image[] = [];
-
-    for (const width of options.widths) {
+    const widthPaths: Array<{ path: string, width: number }> = options.widths.map((width) => {
         const outFile = options.filenameGenerator({ width, quality: options.quality, inputFile });
 
         if (!outFile) {
             throw new Error('Output filename not provided');
         }
 
-        const path = join(outputDir, outFile);
+        return {
+            path: join(outputDir, outFile),
+            width,
+        };
+    })
 
-        if (options?.skipGeneration) {
-            images.push({
-                path,
-                width,
-                height: Math.round((width / options.aspectRatio + Number.EPSILON) * 100) / 100,
-            });
-        } else {
-            images.push(await ensureResizeImage(inputFile, path, { width, quality: options.quality }));
-        }
-    }
-
-    return images;
+    return options?.skipGeneration ?
+        widthPaths.map(({ path, width }) => ({
+            path,
+            width,
+            height: Math.round((width / options.aspectRatio + Number.EPSILON) * 100) / 100,
+        })) :
+        await Promise.all(
+            widthPaths.map(
+                ({ width, path }) => ensureResizeImage(inputFile, path, queue, { width, quality: options.quality })
+            )
+        );
 }

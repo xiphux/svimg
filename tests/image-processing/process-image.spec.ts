@@ -1,50 +1,52 @@
 import processImage from '../../src/image-processing/process-image';
-import { mkdir } from 'fs';
 import md5file from 'md5-file';
 import getProcessImageOptions from '../../src/image-processing/get-process-image-options';
 import resizeImageMultiple from '../../src/image-processing/resize-image-multiple';
 import getOptionsHash from '../../src/image-processing/get-options-hash';
 import getImageMetadata from '../../src/core/get-image-metadata';
 import exists from '../../src/core/exists';
+import fs from 'fs';
 
-jest.mock('fs');
-jest.mock('md5-file', () => ({
-    default: jest.fn(),
+jest.mock('fs', () => ({
+    default: {
+        promises: {
+            mkdir: jest.fn(),
+        }
+    }
 }));
 jest.mock('../../src/image-processing/get-process-image-options');
 jest.mock('../../src/image-processing/resize-image-multiple');
 jest.mock('../../src/image-processing/get-options-hash');
-jest.mock('../../src/core/get-image-metadata');
-jest.mock('../../src/core/exists');
 
 describe('processImage', () => {
 
     beforeEach(() => {
-        (exists as jest.Mock).mockReset();
-        (mkdir as any as jest.Mock).mockReset().mockImplementation((dir, opts, callback) => callback());
-        (md5file as any as jest.Mock).mockReset();
         (getProcessImageOptions as jest.Mock).mockReset();
         (resizeImageMultiple as jest.Mock).mockReset();
-        (getImageMetadata as jest.Mock).mockReset();
     });
 
     it('requires an input file', async () => {
-        await expect(processImage('/in/file.jpg', '', {})).rejects.toThrow();
+        const enqueue = jest.fn();
+        await expect(processImage('/in/file.jpg', '', { enqueue } as any)).rejects.toThrow();
 
-        expect(mkdir).not.toHaveBeenCalled();
+        expect(enqueue).not.toHaveBeenCalled();
         expect(resizeImageMultiple).not.toHaveBeenCalled();
     });
 
     it('requires an output dir', async () => {
-        await expect(processImage('', '/out/dir', {})).rejects.toThrow();
+        const enqueue = jest.fn();
+        await expect(processImage('', '/out/dir', { enqueue } as any)).rejects.toThrow();
 
-        expect(mkdir).not.toHaveBeenCalled();
+        expect(enqueue).not.toHaveBeenCalled();
         expect(resizeImageMultiple).not.toHaveBeenCalled();
     });
 
     it('creates the dir if it doesn\'t exist', async () => {
-        (exists as jest.Mock).mockImplementation(() => Promise.resolve(false));
-        (getImageMetadata as jest.Mock).mockImplementation(() => Promise.resolve({
+        const enqueue = jest.fn().mockImplementationOnce(
+            () => Promise.resolve(false)
+        ).mockImplementationOnce(
+            () => Promise.resolve()
+        ).mockImplementationOnce(() => Promise.resolve({
             width: 300,
         }));
         (getProcessImageOptions as jest.Mock).mockReturnValue({
@@ -52,15 +54,16 @@ describe('processImage', () => {
             quality: 85,
         });
 
-        await processImage('/in/file.jpg', '/out/dir', {});
+        await processImage('/in/file.jpg', '/out/dir', { enqueue } as any);
 
-        expect(exists).toHaveBeenCalledWith('/out/dir');
-        expect(mkdir).toHaveBeenCalledWith('/out/dir', { recursive: true }, expect.anything());
+        expect(enqueue).toHaveBeenCalledWith(exists, '/out/dir');
+        expect(enqueue).toHaveBeenCalledWith(fs.promises.mkdir, '/out/dir', { recursive: true });
     });
 
     it('won\'t create the dir if it exists', async () => {
-        (exists as jest.Mock).mockImplementation(() => Promise.resolve(true));
-        (getImageMetadata as jest.Mock).mockImplementation(() => Promise.resolve({
+        const enqueue = jest.fn().mockImplementationOnce(
+            () => Promise.resolve(true)
+        ).mockImplementationOnce(() => Promise.resolve({
             width: 300,
         }));
         (getProcessImageOptions as jest.Mock).mockReturnValue({
@@ -68,15 +71,14 @@ describe('processImage', () => {
             quality: 85,
         });
 
-        await processImage('/in/file.jpg', '/out/dir', {});
+        await processImage('/in/file.jpg', '/out/dir', { enqueue } as any);
 
-        expect(exists).toHaveBeenCalledWith('/out/dir');
-        expect(mkdir).not.toHaveBeenCalled();
+        expect(enqueue).toHaveBeenCalledWith(exists, '/out/dir');
+        expect(enqueue).not.toHaveBeenCalledWith(fs.promises.mkdir, '/out/dir', { recursive: true });
     });
 
     it('won\'t create the dir if skipping generation', async () => {
-        (exists as jest.Mock).mockImplementation(() => Promise.resolve(false));
-        (getImageMetadata as jest.Mock).mockImplementation(() => Promise.resolve({
+        const enqueue = jest.fn().mockImplementationOnce(() => Promise.resolve({
             width: 300,
         }));
         (getProcessImageOptions as jest.Mock).mockReturnValue({
@@ -84,26 +86,28 @@ describe('processImage', () => {
             quality: 85,
         });
 
-        await processImage('/in/file.jpg', '/out/dir', {
+        await processImage('/in/file.jpg', '/out/dir', { enqueue } as any, {
             skipGeneration: true,
         });
 
-        expect(exists).not.toHaveBeenCalled();
-        expect(mkdir).not.toHaveBeenCalled();
+        expect(enqueue).not.toHaveBeenCalledWith(exists, '/out/dir');
+        expect(enqueue).not.toHaveBeenCalledWith(fs.promises.mkdir, '/out/dir', { recursive: true });
     });
 
     it('resizes images with hashed filename generator', async () => {
-        (exists as jest.Mock).mockImplementation(() => Promise.resolve(true));
+        const enqueue = jest.fn().mockImplementationOnce(
+            () => Promise.resolve(true)
+        ).mockImplementationOnce(() => Promise.resolve({
+            width: 300,
+            height: 300,
+        })).mockImplementationOnce(
+            () => Promise.resolve('filehash'),
+        );
         (getProcessImageOptions as jest.Mock).mockReturnValue({
             widths: [200, 300],
             quality: 85,
             webp: false,
         });
-        (getImageMetadata as jest.Mock).mockImplementation(() => Promise.resolve({
-            width: 300,
-            height: 300,
-        }));
-        (md5file as any as jest.Mock).mockImplementation(() => Promise.resolve('filehash'));
         (resizeImageMultiple as jest.Mock).mockImplementation(() => Promise.resolve([
             {
                 path: '/out/dir/file.1.jpg',
@@ -118,7 +122,7 @@ describe('processImage', () => {
         ]));
         (getOptionsHash as jest.Mock).mockReturnValue('optionshash');
 
-        expect(await processImage('/in/file.jpg', '/out/dir', { widths: [100, 200], quality: 85, webp: false })).toEqual({
+        expect(await processImage('/in/file.jpg', '/out/dir', { enqueue } as any, { widths: [100, 200], quality: 85, webp: false })).toEqual({
             images: [
                 {
                     path: '/out/dir/file.1.jpg',
@@ -134,34 +138,36 @@ describe('processImage', () => {
             webpImages: [],
         });
 
-        expect(getImageMetadata).toHaveBeenCalledWith('/in/file.jpg');
+        expect(enqueue).toHaveBeenCalledWith(getImageMetadata, '/in/file.jpg');
 
         expect(getProcessImageOptions).toHaveBeenCalledWith(300, { widths: [100, 200], quality: 85, webp: false })
 
-        expect(md5file).toHaveBeenCalledWith('/in/file.jpg');
+        expect(enqueue).toHaveBeenCalledWith(md5file, '/in/file.jpg');
         expect(resizeImageMultiple).toHaveBeenCalledTimes(1);
-        expect(resizeImageMultiple).toHaveBeenCalledWith('/in/file.jpg', '/out/dir', {
+        expect(resizeImageMultiple).toHaveBeenCalledWith('/in/file.jpg', '/out/dir', { enqueue } as any, {
             widths: [200, 300],
             quality: 85,
             filenameGenerator: expect.any(Function),
             aspectRatio: 1,
         });
-        const filenameGenerator = (resizeImageMultiple as jest.Mock).mock.calls[0][2].filenameGenerator;
+        const filenameGenerator = (resizeImageMultiple as jest.Mock).mock.calls[0][3].filenameGenerator;
         expect(filenameGenerator({ width: 300, quality: 85 })).toEqual('file.optionshash.filehash.jpg');
     });
 
     it('generates webp images if requested', async () => {
-        (exists as jest.Mock).mockImplementation(() => Promise.resolve(true));
+        const enqueue = jest.fn().mockImplementationOnce(
+            () => Promise.resolve(true)
+        ).mockImplementationOnce(() => Promise.resolve({
+            width: 300,
+            height: 300,
+        })).mockImplementationOnce(
+            () => Promise.resolve('filehash'),
+        );
         (getProcessImageOptions as jest.Mock).mockReturnValue({
             widths: [200, 300],
             quality: 85,
             webp: true,
         });
-        (getImageMetadata as jest.Mock).mockImplementation(() => Promise.resolve({
-            width: 300,
-            height: 300,
-        }));
-        (md5file as any as jest.Mock).mockImplementation(() => Promise.resolve('filehash'));
         (resizeImageMultiple as jest.Mock).mockImplementationOnce(() => Promise.resolve([
             {
                 path: '/out/dir/file.1.jpg',
@@ -187,7 +193,7 @@ describe('processImage', () => {
         ]));
         (getOptionsHash as jest.Mock).mockReturnValue('optionshash');
 
-        expect(await processImage('/in/file.jpg', '/out/dir', { widths: [100, 200], quality: 85, webp: true })).toEqual({
+        expect(await processImage('/in/file.jpg', '/out/dir', { enqueue } as any, { widths: [100, 200], quality: 85, webp: true })).toEqual({
             images: [
                 {
                     path: '/out/dir/file.1.jpg',
@@ -214,44 +220,44 @@ describe('processImage', () => {
             ],
         });
 
-        expect(getImageMetadata).toHaveBeenCalledWith('/in/file.jpg');
+        expect(enqueue).toHaveBeenCalledWith(getImageMetadata, '/in/file.jpg');
 
         expect(getProcessImageOptions).toHaveBeenCalledWith(300, { widths: [100, 200], quality: 85, webp: true })
 
-        expect(md5file).toHaveBeenCalledWith('/in/file.jpg');
+        expect(enqueue).toHaveBeenCalledWith(md5file, '/in/file.jpg');
 
         expect(resizeImageMultiple).toHaveBeenCalledTimes(2);
-        expect(resizeImageMultiple).toHaveBeenCalledWith('/in/file.jpg', '/out/dir', {
+        expect(resizeImageMultiple).toHaveBeenCalledWith('/in/file.jpg', '/out/dir', { enqueue } as any, {
             widths: [200, 300],
             quality: 85,
             filenameGenerator: expect.any(Function),
             aspectRatio: 1,
         });
-        const filenameGenerator = (resizeImageMultiple as jest.Mock).mock.calls[0][2].filenameGenerator;
+        const filenameGenerator = (resizeImageMultiple as jest.Mock).mock.calls[0][3].filenameGenerator;
         expect(filenameGenerator({ width: 300, quality: 85 })).toEqual('file.optionshash.filehash.jpg');
 
-        expect(resizeImageMultiple).toHaveBeenCalledWith('/in/file.jpg', '/out/dir', {
+        expect(resizeImageMultiple).toHaveBeenCalledWith('/in/file.jpg', '/out/dir', { enqueue } as any, {
             widths: [200, 300],
             quality: 85,
             filenameGenerator: expect.any(Function),
             aspectRatio: 1,
         });
-        const filenameGeneratorWebp = (resizeImageMultiple as jest.Mock).mock.calls[1][2].filenameGenerator;
+        const filenameGeneratorWebp = (resizeImageMultiple as jest.Mock).mock.calls[1][3].filenameGenerator;
         expect(filenameGeneratorWebp({ width: 300, quality: 85 })).toEqual('file.optionshash.filehash.webp');
     });
 
     it('skips generation', async () => {
-        (exists as jest.Mock).mockImplementation(() => Promise.resolve(true));
+        const enqueue = jest.fn().mockImplementationOnce(() => Promise.resolve({
+            width: 300,
+            height: 100,
+        })).mockImplementationOnce(
+            () => Promise.resolve('filehash'),
+        );
         (getProcessImageOptions as jest.Mock).mockReturnValue({
             widths: [200, 300],
             quality: 85,
             webp: true,
         });
-        (getImageMetadata as jest.Mock).mockImplementation(() => Promise.resolve({
-            width: 300,
-            height: 100,
-        }));
-        (md5file as any as jest.Mock).mockImplementation(() => Promise.resolve('filehash'));
         (resizeImageMultiple as jest.Mock).mockImplementationOnce(() => Promise.resolve([
             {
                 path: '/out/dir/file.1.jpg',
@@ -277,7 +283,7 @@ describe('processImage', () => {
         ]));
         (getOptionsHash as jest.Mock).mockReturnValue('optionshash');
 
-        expect(await processImage('/in/file.jpg', '/out/dir', { widths: [100, 200], quality: 85, webp: true, skipGeneration: true })).toEqual({
+        expect(await processImage('/in/file.jpg', '/out/dir', { enqueue } as any, { widths: [100, 200], quality: 85, webp: true, skipGeneration: true })).toEqual({
             images: [
                 {
                     path: '/out/dir/file.1.jpg',
@@ -304,31 +310,31 @@ describe('processImage', () => {
             ],
         });
 
-        expect(getImageMetadata).toHaveBeenCalledWith('/in/file.jpg');
+        expect(enqueue).toHaveBeenCalledWith(getImageMetadata, '/in/file.jpg');
 
         expect(getProcessImageOptions).toHaveBeenCalledWith(300, { widths: [100, 200], quality: 85, webp: true })
 
-        expect(md5file).toHaveBeenCalledWith('/in/file.jpg');
+        expect(enqueue).toHaveBeenCalledWith(md5file, '/in/file.jpg');
 
         expect(resizeImageMultiple).toHaveBeenCalledTimes(2);
-        expect(resizeImageMultiple).toHaveBeenCalledWith('/in/file.jpg', '/out/dir', {
+        expect(resizeImageMultiple).toHaveBeenCalledWith('/in/file.jpg', '/out/dir', { enqueue } as any, {
             widths: [200, 300],
             quality: 85,
             filenameGenerator: expect.any(Function),
             aspectRatio: 300 / 100,
             skipGeneration: true,
         });
-        const filenameGenerator = (resizeImageMultiple as jest.Mock).mock.calls[0][2].filenameGenerator;
+        const filenameGenerator = (resizeImageMultiple as jest.Mock).mock.calls[0][3].filenameGenerator;
         expect(filenameGenerator({ width: 300, quality: 85 })).toEqual('file.optionshash.filehash.jpg');
 
-        expect(resizeImageMultiple).toHaveBeenCalledWith('/in/file.jpg', '/out/dir', {
+        expect(resizeImageMultiple).toHaveBeenCalledWith('/in/file.jpg', '/out/dir', { enqueue } as any, {
             widths: [200, 300],
             quality: 85,
             filenameGenerator: expect.any(Function),
             aspectRatio: 300 / 100,
             skipGeneration: true,
         });
-        const filenameGeneratorWebp = (resizeImageMultiple as jest.Mock).mock.calls[1][2].filenameGenerator;
+        const filenameGeneratorWebp = (resizeImageMultiple as jest.Mock).mock.calls[1][3].filenameGenerator;
         expect(filenameGeneratorWebp({ width: 300, quality: 85 })).toEqual('file.optionshash.filehash.webp');
     });
 

@@ -1,14 +1,15 @@
 import Image from './image';
 import getImageMetadata from '../core/get-image-metadata';
-import resizeImageCore from '../core/resize-image';
+import { resizeImageToFile } from '../core/resize-image';
 import exists from '../core/exists';
+import Queue from '../core/queue';
 
 interface ResizeImageOptions {
     width: number;
     quality: number;
 }
 
-export default async function ensureResizeImage(inputFile: string, outputFile: string, options: ResizeImageOptions): Promise<Image> {
+export default async function ensureResizeImage(inputFile: string, outputFile: string, queue: Queue, options: ResizeImageOptions): Promise<Image> {
     if (!inputFile) {
         throw new Error('Input file is required');
     }
@@ -16,19 +17,15 @@ export default async function ensureResizeImage(inputFile: string, outputFile: s
         throw new Error('Output file is required');
     }
 
-    let width;
-    let height;
-    if (await exists(outputFile)) {
-        ({ width, height } = await getImageMetadata(outputFile));
+    let width: number;
+    let height: number;
+    if (await queue.enqueue(exists, outputFile)) {
+        ({ width, height } = await queue.enqueue(getImageMetadata, outputFile));
     } else {
-        ({ width, height } = await resizeImageCore(
-            inputFile,
-            {
-                width: options.width,
-                quality: options.quality,
-            },
-            outputFile
-        ));
+        ({ width, height } = await queue.enqueue(resizeImageToFile, inputFile, {
+            width: options.width,
+            quality: options.quality,
+        }, outputFile));
     }
     return {
         path: outputFile,

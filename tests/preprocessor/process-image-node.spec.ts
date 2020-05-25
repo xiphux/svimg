@@ -13,17 +13,13 @@ describe('processImageNode', () => {
 
     it('returns unmodified without a src', async () => {
         (getNodeAttributes as jest.Mock).mockReturnValue({});
-        const processingQueue = { process: jest.fn() };
-        const placeholderQueue = { process: jest.fn() };
+        const queue = { process: jest.fn() };
 
         expect(await processImageNode(
             '<div><Image /></div>',
             0,
             { start: 5 } as any,
-            {
-                processing: processingQueue as any,
-                placeholder: placeholderQueue as any,
-            },
+            queue as any,
             {
                 inputDir: 'static',
                 outputDir: 'static/g',
@@ -46,17 +42,13 @@ describe('processImageNode', () => {
             srcset: 'g/img/test1.jpg 300w',
             placeholder: '<svg />',
         }));
-        const processingQueue = { process: jest.fn() };
-        const placeholderQueue = { process: jest.fn() };
+        const queue = { process: jest.fn() };
 
         expect(await processImageNode(
             '<div><Image src="img/test.jpg" /></div>',
             0,
             { start: 5 } as any,
-            {
-                processing: processingQueue as any,
-                placeholder: placeholderQueue as any,
-            },
+            queue as any,
             {
                 inputDir: 'static',
                 outputDir: 'static/g',
@@ -70,8 +62,7 @@ describe('processImageNode', () => {
         expect(getNodeAttributes).toHaveBeenCalledWith({ start: 5 });
         expect(generateComponentAttributes).toHaveBeenCalledWith({
             src: 'img/test.jpg',
-            processingQueue,
-            placeholderQueue,
+            queue,
             inputDir: 'static',
             outputDir: 'static/g',
             webp: false,
@@ -86,17 +77,13 @@ describe('processImageNode', () => {
             srcset: 'g/img/test1.jpg 300w',
             placeholder: '<svg />',
         }));
-        const processingQueue = { process: jest.fn() };
-        const placeholderQueue = { process: jest.fn() };
+        const queue = { process: jest.fn() };
 
         expect(await processImageNode(
             '<div><Image src="img/test.jpg" /></div>',
             5,
             { start: 0 } as any,
-            {
-                processing: processingQueue as any,
-                placeholder: placeholderQueue as any,
-            },
+            queue as any,
             {
                 inputDir: 'static',
                 outputDir: 'static/g',
@@ -110,8 +97,7 @@ describe('processImageNode', () => {
         expect(getNodeAttributes).toHaveBeenCalledWith({ start: 5 });
         expect(generateComponentAttributes).toHaveBeenCalledWith({
             src: 'img/test.jpg',
-            processingQueue,
-            placeholderQueue,
+            queue,
             inputDir: 'static',
             outputDir: 'static/g',
             webp: false,
@@ -127,17 +113,13 @@ describe('processImageNode', () => {
             srcsetwebp: 'g/img/test1.webp 300w',
             placeholder: '<svg />',
         }));
-        const processingQueue = { process: jest.fn() };
-        const placeholderQueue = { process: jest.fn() };
+        const queue = { process: jest.fn() };
 
         expect(await processImageNode(
             '<div><Image src="img/test.jpg" /></div>',
             0,
             { start: 5 } as any,
-            {
-                processing: processingQueue as any,
-                placeholder: placeholderQueue as any,
-            },
+            queue as any,
             {
                 inputDir: 'static',
                 outputDir: 'static/g',
@@ -151,8 +133,7 @@ describe('processImageNode', () => {
         expect(getNodeAttributes).toHaveBeenCalledWith({ start: 5 });
         expect(generateComponentAttributes).toHaveBeenCalledWith({
             src: 'img/test.jpg',
-            processingQueue,
-            placeholderQueue,
+            queue,
             inputDir: 'static',
             outputDir: 'static/g',
             webp: true,
@@ -169,17 +150,13 @@ describe('processImageNode', () => {
             srcsetwebp: 'g/img/test1.webp 150w',
             placeholder: '<svg />',
         }));
-        const processingQueue = { process: jest.fn() };
-        const placeholderQueue = { process: jest.fn() };
+        const queue = { process: jest.fn() };
 
         expect(await processImageNode(
             '<div><Image src="img/test.jpg" /></div>',
             0,
             { start: 5 } as any,
-            {
-                processing: processingQueue as any,
-                placeholder: placeholderQueue as any,
-            },
+            queue as any,
             {
                 inputDir: 'static',
                 outputDir: 'static/g',
@@ -193,8 +170,7 @@ describe('processImageNode', () => {
         expect(getNodeAttributes).toHaveBeenCalledWith({ start: 5 });
         expect(generateComponentAttributes).toHaveBeenCalledWith({
             src: 'img/test.jpg',
-            processingQueue,
-            placeholderQueue,
+            queue,
             inputDir: 'static',
             outputDir: 'static/g',
             webp: true,
@@ -212,17 +188,13 @@ describe('processImageNode', () => {
             srcsetwebp: 'g/img/test1.webp 300w',
             placeholder: '<svg />',
         }));
-        const processingQueue = { process: jest.fn() };
-        const placeholderQueue = { process: jest.fn() };
+        const queue = { process: jest.fn() };
 
         expect(await processImageNode(
             '<div><Image src="img/test.jpg" /></div>',
             0,
             { start: 5 } as any,
-            {
-                processing: processingQueue as any,
-                placeholder: placeholderQueue as any,
-            },
+            queue as any,
             {
                 inputDir: 'static',
                 outputDir: 'static/g',
@@ -236,8 +208,7 @@ describe('processImageNode', () => {
         expect(getNodeAttributes).toHaveBeenCalledWith({ start: 5 });
         expect(generateComponentAttributes).toHaveBeenCalledWith({
             src: 'img/test.jpg',
-            processingQueue,
-            placeholderQueue,
+            queue,
             inputDir: 'static',
             outputDir: 'static/g',
             webp: true,
@@ -254,17 +225,13 @@ describe('processImageNode', () => {
             srcsetwebp: 'g/img/test1.webp 300w',
             placeholder: '<svg />',
         }));
-        const processingQueue = { process: jest.fn() };
-        const placeholderQueue = { process: jest.fn() };
+        const queue = { process: jest.fn() };
 
         expect(await processImageNode(
             '<div><Image src="img/test.jpg" /></div>',
             0,
             { start: 5 } as any,
-            {
-                processing: processingQueue as any,
-                placeholder: placeholderQueue as any,
-            },
+            queue as any,
             {
                 inputDir: 'static',
                 outputDir: 'static/g',
@@ -278,8 +245,7 @@ describe('processImageNode', () => {
         expect(getNodeAttributes).toHaveBeenCalledWith({ start: 5 });
         expect(generateComponentAttributes).toHaveBeenCalledWith({
             src: 'img/test.jpg',
-            processingQueue,
-            placeholderQueue,
+            queue,
             inputDir: 'static',
             outputDir: 'static/g',
             webp: true,

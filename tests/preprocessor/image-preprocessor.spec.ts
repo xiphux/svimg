@@ -1,11 +1,11 @@
 import imagePreprocessor from '../../src/preprocessor/image-preprocessor';
 import getImageNodes from '../../src/preprocessor/get-image-nodes';
 import processImageNode from '../../src/preprocessor/process-image-node';
-import ProcessingQueue from '../../src/core/processing-queue';
-import PlaceholderQueue from '../../src/placeholder/placeholder-queue';
+import Queue from '../../src/core/queue';
 
 jest.mock('../../src/preprocessor/get-image-nodes');
 jest.mock('../../src/preprocessor/process-image-node');
+jest.mock('../../src/core/queue');
 
 describe('imagePreprocessor', () => {
 
@@ -64,10 +64,7 @@ describe('imagePreprocessor', () => {
             '<content>',
             0,
             { node: '1' },
-            {
-                processing: expect.any(ProcessingQueue),
-                placeholder: expect.any(PlaceholderQueue),
-            },
+            expect.any(Queue),
             {
                 inputDir: 'static',
                 outputDir: 'static/g',
@@ -79,10 +76,7 @@ describe('imagePreprocessor', () => {
             '<content2>',
             5,
             { node: '2' },
-            {
-                processing: expect.any(ProcessingQueue),
-                placeholder: expect.any(PlaceholderQueue),
-            },
+            expect.any(Queue),
             {
                 inputDir: 'static',
                 outputDir: 'static/g',

@@ -26,48 +26,48 @@ describe('createPlaceholder', () => {
     });
 
     it('requires input file', async () => {
-        await expect(createPlaceholder('')).rejects.toThrow();
+        await expect(createPlaceholder('', { enqueue: jest.fn() } as any)).rejects.toThrow();
     });
 
     it('creates an svg with default blur', async () => {
-        (getImageMetadata as jest.Mock).mockImplementation(() => Promise.resolve({
+        const enqueue = jest.fn().mockImplementationOnce(() => Promise.resolve({
             width: 300,
             height: 200,
             format: 'jpeg'
-        }));
-        (resizeImage as jest.Mock).mockImplementation(() => Promise.resolve({
+        })).mockImplementationOnce(() => Promise.resolve({
             toString: jest.fn(() => 'base64data')
         }));
         (getMimeType as jest.Mock).mockReturnValue('image/jpeg');
         (getBlurSvg as jest.Mock).mockReturnValue('<svg />');
         (svgDataUri.toSrcset as jest.Mock).mockReturnValue('<optimizedsvg />');
 
-        expect(await createPlaceholder('/in/file.jpg')).toEqual('<optimizedsvg />');
+        expect(await createPlaceholder('/in/file.jpg', { enqueue } as any)).toEqual('<optimizedsvg />');
 
-        expect(getImageMetadata).toHaveBeenCalledWith('/in/file.jpg');
-        expect(resizeImage).toHaveBeenCalledWith('/in/file.jpg', { width: 64 });
+        expect(enqueue).toHaveBeenCalledTimes(2);
+        expect(enqueue).toHaveBeenCalledWith(getImageMetadata, '/in/file.jpg');
+        expect(enqueue).toHaveBeenCalledWith(resizeImage, '/in/file.jpg', { width: 64 });
         expect(getMimeType).toHaveBeenCalledWith('jpeg');
         expect(getBlurSvg).toHaveBeenCalledWith('data:image/jpeg;base64,base64data', 300, 200, 40);
         expect(svgDataUri.toSrcset).toHaveBeenCalledWith('<svg />');
     });
 
     it('creates an svg with custom blur', async () => {
-        (getImageMetadata as jest.Mock).mockImplementation(() => Promise.resolve({
+        const enqueue = jest.fn().mockImplementationOnce(() => Promise.resolve({
             width: 300,
             height: 200,
             format: 'jpeg'
-        }));
-        (resizeImage as jest.Mock).mockImplementation(() => Promise.resolve({
+        })).mockImplementationOnce(() => Promise.resolve({
             toString: jest.fn(() => 'base64data')
         }));
         (getMimeType as jest.Mock).mockReturnValue('image/jpeg');
         (getBlurSvg as jest.Mock).mockReturnValue('<svg />');
         (svgDataUri.toSrcset as jest.Mock).mockReturnValue('<optimizedsvg />');
 
-        expect(await createPlaceholder('/in/file.jpg', { blur: 30 })).toEqual('<optimizedsvg />');
+        expect(await createPlaceholder('/in/file.jpg', { enqueue } as any, { blur: 30 })).toEqual('<optimizedsvg />');
 
-        expect(getImageMetadata).toHaveBeenCalledWith('/in/file.jpg');
-        expect(resizeImage).toHaveBeenCalledWith('/in/file.jpg', { width: 64 });
+        expect(enqueue).toHaveBeenCalledTimes(2);
+        expect(enqueue).toHaveBeenCalledWith(getImageMetadata, '/in/file.jpg');
+        expect(enqueue).toHaveBeenCalledWith(resizeImage, '/in/file.jpg', { width: 64 });
         expect(getMimeType).toHaveBeenCalledWith('jpeg');
         expect(getBlurSvg).toHaveBeenCalledWith('data:image/jpeg;base64,base64data', 300, 200, 30);
         expect(svgDataUri.toSrcset).toHaveBeenCalledWith('<svg />');

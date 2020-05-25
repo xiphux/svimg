@@ -1,5 +1,4 @@
-import { mkdir } from 'fs';
-import { promisify } from 'util';
+import fs from 'fs';
 import md5file from 'md5-file';
 import { basename, extname } from 'path';
 import resizeImageMultiple from './resize-image-multiple';
@@ -8,8 +7,7 @@ import getProcessImageOptions from './get-process-image-options';
 import Image from './image';
 import getImageMetadata from '../core/get-image-metadata';
 import exists from '../core/exists';
-
-const mkdirPromise = promisify(mkdir);
+import Queue from '../core/queue';
 
 export interface ProcessImageOptions {
     widths?: number[];
@@ -23,7 +21,7 @@ export interface ProcessImageOutput {
     webpImages: Image[];
 }
 
-export default async function processImage(inputFile: string, outputDir: string, options?: ProcessImageOptions): Promise<ProcessImageOutput> {
+export default async function processImage(inputFile: string, outputDir: string, queue: Queue, options?: ProcessImageOptions): Promise<ProcessImageOutput> {
     if (!inputFile) {
         throw new Error('Input file is required');
     }
@@ -31,29 +29,31 @@ export default async function processImage(inputFile: string, outputDir: string,
         throw new Error('Output dir is required');
     }
 
-    if (!options?.skipGeneration && !(await exists(outputDir))) {
-        await mkdirPromise(outputDir, { recursive: true });
+    if (!(options?.skipGeneration)) {
+        if (!(await queue.enqueue(exists, outputDir))) {
+            await queue.enqueue(fs.promises.mkdir, outputDir, { recursive: true });
+        }
     }
 
-    const metadata = await getImageMetadata(inputFile);
+    const metadata = await queue.enqueue(getImageMetadata, inputFile);
 
-    const { skipGeneration, ...restOpts } = options;
+    const { skipGeneration, ...restOpts } = options || {};
     const { widths, quality, webp } = getProcessImageOptions(metadata.width, restOpts);
 
     const filename = basename(inputFile);
     const extension = extname(filename);
     const baseFilename = filename.substring(0, filename.length - extension.length);
-    const fileHash = await md5file(inputFile);
+    const fileHash = await queue.enqueue(md5file, inputFile);
     const aspectRatio = metadata.width / metadata.height;
 
-    const images = await resizeImageMultiple(inputFile, outputDir, {
+    const images = await resizeImageMultiple(inputFile, outputDir, queue, {
         widths,
         quality,
         filenameGenerator: ({ width, quality }) => `${baseFilename}.${getOptionsHash({ width, quality }, 7)}.${fileHash}${extension}`,
         aspectRatio,
         skipGeneration,
     });
-    const webpImages = webp ? await resizeImageMultiple(inputFile, outputDir, {
+    const webpImages = webp ? await resizeImageMultiple(inputFile, outputDir, queue, {
         widths,
         quality,
         filenameGenerator: ({ width, quality }) => `${baseFilename}.${getOptionsHash({ width, quality }, 7)}.${fileHash}.webp`,

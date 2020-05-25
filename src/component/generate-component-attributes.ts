@@ -1,13 +1,13 @@
 import getComponentAttributes, { GetComponentAttributesOutput } from './get-component-attributes';
 import { join, dirname } from 'path';
-import ImageProcessingQueue from '../image-processing/image-processing-queue';
-import PlaceholderQueue from '../placeholder/placeholder-queue';
 import pathToUrl from '../core/path-to-url';
+import Queue from '../core/queue';
+import createPlaceholder from '../placeholder/create-placeholder';
+import processImage from '../image-processing/process-image';
 
 interface GenerateComponentAttributesOptions {
     src: string;
-    processingQueue?: ImageProcessingQueue;
-    placeholderQueue?: PlaceholderQueue;
+    queue?: Queue;
     inputDir: string;
     outputDir: string;
     webp?: boolean;
@@ -17,8 +17,7 @@ interface GenerateComponentAttributesOptions {
 
 export default async function generateComponentAttributes({
     src,
-    processingQueue,
-    placeholderQueue,
+    queue,
     inputDir,
     outputDir,
     webp,
@@ -35,25 +34,18 @@ export default async function generateComponentAttributes({
         throw new Error('Output dir is required');
     }
 
-    processingQueue = processingQueue || new ImageProcessingQueue();
-    placeholderQueue = placeholderQueue || new PlaceholderQueue();
+    queue = queue || new Queue();
 
     const inputFile = join(inputDir, src);
     const outputDirReal = join(outputDir, dirname(src));
 
     const [{ images, webpImages }, placeholder] = await Promise.all([
-        processingQueue.process({
-            inputFile,
-            outputDir: outputDirReal,
-            options: {
-                webp: webp ?? true,
-                widths,
-                skipGeneration
-            }
+        processImage(inputFile, outputDirReal, queue, {
+            webp: webp ?? true,
+            widths,
+            skipGeneration
         }),
-        placeholderQueue.process({
-            inputFile,
-        })
+        createPlaceholder(inputFile, queue)
     ]);
 
     return getComponentAttributes({

@@ -3,6 +3,7 @@ import getMimeType from '../core/get-mime-type';
 import resizeImage from '../core/resize-image';
 import getImageMetadata from '../core/get-image-metadata';
 import getBlurSvg from './get-blur-svg';
+import Queue from '../core/queue';
 
 export interface CreatePlaceholderOptions {
     blur?: number;
@@ -10,15 +11,17 @@ export interface CreatePlaceholderOptions {
 
 const BLUR_WIDTH = 64;
 
-export default async function createPlaceholder(inputFile: string, options?: CreatePlaceholderOptions): Promise<string> {
+export default async function createPlaceholder(inputFile: string, queue: Queue, options?: CreatePlaceholderOptions): Promise<string> {
     if (!inputFile) {
         throw new Error('Input file is required');
     }
 
     const blur = options?.blur || 40;
 
-    const { width, height, format } = await getImageMetadata(inputFile);
-    const blurData = await resizeImage(inputFile, { width: BLUR_WIDTH });
+    const [{ width, height, format }, blurData] = await Promise.all([
+        queue.enqueue(getImageMetadata, inputFile),
+        queue.enqueue(resizeImage, inputFile, { width: BLUR_WIDTH })
+    ]);
     const blur64 = blurData.toString('base64');
     const mime = getMimeType(format);
     const href = `data:${mime};base64,${blur64}`;

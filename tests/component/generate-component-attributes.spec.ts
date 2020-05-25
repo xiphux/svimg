@@ -1,81 +1,66 @@
 import generateComponentAttributes from '../../src/component/generate-component-attributes';
 import { join } from 'path';
-import ImageProcessingQueue from '../../src/image-processing/image-processing-queue';
-import PlaceholderQueue from '../../src/placeholder/placeholder-queue';
+import Queue from '../../src/core/queue';
+import createPlaceholder from '../../src/placeholder/create-placeholder';
+import processImage from '../../src/image-processing/process-image';
 
-jest.mock('../../src/image-processing/image-processing-queue');
-jest.mock('../../src/placeholder/placeholder-queue');
+jest.mock('../../src/core/queue');
+jest.mock('../../src/placeholder/create-placeholder');
+jest.mock('../../src/image-processing/process-image');
 
 describe('generateComponentAttributes', () => {
 
-    let process: jest.Mock;
-    let placeholderProcess: jest.Mock;
-    let processingQueue: {
-        process: jest.Mock
-    };
-    let placeholderQueue: {
-        process: jest.Mock,
-    };
     beforeEach(() => {
-        process = jest.fn();
-        placeholderProcess = jest.fn();
-        processingQueue = {
-            process,
-        };
-        placeholderQueue = {
-            process: placeholderProcess,
-        };
-        (ImageProcessingQueue as jest.Mock).mockReset();
-        (PlaceholderQueue as jest.Mock).mockReset();
+        (createPlaceholder as jest.Mock).mockReset();
+        (processImage as jest.Mock).mockReset();
+        (Queue as jest.Mock).mockReset();
     });
 
     it('won\'t process without src', async () => {
+        const queue = jest.fn(() => ({ enqueue: jest.fn() }));
         await expect(generateComponentAttributes({
             src: '',
-            processingQueue: processingQueue as any,
-            placeholderQueue: placeholderQueue as any,
+            queue: queue as any,
             inputDir: 'static',
             outputDir: 'static/g',
         })).rejects.toThrow();
 
-        expect(process).not.toHaveBeenCalled();
-        expect(placeholderProcess).not.toHaveBeenCalled();
-        expect(ImageProcessingQueue).not.toHaveBeenCalled();
-        expect(PlaceholderQueue).not.toHaveBeenCalled();
+        expect(createPlaceholder).not.toHaveBeenCalled();
+        expect(processImage).not.toHaveBeenCalled();
+        expect(Queue).not.toHaveBeenCalled();
     });
 
     it('won\'t process without input dir', async () => {
+        const queue = jest.fn(() => ({ enqueue: jest.fn() }));
         await expect(generateComponentAttributes({
             src: 'assets/images/avatar.jpg',
-            processingQueue: processingQueue as any,
-            placeholderQueue: placeholderQueue as any,
+            queue: queue as any,
             inputDir: '',
             outputDir: 'static/g',
         })).rejects.toThrow();
 
-        expect(process).not.toHaveBeenCalled();
-        expect(placeholderProcess).not.toHaveBeenCalled();
-        expect(ImageProcessingQueue).not.toHaveBeenCalled();
-        expect(PlaceholderQueue).not.toHaveBeenCalled();
+        expect(createPlaceholder).not.toHaveBeenCalled();
+        expect(processImage).not.toHaveBeenCalled();
+        expect(Queue).not.toHaveBeenCalled();
     });
 
     it('won\'t process without output dir', async () => {
+        const queue = jest.fn(() => ({ enqueue: jest.fn() }));
         await expect(generateComponentAttributes({
             src: 'assets/images/avatar.jpg',
-            processingQueue: processingQueue as any,
-            placeholderQueue: placeholderQueue as any,
+            queue: queue as any,
             inputDir: 'static',
             outputDir: '',
         })).rejects.toThrow();
 
-        expect(process).not.toHaveBeenCalled();
-        expect(placeholderProcess).not.toHaveBeenCalled();
-        expect(ImageProcessingQueue).not.toHaveBeenCalled();
-        expect(PlaceholderQueue).not.toHaveBeenCalled();
+        expect(createPlaceholder).not.toHaveBeenCalled();
+        expect(processImage).not.toHaveBeenCalled();
+        expect(Queue).not.toHaveBeenCalled();
     });
 
     it('will process src', async () => {
-        process.mockImplementation(() => Promise.resolve({
+        const queue = jest.fn(() => ({ enqueue: jest.fn() }));
+        (processImage as jest.Mock).mockImplementation(() => Promise.resolve({
             images: [
                 {
                     path: 'static/g/assets/images/avatar.1.jpg',
@@ -101,12 +86,11 @@ describe('generateComponentAttributes', () => {
                 },
             ]
         }));
-        placeholderProcess.mockImplementation(() => Promise.resolve('<svg />'));
+        (createPlaceholder as jest.Mock).mockImplementation(() => Promise.resolve('<svg />'));
 
         expect(await generateComponentAttributes({
             src: 'assets/images/avatar.jpg',
-            processingQueue: processingQueue as any,
-            placeholderQueue: placeholderQueue as any,
+            queue: queue as any,
             inputDir: 'static',
             outputDir: 'static/g',
         })).toEqual({
@@ -115,22 +99,23 @@ describe('generateComponentAttributes', () => {
             placeholder: '<svg />',
         });
 
-        expect(process).toHaveBeenCalledWith({
-            inputFile: join('static', 'assets', 'images', 'avatar.jpg'),
-            outputDir: join('static', 'g', 'assets', 'images'),
-            options: {
+        expect(processImage).toHaveBeenCalledWith(
+            join('static', 'assets', 'images', 'avatar.jpg'),
+            join('static', 'g', 'assets', 'images'),
+            queue as any,
+            {
                 webp: true,
             },
-        });
-        expect(placeholderProcess).toHaveBeenCalledWith({
-            inputFile: join('static', 'assets', 'images', 'avatar.jpg'),
-        });
-        expect(ImageProcessingQueue).not.toHaveBeenCalled();
-        expect(PlaceholderQueue).not.toHaveBeenCalled();
+        );
+        expect(createPlaceholder).toHaveBeenCalledWith(
+            join('static', 'assets', 'images', 'avatar.jpg'),
+            queue
+        );
     });
 
     it('will process src with webp = true', async () => {
-        process.mockImplementation(() => Promise.resolve({
+        const queue = jest.fn(() => ({ enqueue: jest.fn() }));
+        (processImage as jest.Mock).mockImplementation(() => Promise.resolve({
             images: [
                 {
                     path: 'static/g/assets/images/avatar.1.jpg',
@@ -156,12 +141,11 @@ describe('generateComponentAttributes', () => {
                 },
             ]
         }));
-        placeholderProcess.mockImplementation(() => Promise.resolve('<svg />'));
+        (createPlaceholder as jest.Mock).mockImplementation(() => Promise.resolve('<svg />'));
 
         expect(await generateComponentAttributes({
             src: 'assets/images/avatar.jpg',
-            processingQueue: processingQueue as any,
-            placeholderQueue: placeholderQueue as any,
+            queue: queue as any,
             inputDir: 'static',
             outputDir: 'static/g',
             webp: true,
@@ -171,22 +155,24 @@ describe('generateComponentAttributes', () => {
             placeholder: '<svg />',
         });
 
-        expect(process).toHaveBeenCalledWith({
-            inputFile: join('static', 'assets', 'images', 'avatar.jpg'),
-            outputDir: join('static', 'g', 'assets', 'images'),
-            options: {
+        expect(processImage).toHaveBeenCalledWith(
+            join('static', 'assets', 'images', 'avatar.jpg'),
+            join('static', 'g', 'assets', 'images'),
+            queue as any,
+            {
                 webp: true,
             },
-        });
-        expect(placeholderProcess).toHaveBeenCalledWith({
-            inputFile: join('static', 'assets', 'images', 'avatar.jpg'),
-        });
-        expect(ImageProcessingQueue).not.toHaveBeenCalled();
-        expect(PlaceholderQueue).not.toHaveBeenCalled();
+        );
+        expect(createPlaceholder).toHaveBeenCalledWith(
+            join('static', 'assets', 'images', 'avatar.jpg'),
+            queue
+        );
+        expect(Queue).not.toHaveBeenCalled();
     });
 
     it('will process src with webp = false', async () => {
-        process.mockImplementation(() => Promise.resolve({
+        const queue = jest.fn(() => ({ enqueue: jest.fn() }));
+        (processImage as jest.Mock).mockImplementation(() => Promise.resolve({
             images: [
                 {
                     path: 'static/g/assets/images/avatar.1.jpg',
@@ -201,12 +187,11 @@ describe('generateComponentAttributes', () => {
             ],
             webpImages: []
         }));
-        placeholderProcess.mockImplementation(() => Promise.resolve('<svg />'));
+        (createPlaceholder as jest.Mock).mockImplementation(() => Promise.resolve('<svg />'));
 
         expect(await generateComponentAttributes({
             src: 'assets/images/avatar.jpg',
-            processingQueue: processingQueue as any,
-            placeholderQueue: placeholderQueue as any,
+            queue: queue as any,
             inputDir: 'static',
             outputDir: 'static/g',
             webp: false,
@@ -215,22 +200,24 @@ describe('generateComponentAttributes', () => {
             placeholder: '<svg />',
         });
 
-        expect(process).toHaveBeenCalledWith({
-            inputFile: join('static', 'assets', 'images', 'avatar.jpg'),
-            outputDir: join('static', 'g', 'assets', 'images'),
-            options: {
+        expect(processImage).toHaveBeenCalledWith(
+            join('static', 'assets', 'images', 'avatar.jpg'),
+            join('static', 'g', 'assets', 'images'),
+            queue as any,
+            {
                 webp: false,
             },
-        });
-        expect(placeholderProcess).toHaveBeenCalledWith({
-            inputFile: join('static', 'assets', 'images', 'avatar.jpg'),
-        });
-        expect(ImageProcessingQueue).not.toHaveBeenCalled();
-        expect(PlaceholderQueue).not.toHaveBeenCalled();
+        );
+        expect(createPlaceholder).toHaveBeenCalledWith(
+            join('static', 'assets', 'images', 'avatar.jpg'),
+            queue
+        );
+        expect(Queue).not.toHaveBeenCalled();
     });
 
     it('will process src with widths', async () => {
-        process.mockImplementation(() => Promise.resolve({
+        const queue = jest.fn(() => ({ enqueue: jest.fn() }));
+        (processImage as jest.Mock).mockImplementation(() => Promise.resolve({
             images: [
                 {
                     path: 'static/g/assets/images/avatar.1.jpg',
@@ -246,12 +233,11 @@ describe('generateComponentAttributes', () => {
                 },
             ]
         }));
-        placeholderProcess.mockImplementation(() => Promise.resolve('<svg />'));
+        (createPlaceholder as jest.Mock).mockImplementation(() => Promise.resolve('<svg />'));
 
         expect(await generateComponentAttributes({
             src: 'assets/images/avatar.jpg',
-            processingQueue: processingQueue as any,
-            placeholderQueue: placeholderQueue as any,
+            queue: queue as any,
             inputDir: 'static',
             outputDir: 'static/g',
             widths: [150],
@@ -261,29 +247,27 @@ describe('generateComponentAttributes', () => {
             placeholder: '<svg />',
         });
 
-        expect(process).toHaveBeenCalledWith({
-            inputFile: join('static', 'assets', 'images', 'avatar.jpg'),
-            outputDir: join('static', 'g', 'assets', 'images'),
-            options: {
+        expect(processImage).toHaveBeenCalledWith(
+            join('static', 'assets', 'images', 'avatar.jpg'),
+            join('static', 'g', 'assets', 'images'),
+            queue as any,
+            {
                 webp: true,
                 widths: [150],
             },
-        });
-        expect(placeholderProcess).toHaveBeenCalledWith({
-            inputFile: join('static', 'assets', 'images', 'avatar.jpg'),
-        });
-        expect(ImageProcessingQueue).not.toHaveBeenCalled();
-        expect(PlaceholderQueue).not.toHaveBeenCalled();
+        );
+        expect(createPlaceholder).toHaveBeenCalledWith(
+            join('static', 'assets', 'images', 'avatar.jpg'),
+            queue
+        );
+        expect(Queue).not.toHaveBeenCalled();
     });
 
     it('will create queues if not provided', async () => {
-        (ImageProcessingQueue as jest.Mock).mockReturnValue({
-            process,
+        (Queue as jest.Mock).mockReturnValue({
+            enqueue: true
         });
-        (PlaceholderQueue as jest.Mock).mockReturnValue({
-            process: placeholderProcess,
-        });
-        process.mockImplementation(() => Promise.resolve({
+        (processImage as jest.Mock).mockImplementation(() => Promise.resolve({
             images: [
                 {
                     path: 'static/g/assets/images/avatar.1.jpg',
@@ -309,7 +293,7 @@ describe('generateComponentAttributes', () => {
                 },
             ]
         }));
-        placeholderProcess.mockImplementation(() => Promise.resolve('<svg />'));
+        (createPlaceholder as jest.Mock).mockImplementation(() => Promise.resolve('<svg />'));
 
         expect(await generateComponentAttributes({
             src: 'assets/images/avatar.jpg',
@@ -321,22 +305,24 @@ describe('generateComponentAttributes', () => {
             placeholder: '<svg />',
         });
 
-        expect(process).toHaveBeenCalledWith({
-            inputFile: join('static', 'assets', 'images', 'avatar.jpg'),
-            outputDir: join('static', 'g', 'assets', 'images'),
-            options: {
+        expect(processImage).toHaveBeenCalledWith(
+            join('static', 'assets', 'images', 'avatar.jpg'),
+            join('static', 'g', 'assets', 'images'),
+            { enqueue: true } as any,
+            {
                 webp: true,
             },
-        });
-        expect(placeholderProcess).toHaveBeenCalledWith({
-            inputFile: join('static', 'assets', 'images', 'avatar.jpg'),
-        });
-        expect(ImageProcessingQueue).toHaveBeenCalled();
-        expect(PlaceholderQueue).toHaveBeenCalled();
+        );
+        expect(createPlaceholder).toHaveBeenCalledWith(
+            join('static', 'assets', 'images', 'avatar.jpg'),
+            { enqueue: true }
+        );
+        expect(Queue).toHaveBeenCalled();
     });
 
     it('will skip image generation', async () => {
-        process.mockImplementation(() => Promise.resolve({
+        const queue = jest.fn(() => ({ enqueue: jest.fn() }));
+        (processImage as jest.Mock).mockImplementation(() => Promise.resolve({
             images: [
                 {
                     path: 'static/g/assets/images/avatar.1.jpg',
@@ -362,12 +348,11 @@ describe('generateComponentAttributes', () => {
                 },
             ]
         }));
-        placeholderProcess.mockImplementation(() => Promise.resolve('<svg />'));
+        (createPlaceholder as jest.Mock).mockImplementation(() => Promise.resolve('<svg />'));
 
         expect(await generateComponentAttributes({
             src: 'assets/images/avatar.jpg',
-            processingQueue: processingQueue as any,
-            placeholderQueue: placeholderQueue as any,
+            queue: queue as any,
             inputDir: 'static',
             outputDir: 'static/g',
             skipGeneration: true,
@@ -377,19 +362,20 @@ describe('generateComponentAttributes', () => {
             placeholder: '<svg />',
         });
 
-        expect(process).toHaveBeenCalledWith({
-            inputFile: join('static', 'assets', 'images', 'avatar.jpg'),
-            outputDir: join('static', 'g', 'assets', 'images'),
-            options: {
+        expect(processImage).toHaveBeenCalledWith(
+            join('static', 'assets', 'images', 'avatar.jpg'),
+            join('static', 'g', 'assets', 'images'),
+            queue as any,
+            {
                 webp: true,
                 skipGeneration: true,
             },
-        });
-        expect(placeholderProcess).toHaveBeenCalledWith({
-            inputFile: join('static', 'assets', 'images', 'avatar.jpg'),
-        });
-        expect(ImageProcessingQueue).not.toHaveBeenCalled();
-        expect(PlaceholderQueue).not.toHaveBeenCalled();
+        );
+        expect(createPlaceholder).toHaveBeenCalledWith(
+            join('static', 'assets', 'images', 'avatar.jpg'),
+            queue
+        );
+        expect(Queue).not.toHaveBeenCalled();
     });
 
 });

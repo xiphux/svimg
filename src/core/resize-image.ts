@@ -6,6 +6,10 @@ interface ResizeImageOptions {
     quality?: number;
 }
 
+export function resizeImageToFile(inputFile: string, options: ResizeImageOptions, outputFile: string): Promise<sharp.OutputInfo> {
+    return resizeImage(inputFile, options, outputFile);
+}
+
 async function resizeImage(inputFile: string, options: ResizeImageOptions, outputFile: string): Promise<sharp.OutputInfo>;
 async function resizeImage(inputFile: string, options: ResizeImageOptions): Promise<Buffer>;
 async function resizeImage(inputFile: string, options: ResizeImageOptions, outputFile?: string): Promise<Buffer | sharp.OutputInfo> {

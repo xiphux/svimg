@@ -1,8 +1,7 @@
 import { PreprocessorGroup, Processed } from 'svelte/types/compiler/preprocess';
-import ImageProcessingQueue from '../image-processing/image-processing-queue';
-import PlaceholderQueue from '../placeholder/placeholder-queue';
 import processImageNode from './process-image-node';
 import getImageNodes from './get-image-nodes';
+import Queue from '../core/queue';
 
 export interface ImagePreprocessorOptions {
     inputDir: string;
@@ -12,8 +11,7 @@ export interface ImagePreprocessorOptions {
 
 export default function imagePreprocessor(options?: ImagePreprocessorOptions): PreprocessorGroup {
 
-    const processingQueue = new ImageProcessingQueue();
-    const placeholderQueue = new PlaceholderQueue();
+    const queue = new Queue();
 
     return {
         async markup({ content }): Promise<Processed> {
@@ -27,10 +25,7 @@ export default function imagePreprocessor(options?: ImagePreprocessorOptions): P
 
             let offset = 0;
             for (const node of imageNodes) {
-                ({ content, offset } = await processImageNode(content, offset, node, {
-                    processing: processingQueue,
-                    placeholder: placeholderQueue,
-                }, options));
+                ({ content, offset } = await processImageNode(content, offset, node, queue, options));
             }
 
             return {

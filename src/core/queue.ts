@@ -10,13 +10,15 @@ export default class Queue {
     private cache: Map<string, Promise<any>>;
     private queue: PQueue;
 
-    public async enqueue<TReturn>(func: () => Promise<TReturn>, cacheKey: string): Promise<TReturn> {
+    public enqueue<TFunc extends ((...args: any[]) => Promise<any>)>(func: TFunc, ...args: Parameters<TFunc>): ReturnType<TFunc> {
+        const cacheKey = `${func.name}|${JSON.stringify(args)}`;
+
         if (this.cache.has(cacheKey)) {
-            return this.cache.get(cacheKey);
+            return this.cache.get(cacheKey) as ReturnType<TFunc>;
         }
 
-        const p = this.queue.add(func);
+        const p = this.queue.add(() => func.apply(null, args));
         this.cache.set(cacheKey, p);
-        return p;
+        return p as ReturnType<TFunc>;
     }
 }

@@ -29,13 +29,17 @@ export default async function processImage(inputFile: string, outputDir: string,
         throw new Error('Output dir is required');
     }
 
-    if (!(options?.skipGeneration)) {
-        if (!(await queue.enqueue(exists, outputDir))) {
-            await queue.enqueue(fs.promises.mkdir, outputDir, { recursive: true });
-        }
-    }
-
-    const metadata = await queue.enqueue(getImageMetadata, inputFile);
+    const [, metadata, fileHash] = await Promise.all([
+        (async () => {
+            if (!(options?.skipGeneration)) {
+                if (!(await queue.enqueue(exists, outputDir))) {
+                    await queue.enqueue(fs.promises.mkdir, outputDir, { recursive: true });
+                }
+            }
+        })(),
+        queue.enqueue(getImageMetadata, inputFile),
+        queue.enqueue(md5file, inputFile)
+    ]);
 
     const { skipGeneration, ...restOpts } = options || {};
     const { widths, quality, webp } = getProcessImageOptions(metadata.width, restOpts);
@@ -43,23 +47,24 @@ export default async function processImage(inputFile: string, outputDir: string,
     const filename = basename(inputFile);
     const extension = extname(filename);
     const baseFilename = filename.substring(0, filename.length - extension.length);
-    const fileHash = await queue.enqueue(md5file, inputFile);
     const aspectRatio = metadata.width / metadata.height;
 
-    const images = await resizeImageMultiple(inputFile, outputDir, queue, {
-        widths,
-        quality,
-        filenameGenerator: ({ width, quality }) => `${baseFilename}.${getOptionsHash({ width, quality }, 7)}.${fileHash}${extension}`,
-        aspectRatio,
-        skipGeneration,
-    });
-    const webpImages = webp ? await resizeImageMultiple(inputFile, outputDir, queue, {
-        widths,
-        quality,
-        filenameGenerator: ({ width, quality }) => `${baseFilename}.${getOptionsHash({ width, quality }, 7)}.${fileHash}.webp`,
-        aspectRatio,
-        skipGeneration,
-    }) : [];
+    const [images, webpImages] = await Promise.all([
+        resizeImageMultiple(inputFile, outputDir, queue, {
+            widths,
+            quality,
+            filenameGenerator: ({ width, quality }) => `${baseFilename}.${getOptionsHash({ width, quality }, 7)}.${fileHash}${extension}`,
+            aspectRatio,
+            skipGeneration,
+        }),
+        webp ? resizeImageMultiple(inputFile, outputDir, queue, {
+            widths,
+            quality,
+            filenameGenerator: ({ width, quality }) => `${baseFilename}.${getOptionsHash({ width, quality }, 7)}.${fileHash}.webp`,
+            aspectRatio,
+            skipGeneration,
+        }) : []
+    ]);
 
     return {
         images,

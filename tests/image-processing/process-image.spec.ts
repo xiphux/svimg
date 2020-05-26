@@ -44,8 +44,6 @@ describe('processImage', () => {
     it('creates the dir if it doesn\'t exist', async () => {
         const enqueue = jest.fn().mockImplementationOnce(
             () => Promise.resolve(false)
-        ).mockImplementationOnce(
-            () => Promise.resolve()
         ).mockImplementationOnce(() => Promise.resolve({
             width: 300,
         }));

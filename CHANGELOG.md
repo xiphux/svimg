@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.5
+
+* Parallelization improvements
+
 ## 0.1.4
 
 * Custom element support

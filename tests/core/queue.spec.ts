@@ -4,11 +4,6 @@ import PQueue from 'p-queue';
 jest.mock('p-queue', () => ({
     default: jest.fn()
 }));
-jest.mock('os', () => ({
-    default: {
-        cpus: jest.fn(() => [{ num: 1 }, { num: 2 }, { num: 3 }, { num: 4 }]),
-    },
-}));
 
 describe('Queue', () => {
 
@@ -37,9 +32,16 @@ describe('Queue', () => {
         func2CallCount = 0;
     });
 
-    it('will initialize based on cpus', async () => {
+    it('will initialize with default concurrency', async () => {
         const queue = new Queue();
-        expect(PQueue).toHaveBeenCalledWith({ concurrency: 4 });
+        expect(PQueue).toHaveBeenCalledWith({ concurrency: Infinity });
+    });
+
+    it('will initialize with specified concurrency', async () => {
+        const queue = new Queue({
+            concurrency: 10000,
+        });
+        expect(PQueue).toHaveBeenCalledWith({ concurrency: 10000 });
     });
 
     it('will run a job', async () => {

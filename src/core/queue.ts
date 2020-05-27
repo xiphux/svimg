@@ -1,10 +1,13 @@
 import PQueue from 'p-queue';
-import os from 'os';
+
+export interface QueueOptions {
+    concurrency?: number;
+}
 
 export default class Queue {
-    constructor() {
+    constructor(options?: QueueOptions) {
         this.cache = new Map();
-        this.queue = new PQueue({ concurrency: os.cpus().length });
+        this.queue = new PQueue({ concurrency: options?.concurrency || Infinity });
     }
 
     private cache: Map<string, Promise<any>>;

@@ -79,6 +79,9 @@
   .wrapper > * {
     grid-area: 1 / 1 / 2 / 2;
   }
+  .image {
+    display: block;
+  }
   .placeholder {
     z-index: -1;
   }
@@ -103,7 +106,8 @@
       alt={loaded ? alt : undefined}
       width={imageWidth}
       loading="lazy"
+      class="image"
       on:load={() => (loaded = true)} />
   </picture>
-  <img class="placeholder" src={placeholder} {alt} width={imageWidth} />
+  <img class="placeholder image" src={placeholder} {alt} width={imageWidth} />
 </div>

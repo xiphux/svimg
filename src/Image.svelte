@@ -19,27 +19,27 @@
   let loaded = false;
 
   $: fixedWidth = !!(width && /^[0-9]+$/.test(width));
-  $: imageWidth = fixedWidth ? width : clientWidth;
+  $: imageWidth =
+    fixedWidth && clientWidth
+      ? Math.min(clientWidth, width)
+      : fixedWidth
+      ? width
+      : clientWidth;
   $: sizes = `${imageWidth}px`;
 
   onMount(() => {
     tick().then(() => {
-      let ro;
-      if (!fixedWidth) {
-        ro = new ResizeObserver(entries => {
-          const entry = entries[0];
-          clientWidth = entry.contentRect.width;
-        });
+      const ro = new ResizeObserver(entries => {
+        const entry = entries[0];
+        clientWidth = entry.contentRect.width;
+      });
 
-        ro.observe(container);
-      }
+      ro.observe(container);
 
       native = "loading" in HTMLImageElement.prototype;
       if (native) {
         return () => {
-          if (ro) {
-            ro.unobserve(container);
-          }
+          ro.unobserve(container);
         };
       }
 
@@ -59,9 +59,7 @@
 
       return () => {
         io.unobserve(container);
-        if (ro) {
-          ro.unobserve(container);
-        }
+        ro.unobserve(container);
       };
     });
   });
@@ -91,7 +89,7 @@
 
 <div
   bind:this={container}
-  style={fixedWidth ? `width:${width}px` : undefined}
+  style={fixedWidth ? `max-width:${width}px` : undefined}
   class="wrapper {className}">
   <picture>
     {#if srcsetwebp}

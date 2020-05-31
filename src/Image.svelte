@@ -79,8 +79,15 @@
   }
   .image {
     display: block;
+    opacity: 0;
+    will-change: opacity;
+    transition: opacity 0.25s ease-in;
+  }
+  .image.loaded {
+    opacity: 1;
   }
   .placeholder {
+    display: block;
     z-index: -1;
   }
 </style>
@@ -104,8 +111,8 @@
       alt={loaded ? alt : undefined}
       width={imageWidth}
       loading="lazy"
-      class="image"
+      class="image {loaded ? 'loaded' : ''}"
       on:load={() => (loaded = true)} />
   </picture>
-  <img class="placeholder image" src={placeholder} {alt} width={imageWidth} />
+  <img class="placeholder" src={placeholder} {alt} width={imageWidth} />
 </div>

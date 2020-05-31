@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.6
+
+* Fix issue with placeholder/real image height mismatch
+* Adjust css to avoid accidental purging by purgecss
+
 ## 0.1.5
 
 * Parallelization improvements

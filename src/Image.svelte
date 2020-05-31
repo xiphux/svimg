@@ -76,8 +76,7 @@
     grid-row-gap: 0px;
     overflow: hidden;
   }
-  picture,
-  img {
+  .wrapper > * {
     grid-area: 1 / 1 / 2 / 2;
   }
   .placeholder {

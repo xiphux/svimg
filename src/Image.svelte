@@ -25,21 +25,26 @@
       : fixedWidth
       ? width
       : clientWidth;
-  $: sizes = `${imageWidth}px`;
+  $: sizes = imageWidth ? `${imageWidth}px` : undefined;
 
   onMount(() => {
     tick().then(() => {
-      const ro = new ResizeObserver(entries => {
-        const entry = entries[0];
-        clientWidth = entry.contentRect.width;
-      });
+      let ro;
+      if (window.ResizeObserver) {
+        ro = new ResizeObserver(entries => {
+          const entry = entries[0];
+          clientWidth = entry.contentRect.width;
+        });
 
-      ro.observe(container);
+        ro.observe(container);
+      }
 
       native = "loading" in HTMLImageElement.prototype;
       if (native) {
         return () => {
-          ro.unobserve(container);
+          if (ro) {
+            ro.unobserve(container);
+          }
         };
       }
 
@@ -59,7 +64,9 @@
 
       return () => {
         io.unobserve(container);
-        ro.unobserve(container);
+        if (ro) {
+          ro.unobserve(container);
+        }
       };
     });
   });
@@ -78,6 +85,7 @@
     grid-area: 1 / 1 / 2 / 2;
   }
   .image {
+    width: 100%;
     display: block;
     opacity: 0;
     will-change: opacity;
@@ -87,6 +95,7 @@
     opacity: 1;
   }
   .placeholder {
+    width: 100%;
     display: block;
     z-index: -1;
   }

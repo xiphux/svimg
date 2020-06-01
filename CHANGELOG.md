@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.7
+
+* Add blur up transition from placeholder to actual image
+* Use width as max-width
+* Fallback without sizes if browser doesn't support ResizeObserver
+
 ## 0.1.6
 
 * Fix issue with placeholder/real image height mismatch

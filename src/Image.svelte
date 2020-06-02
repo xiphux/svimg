@@ -80,6 +80,7 @@
     grid-column-gap: 0px;
     grid-row-gap: 0px;
     overflow: hidden;
+    will-change: transform;
   }
   .wrapper > * {
     grid-area: 1 / 1 / 2 / 2;

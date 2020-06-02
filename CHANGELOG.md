@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.8
+
+* Fix overflow of image on Safari
+
 ## 0.1.7
 
 * Add blur up transition from placeholder to actual image

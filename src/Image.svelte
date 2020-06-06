@@ -10,6 +10,7 @@
   export let placeholder;
   export let width;
   export let aspectratio;
+  export let immediate = false;
 
   const srcLocal = src; // suppress unused-export-let
 
@@ -42,7 +43,7 @@
       }
 
       native = "loading" in HTMLImageElement.prototype;
-      if (native) {
+      if (native || immediate) {
         return () => {
           if (ro) {
             ro.unobserve(container);
@@ -114,23 +115,25 @@
     {#if srcsetwebp}
       <source
         type="image/webp"
-        srcset={intersecting || native ? srcsetwebp : undefined}
+        srcset={intersecting || native || immediate ? srcsetwebp : undefined}
         {sizes} />
     {/if}
     <img
-      srcset={intersecting || native ? srcset : undefined}
+      srcset={intersecting || native || immediate ? srcset : undefined}
       {sizes}
-      alt={loaded ? alt : undefined}
+      alt={loaded || immediate ? alt : undefined}
       width={imageWidth}
       height={imageHeight}
-      loading="lazy"
-      class="image {loaded ? 'loaded' : ''}"
+      loading={!immediate ? 'lazy' : undefined}
+      class="image {loaded || immediate ? 'loaded' : ''}"
       on:load={() => (loaded = true)} />
   </picture>
-  <img
-    class="placeholder"
-    src={placeholder}
-    {alt}
-    width={imageWidth}
-    height={imageHeight} />
+  {#if !immediate}
+    <img
+      class="placeholder"
+      src={placeholder}
+      {alt}
+      width={imageWidth}
+      height={imageHeight} />
+  {/if}
 </div>

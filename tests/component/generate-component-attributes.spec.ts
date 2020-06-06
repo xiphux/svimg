@@ -84,7 +84,8 @@ describe('generateComponentAttributes', () => {
                     width: 500,
                     height: 500,
                 },
-            ]
+            ],
+            aspectRatio: 0.5,
         }));
         (createPlaceholder as jest.Mock).mockImplementation(() => Promise.resolve('<svg />'));
 
@@ -97,6 +98,7 @@ describe('generateComponentAttributes', () => {
             srcset: 'g/assets/images/avatar.1.jpg 300w, g/assets/images/avatar.2.jpg 500w',
             srcsetwebp: 'g/assets/images/avatar.1.webp 300w, g/assets/images/avatar.2.webp 500w',
             placeholder: '<svg />',
+            aspectratio: 0.5,
         });
 
         expect(processImage).toHaveBeenCalledWith(
@@ -139,7 +141,8 @@ describe('generateComponentAttributes', () => {
                     width: 500,
                     height: 500,
                 },
-            ]
+            ],
+            aspectRatio: 0.5,
         }));
         (createPlaceholder as jest.Mock).mockImplementation(() => Promise.resolve('<svg />'));
 
@@ -153,6 +156,7 @@ describe('generateComponentAttributes', () => {
             srcset: 'g/assets/images/avatar.1.jpg 300w, g/assets/images/avatar.2.jpg 500w',
             srcsetwebp: 'g/assets/images/avatar.1.webp 300w, g/assets/images/avatar.2.webp 500w',
             placeholder: '<svg />',
+            aspectratio: 0.5,
         });
 
         expect(processImage).toHaveBeenCalledWith(
@@ -185,7 +189,8 @@ describe('generateComponentAttributes', () => {
                     height: 500,
                 },
             ],
-            webpImages: []
+            webpImages: [],
+            aspectRatio: 0.5,
         }));
         (createPlaceholder as jest.Mock).mockImplementation(() => Promise.resolve('<svg />'));
 
@@ -198,6 +203,7 @@ describe('generateComponentAttributes', () => {
         })).toEqual({
             srcset: 'g/assets/images/avatar.1.jpg 300w, g/assets/images/avatar.2.jpg 500w',
             placeholder: '<svg />',
+            aspectratio: 0.5,
         });
 
         expect(processImage).toHaveBeenCalledWith(
@@ -231,7 +237,8 @@ describe('generateComponentAttributes', () => {
                     width: 150,
                     height: 150,
                 },
-            ]
+            ],
+            aspectRatio: 0.5,
         }));
         (createPlaceholder as jest.Mock).mockImplementation(() => Promise.resolve('<svg />'));
 
@@ -245,6 +252,7 @@ describe('generateComponentAttributes', () => {
             srcset: 'g/assets/images/avatar.1.jpg 150w',
             srcsetwebp: 'g/assets/images/avatar.1.webp 150w',
             placeholder: '<svg />',
+            aspectratio: 0.5,
         });
 
         expect(processImage).toHaveBeenCalledWith(
@@ -291,7 +299,8 @@ describe('generateComponentAttributes', () => {
                     width: 500,
                     height: 500,
                 },
-            ]
+            ],
+            aspectRatio: 0.5,
         }));
         (createPlaceholder as jest.Mock).mockImplementation(() => Promise.resolve('<svg />'));
 
@@ -303,6 +312,7 @@ describe('generateComponentAttributes', () => {
             srcset: 'g/assets/images/avatar.1.jpg 300w, g/assets/images/avatar.2.jpg 500w',
             srcsetwebp: 'g/assets/images/avatar.1.webp 300w, g/assets/images/avatar.2.webp 500w',
             placeholder: '<svg />',
+            aspectratio: 0.5,
         });
 
         expect(processImage).toHaveBeenCalledWith(
@@ -346,7 +356,8 @@ describe('generateComponentAttributes', () => {
                     width: 500,
                     height: 500,
                 },
-            ]
+            ],
+            aspectRatio: 0.5,
         }));
         (createPlaceholder as jest.Mock).mockImplementation(() => Promise.resolve('<svg />'));
 
@@ -360,6 +371,7 @@ describe('generateComponentAttributes', () => {
             srcset: 'g/assets/images/avatar.1.jpg 300w, g/assets/images/avatar.2.jpg 500w',
             srcsetwebp: 'g/assets/images/avatar.1.webp 300w, g/assets/images/avatar.2.webp 500w',
             placeholder: '<svg />',
+            aspectratio: 0.5,
         });
 
         expect(processImage).toHaveBeenCalledWith(

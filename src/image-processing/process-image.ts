@@ -19,6 +19,7 @@ export interface ProcessImageOptions {
 export interface ProcessImageOutput {
     images: Image[];
     webpImages: Image[];
+    aspectRatio: number;
 }
 
 export default async function processImage(inputFile: string, outputDir: string, queue: Queue, options?: ProcessImageOptions): Promise<ProcessImageOutput> {
@@ -68,6 +69,7 @@ export default async function processImage(inputFile: string, outputDir: string,
 
     return {
         images,
-        webpImages
+        webpImages,
+        aspectRatio,
     };
 }

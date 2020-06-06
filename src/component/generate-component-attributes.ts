@@ -39,7 +39,7 @@ export default async function generateComponentAttributes({
     const inputFile = join(inputDir, src);
     const outputDirReal = join(outputDir, dirname(src));
 
-    const [{ images, webpImages }, placeholder] = await Promise.all([
+    const [{ images, webpImages, aspectRatio }, placeholder] = await Promise.all([
         processImage(inputFile, outputDirReal, queue, {
             webp: webp ?? true,
             widths,
@@ -58,5 +58,6 @@ export default async function generateComponentAttributes({
             path: pathToUrl(i.path, inputDir),
         })),
         placeholder,
+        aspectRatio,
     });
 }

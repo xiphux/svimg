@@ -26,6 +26,7 @@ describe('getComponentAttributes', () => {
                 },
             ],
             webpImages: [],
+            aspectRatio: 0.5,
         });
 
         expect(attributes.srcset).toEqual('srcset1');
@@ -72,6 +73,7 @@ describe('getComponentAttributes', () => {
                     height: 300,
                 },
             ],
+            aspectRatio: 0.5,
         });
 
         expect(attributes.srcset).toEqual('srcset1');
@@ -119,10 +121,34 @@ describe('getComponentAttributes', () => {
                 },
             ],
             webpImages: [],
-            placeholder: 'placeholder1'
+            placeholder: 'placeholder1',
+            aspectRatio: 0.5,
         });
 
         expect(attributes.placeholder).toEqual('placeholder1');
+    });
+
+    it('returns aspect ratio', () => {
+        (getSrcset as jest.Mock).mockReturnValue('srcset1');
+
+        const attributes = getComponentAttributes({
+            images: [
+                {
+                    path: 'one.jpg',
+                    width: 100,
+                    height: 200,
+                },
+                {
+                    path: 'two.jpg',
+                    width: 200,
+                    height: 300,
+                },
+            ],
+            webpImages: [],
+            aspectRatio: 0.5,
+        });
+
+        expect(attributes.aspectratio).toEqual(0.5);
     });
 
 });

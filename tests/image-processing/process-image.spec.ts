@@ -134,6 +134,7 @@ describe('processImage', () => {
                 }
             ],
             webpImages: [],
+            aspectRatio: 1,
         });
 
         expect(enqueue).toHaveBeenCalledWith(getImageMetadata, '/in/file.jpg');
@@ -216,6 +217,7 @@ describe('processImage', () => {
                     height: 300,
                 }
             ],
+            aspectRatio: 1,
         });
 
         expect(enqueue).toHaveBeenCalledWith(getImageMetadata, '/in/file.jpg');
@@ -306,6 +308,7 @@ describe('processImage', () => {
                     height: 300,
                 }
             ],
+            aspectRatio: 300 / 100,
         });
 
         expect(enqueue).toHaveBeenCalledWith(getImageMetadata, '/in/file.jpg');

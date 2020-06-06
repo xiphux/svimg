@@ -5,12 +5,14 @@ export interface GetComponentAttributesOutput {
     srcset: string;
     srcsetwebp?: string;
     placeholder?: string;
+    aspectratio: number;
 }
 
 interface GetComponentAttributesInput {
     images: Image[];
     webpImages: Image[];
     placeholder?: string;
+    aspectRatio: number;
 }
 
 export default function getComponentAttributes(input: GetComponentAttributesInput): GetComponentAttributesOutput {
@@ -18,5 +20,6 @@ export default function getComponentAttributes(input: GetComponentAttributesInpu
         srcset: getSrcset(input.images),
         srcsetwebp: input.webpImages.length ? getSrcset(input.webpImages) : undefined,
         placeholder: input.placeholder,
+        aspectratio: input.aspectRatio,
     };
 }

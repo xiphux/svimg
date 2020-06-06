@@ -9,6 +9,7 @@
   export let srcsetwebp;
   export let placeholder;
   export let width;
+  export let aspectratio;
 
   const srcLocal = src; // suppress unused-export-let
 
@@ -25,6 +26,7 @@
       : fixedWidth
       ? width
       : clientWidth;
+  $: imageHeight = imageWidth / aspectratio;
   $: sizes = imageWidth ? `${imageWidth}px` : undefined;
 
   onMount(() => {
@@ -120,9 +122,15 @@
       {sizes}
       alt={loaded ? alt : undefined}
       width={imageWidth}
+      height={imageHeight}
       loading="lazy"
       class="image {loaded ? 'loaded' : ''}"
       on:load={() => (loaded = true)} />
   </picture>
-  <img class="placeholder" src={placeholder} {alt} width={imageWidth} />
+  <img
+    class="placeholder"
+    src={placeholder}
+    {alt}
+    width={imageWidth}
+    height={imageHeight} />
 </div>

@@ -252,4 +252,40 @@ describe('processImageNode', () => {
         });
     });
 
+    it('skips placeholder if immediate', async () => {
+        (getNodeAttributes as jest.Mock).mockReturnValue({
+            src: 'img/test.jpg',
+            immediate: true,
+        });
+        (generateComponentAttributes as jest.Mock).mockImplementation(() => Promise.resolve({
+            srcset: 'g/img/test1.jpg 300w',
+        }));
+        const queue = { process: jest.fn() };
+
+        expect(await processImageNode(
+            '<div><Image src="img/test.jpg" /></div>',
+            0,
+            { start: 5 } as any,
+            queue as any,
+            {
+                inputDir: 'static',
+                outputDir: 'static/g',
+                webp: false,
+            },
+        )).toEqual({
+            content: '<div><Image srcset="g/img/test1.jpg 300w" src="img/test.jpg" /></div>',
+            offset: 30,
+        });
+
+        expect(getNodeAttributes).toHaveBeenCalledWith({ start: 5 });
+        expect(generateComponentAttributes).toHaveBeenCalledWith({
+            src: 'img/test.jpg',
+            queue,
+            inputDir: 'static',
+            outputDir: 'static/g',
+            webp: false,
+            skipPlaceholder: true,
+        });
+    });
+
 });

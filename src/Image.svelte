@@ -7,7 +7,7 @@
   export { className as class };
   export let srcset;
   export let srcsetwebp;
-  export let placeholder;
+  export let placeholder = "";
   export let width;
   export let aspectratio;
   export let immediate = false;

@@ -14,7 +14,10 @@ export default async function processImageNode(
     queue: Queue,
     options?: ImagePreprocessorOptions
 ): Promise<{ content: string, offset: number }> {
-    const { src, width } = getNodeAttributes(node);
+    const nodeAttr = getNodeAttributes(node);
+    const src = nodeAttr.src && typeof nodeAttr.src === 'string' ? nodeAttr.src : '';
+    const width = nodeAttr.width && typeof nodeAttr.width === 'string' ? nodeAttr.width : '';
+    const immediate = !!(nodeAttr.immediate);
     if (!src) {
         return {
             content,
@@ -31,6 +34,7 @@ export default async function processImageNode(
         outputDir: options.outputDir,
         webp: options.webp,
         widths: forceWidth ? [forceWidth] : undefined,
+        skipPlaceholder: immediate || undefined,
     });
 
     const attrString = Object.entries(attributes).map(([attr, val]) => formatAttribute(attr, val)).join(' ');

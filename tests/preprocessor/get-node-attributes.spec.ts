@@ -50,4 +50,17 @@ describe('getNodeAttributes', () => {
         });
     });
 
+    it('handles boolean attributes', () => {
+        expect(getNodeAttributes({
+            attributes: [
+                {
+                    name: 'immediate',
+                    value: true
+                }
+            ]
+        } as any)).toEqual({
+            immediate: true,
+        });
+    });
+
 });

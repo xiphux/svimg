@@ -390,4 +390,59 @@ describe('generateComponentAttributes', () => {
         expect(Queue).not.toHaveBeenCalled();
     });
 
+    it('will skip placeholder', async () => {
+        const queue = jest.fn(() => ({ enqueue: jest.fn() }));
+        (processImage as jest.Mock).mockImplementation(() => Promise.resolve({
+            images: [
+                {
+                    path: 'static/g/assets/images/avatar.1.jpg',
+                    width: 300,
+                    height: 300,
+                },
+                {
+                    path: 'static/g/assets/images/avatar.2.jpg',
+                    width: 500,
+                    height: 500,
+                },
+            ],
+            webpImages: [
+                {
+                    path: 'static/g/assets/images/avatar.1.webp',
+                    width: 300,
+                    height: 300,
+                },
+                {
+                    path: 'static/g/assets/images/avatar.2.webp',
+                    width: 500,
+                    height: 500,
+                },
+            ],
+            aspectRatio: 0.5,
+        }));
+        (createPlaceholder as jest.Mock).mockImplementation(() => Promise.resolve('<svg />'));
+
+        expect(await generateComponentAttributes({
+            src: 'assets/images/avatar.jpg',
+            queue: queue as any,
+            inputDir: 'static',
+            outputDir: 'static/g',
+            skipPlaceholder: true,
+        })).toEqual({
+            srcset: 'g/assets/images/avatar.1.jpg 300w, g/assets/images/avatar.2.jpg 500w',
+            srcsetwebp: 'g/assets/images/avatar.1.webp 300w, g/assets/images/avatar.2.webp 500w',
+            aspectratio: 0.5,
+        });
+
+        expect(processImage).toHaveBeenCalledWith(
+            join('static', 'assets', 'images', 'avatar.jpg'),
+            join('static', 'g', 'assets', 'images'),
+            queue as any,
+            {
+                webp: true,
+            },
+        );
+        expect(createPlaceholder).not.toHaveBeenCalled();
+        expect(Queue).not.toHaveBeenCalled();
+    });
+
 });

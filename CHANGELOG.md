@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.2.0
+
+* Add immediate option to disable lazy loading
+
 ## 0.1.8
 
 * Fix overflow of image on Safari

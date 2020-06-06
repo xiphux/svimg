@@ -104,12 +104,13 @@ import 'svimg/dist/s-image';
 
 #### Component Attributes
 
-| Property | Default    |           |
-| -------- | ---------- | --------- |
-| src      | *required* | Image url |
-| alt      |            | Alternate text for the image |
-| class    |            | CSS classes to apply to image |
-| width    |            | Resize image to specified width in pixels. If not specified, generates images of widths 480, 1024, 1920, and 2560. |
+| Property  | Default    |           |
+| --------- | ---------- | --------- |
+| src       | *required* | Image url |
+| alt       |            | Alternate text for the image |
+| class     |            | CSS classes to apply to image |
+| width     |            | Resize image to specified width in pixels. If not specified, generates images of widths 480, 1024, 1920, and 2560. |
+| immediate |            | Set to `true` to disable lazy-loading |
 
 The following properties will be automatically populated by the preprocessor:
 
@@ -118,6 +119,7 @@ The following properties will be automatically populated by the preprocessor:
 | srcset      | Responsive images and widths |
 | srcsetwebp  | Responsive WebP images and widths |
 | placeholder | Blurred placeholder image |
+| aspectratio | Aspect ratio of image |
 
 #### Preprocessor Options
 

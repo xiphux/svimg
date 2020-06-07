@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.2.1
+
+* Remove will-change to avoid unnecessary resource usage
+
 ## 0.2.0
 
 * Add immediate option to disable lazy loading

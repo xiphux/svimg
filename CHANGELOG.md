@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.3.0
+
+* Allow specifying image placeholder blur amount
+* Allow specifying resized image quality
+
 ## 0.2.1
 
 * Remove will-change to avoid unnecessary resource usage

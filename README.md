@@ -79,7 +79,7 @@ import Image from 'svimg';
 
 <Image src="images/splash.jpg" />
 
-<Image src="images/avatar.jpg" width="150" alt="Avatar" class="blue-border" />
+<Image src="images/avatar.jpg" width="150" alt="Avatar" class="blue-border" quality="85" immediate />
 ```
 
 The `Image` component will render a blurred placeholder, a srcset with multiple resolutions, a sizes attribute, and a source of type `image/webp` with webp images.
@@ -110,7 +110,9 @@ import 'svimg/dist/s-image';
 | alt       |            | Alternate text for the image |
 | class     |            | CSS classes to apply to image |
 | width     |            | Resize image to specified width in pixels. If not specified, generates images of widths 480, 1024, 1920, and 2560. |
-| immediate |            | Set to `true` to disable lazy-loading |
+| immediate | `false`    | Set to `true` to disable lazy-loading |
+| blur      | `40`       | Amount of blur to apply to placeholder |
+| quality   | `75`       | Quality of the resized images |
 
 The following properties will be automatically populated by the preprocessor:
 
@@ -127,7 +129,7 @@ The following properties will be automatically populated by the preprocessor:
 | --------- | ---------- | ---------- |
 | inputDir | *required* | The static asset directory where image urls are retrieved from |
 | outputDir | *required* | The output directory where resized image files should be written to. This should usually be a subfolder within the normal static asset directory |
-| webp      | true       | Whether to generate WebP versions of images in addition to the original image formats |
+| webp      | `true`     | Whether to generate WebP versions of images in addition to the original image formats |
 
 ## Built With
 

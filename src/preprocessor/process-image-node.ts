@@ -7,6 +7,16 @@ import Queue from "../core/queue";
 
 const TAG_START = '<Image';
 
+function getStringAttr(attributes: Record<string, string | boolean>, attr: string): string {
+    const attrVal = attributes[attr];
+    return typeof attrVal === 'string' ? attrVal : '';
+}
+
+function getIntAttr(attributes: Record<string, string | boolean>, attr: string): number | undefined {
+    const val = getStringAttr(attributes, attr);
+    return val && /^[0-9]+$/.test(val) ? parseInt(val, 10) : undefined;
+}
+
 export default async function processImageNode(
     content: string,
     offset: number,
@@ -15,11 +25,7 @@ export default async function processImageNode(
     options?: ImagePreprocessorOptions
 ): Promise<{ content: string, offset: number }> {
     const nodeAttr = getNodeAttributes(node);
-    const src = nodeAttr.src && typeof nodeAttr.src === 'string' ? nodeAttr.src : '';
-    const width = nodeAttr.width && typeof nodeAttr.width === 'string' ? nodeAttr.width : '';
-    const blur = nodeAttr.blur && typeof nodeAttr.blur === 'string' ? nodeAttr.blur : '';
-    const quality = nodeAttr.quality && typeof nodeAttr.quality === 'string' ? nodeAttr.quality : '';
-    const immediate = !!(nodeAttr.immediate);
+    const src = getStringAttr(nodeAttr, 'src');
     if (!src) {
         return {
             content,
@@ -27,9 +33,10 @@ export default async function processImageNode(
         };
     }
 
-    const forceWidth = width && /^[0-9]+$/.test(width) ? parseInt(width, 10) : undefined;
-    const forceBlur = blur && /^[0-9]+$/.test(blur) ? parseInt(blur, 10) : undefined;
-    const forceQuality = quality && /^[0-9]+$/.test(quality) ? parseInt(quality, 10) : undefined;
+    const width = getIntAttr(nodeAttr, 'width');
+    const blur = getIntAttr(nodeAttr, 'blur');
+    const quality = getIntAttr(nodeAttr, 'quality');
+    const immediate = !!(nodeAttr.immediate);
 
     const attributes = await generateComponentAttributes({
         src,
@@ -37,9 +44,9 @@ export default async function processImageNode(
         inputDir: options.inputDir,
         outputDir: options.outputDir,
         webp: options.webp,
-        widths: forceWidth ? [forceWidth] : undefined,
-        blur: forceBlur,
-        quality: forceQuality,
+        widths: width ? [width] : undefined,
+        blur,
+        quality,
         skipPlaceholder: immediate || undefined,
     });
 

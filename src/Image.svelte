@@ -11,8 +11,8 @@
   export let width;
   export let aspectratio;
   export let immediate = false;
-  export let blur;
-  export let quality;
+  export let blur = "";
+  export let quality = "";
 
   const srcLocal = src; // suppress unused-export-let
   const blurLocal = blur;

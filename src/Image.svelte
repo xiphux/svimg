@@ -11,8 +11,10 @@
   export let width;
   export let aspectratio;
   export let immediate = false;
+  export let blur;
 
   const srcLocal = src; // suppress unused-export-let
+  const blurLocal = blur;
 
   let clientWidth;
   let intersecting = false;

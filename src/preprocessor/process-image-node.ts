@@ -18,6 +18,7 @@ export default async function processImageNode(
     const src = nodeAttr.src && typeof nodeAttr.src === 'string' ? nodeAttr.src : '';
     const width = nodeAttr.width && typeof nodeAttr.width === 'string' ? nodeAttr.width : '';
     const blur = nodeAttr.blur && typeof nodeAttr.blur === 'string' ? nodeAttr.blur : '';
+    const quality = nodeAttr.quality && typeof nodeAttr.quality === 'string' ? nodeAttr.quality : '';
     const immediate = !!(nodeAttr.immediate);
     if (!src) {
         return {
@@ -28,6 +29,7 @@ export default async function processImageNode(
 
     const forceWidth = width && /^[0-9]+$/.test(width) ? parseInt(width, 10) : undefined;
     const forceBlur = blur && /^[0-9]+$/.test(blur) ? parseInt(blur, 10) : undefined;
+    const forceQuality = quality && /^[0-9]+$/.test(quality) ? parseInt(quality, 10) : undefined;
 
     const attributes = await generateComponentAttributes({
         src,
@@ -37,6 +39,7 @@ export default async function processImageNode(
         webp: options.webp,
         widths: forceWidth ? [forceWidth] : undefined,
         blur: forceBlur,
+        quality: forceQuality,
         skipPlaceholder: immediate || undefined,
     });
 

@@ -13,6 +13,7 @@ interface GenerateComponentAttributesOptions {
     webp?: boolean;
     widths?: number[];
     blur?: number;
+    quality?: number;
     skipGeneration?: boolean;
     skipPlaceholder?: boolean;
 }
@@ -25,6 +26,7 @@ export default async function generateComponentAttributes({
     webp,
     widths,
     blur,
+    quality,
     skipGeneration,
     skipPlaceholder
 }: GenerateComponentAttributesOptions): Promise<GetComponentAttributesOutput> {
@@ -47,7 +49,8 @@ export default async function generateComponentAttributes({
         processImage(inputFile, outputDirReal, queue, {
             webp: webp ?? true,
             widths,
-            skipGeneration
+            skipGeneration,
+            quality,
         }),
         !skipPlaceholder ? createPlaceholder(inputFile, queue, {
             blur,

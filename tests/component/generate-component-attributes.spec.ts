@@ -326,6 +326,56 @@ describe('generateComponentAttributes', () => {
         expect(Queue).not.toHaveBeenCalled();
     });
 
+    it('will process images with custom quality', async () => {
+        const queue = jest.fn(() => ({ enqueue: jest.fn() }));
+        (processImage as jest.Mock).mockImplementation(() => Promise.resolve({
+            images: [
+                {
+                    path: 'static/g/assets/images/avatar.1.jpg',
+                    width: 150,
+                    height: 150,
+                },
+            ],
+            webpImages: [
+                {
+                    path: 'static/g/assets/images/avatar.1.webp',
+                    width: 150,
+                    height: 150,
+                },
+            ],
+            aspectRatio: 0.5,
+        }));
+        (createPlaceholder as jest.Mock).mockImplementation(() => Promise.resolve('<svg />'));
+
+        expect(await generateComponentAttributes({
+            src: 'assets/images/avatar.jpg',
+            queue: queue as any,
+            inputDir: 'static',
+            outputDir: 'static/g',
+            quality: 50,
+        })).toEqual({
+            srcset: 'g/assets/images/avatar.1.jpg 150w',
+            srcsetwebp: 'g/assets/images/avatar.1.webp 150w',
+            placeholder: '<svg />',
+            aspectratio: 0.5,
+        });
+
+        expect(processImage).toHaveBeenCalledWith(
+            join('static', 'assets', 'images', 'avatar.jpg'),
+            join('static', 'g', 'assets', 'images'),
+            queue as any,
+            {
+                webp: true,
+                quality: 50,
+            },
+        );
+        expect(createPlaceholder).toHaveBeenCalledWith(
+            join('static', 'assets', 'images', 'avatar.jpg'),
+            queue, {}
+        );
+        expect(Queue).not.toHaveBeenCalled();
+    });
+
     it('will create queues if not provided', async () => {
         (Queue as jest.Mock).mockReturnValue({
             enqueue: true

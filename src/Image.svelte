@@ -12,9 +12,11 @@
   export let aspectratio;
   export let immediate = false;
   export let blur;
+  export let quality;
 
   const srcLocal = src; // suppress unused-export-let
   const blurLocal = blur;
+  const qualityLocal = quality;
 
   let clientWidth;
   let intersecting = false;

@@ -397,6 +397,151 @@ describe('processImageNode', () => {
         });
     });
 
+    it('processes node with a specified quality', async () => {
+        (getNodeAttributes as jest.Mock).mockReturnValue({
+            src: 'img/test.jpg',
+            quality: '50',
+        });
+        (generateComponentAttributes as jest.Mock).mockImplementation(() => Promise.resolve({
+            srcset: 'g/img/test1.jpg 300w',
+            placeholder: '<svg />',
+        }));
+        const queue = { process: jest.fn() };
+
+        expect(await processImageNode(
+            '<div><Image src="img/test.jpg" /></div>',
+            0,
+            { start: 5 } as any,
+            queue as any,
+            {
+                inputDir: 'static',
+                outputDir: 'static/g',
+                webp: false,
+            },
+        )).toEqual({
+            content: '<div><Image srcset="g/img/test1.jpg 300w" placeholder="<svg />" src="img/test.jpg" /></div>',
+            offset: 52,
+        });
+
+        expect(getNodeAttributes).toHaveBeenCalledWith({ start: 5 });
+        expect(generateComponentAttributes).toHaveBeenCalledWith({
+            src: 'img/test.jpg',
+            queue,
+            inputDir: 'static',
+            outputDir: 'static/g',
+            webp: false,
+            quality: 50,
+        });
+    });
+
+    it('ignores a negative quality', async () => {
+        (getNodeAttributes as jest.Mock).mockReturnValue({
+            src: 'img/test.jpg',
+            quality: '-50',
+        });
+        (generateComponentAttributes as jest.Mock).mockImplementation(() => Promise.resolve({
+            srcset: 'g/img/test1.jpg 300w',
+            placeholder: '<svg />',
+        }));
+        const queue = { process: jest.fn() };
+
+        expect(await processImageNode(
+            '<div><Image src="img/test.jpg" /></div>',
+            0,
+            { start: 5 } as any,
+            queue as any,
+            {
+                inputDir: 'static',
+                outputDir: 'static/g',
+                webp: false,
+            },
+        )).toEqual({
+            content: '<div><Image srcset="g/img/test1.jpg 300w" placeholder="<svg />" src="img/test.jpg" /></div>',
+            offset: 52,
+        });
+
+        expect(getNodeAttributes).toHaveBeenCalledWith({ start: 5 });
+        expect(generateComponentAttributes).toHaveBeenCalledWith({
+            src: 'img/test.jpg',
+            queue,
+            inputDir: 'static',
+            outputDir: 'static/g',
+            webp: false,
+        });
+    });
+
+    it('ignores a non number quality', async () => {
+        (getNodeAttributes as jest.Mock).mockReturnValue({
+            src: 'img/test.jpg',
+            quality: '100%',
+        });
+        (generateComponentAttributes as jest.Mock).mockImplementation(() => Promise.resolve({
+            srcset: 'g/img/test1.jpg 300w',
+            placeholder: '<svg />',
+        }));
+        const queue = { process: jest.fn() };
+
+        expect(await processImageNode(
+            '<div><Image src="img/test.jpg" /></div>',
+            0,
+            { start: 5 } as any,
+            queue as any,
+            {
+                inputDir: 'static',
+                outputDir: 'static/g',
+                webp: false,
+            },
+        )).toEqual({
+            content: '<div><Image srcset="g/img/test1.jpg 300w" placeholder="<svg />" src="img/test.jpg" /></div>',
+            offset: 52,
+        });
+
+        expect(getNodeAttributes).toHaveBeenCalledWith({ start: 5 });
+        expect(generateComponentAttributes).toHaveBeenCalledWith({
+            src: 'img/test.jpg',
+            queue,
+            inputDir: 'static',
+            outputDir: 'static/g',
+            webp: false,
+        });
+    });
+
+    it('ignores a dynamic quality', async () => {
+        (getNodeAttributes as jest.Mock).mockReturnValue({
+            src: 'img/test.jpg',
+            quality: '{quality}',
+        });
+        (generateComponentAttributes as jest.Mock).mockImplementation(() => Promise.resolve({
+            srcset: 'g/img/test1.jpg 300w',
+            placeholder: '<svg />',
+        }));
+        const queue = { process: jest.fn() };
+
+        expect(await processImageNode(
+            '<div><Image src="img/test.jpg" /></div>',
+            0,
+            { start: 5 } as any,
+            queue as any,
+            {
+                inputDir: 'static',
+                outputDir: 'static/g',
+                webp: false,
+            },
+        )).toEqual({
+            content: '<div><Image srcset="g/img/test1.jpg 300w" placeholder="<svg />" src="img/test.jpg" /></div>',
+            offset: 52,
+        });
+
+        expect(getNodeAttributes).toHaveBeenCalledWith({ start: 5 });
+        expect(generateComponentAttributes).toHaveBeenCalledWith({
+            src: 'img/test.jpg',
+            queue,
+            inputDir: 'static',
+            outputDir: 'static/g',
+            webp: false,
+        });
+    });
+
     it('skips placeholder if immediate', async () => {
         (getNodeAttributes as jest.Mock).mockReturnValue({
             src: 'img/test.jpg',

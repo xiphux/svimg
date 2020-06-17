@@ -12,7 +12,6 @@ interface GenerateComponentAttributesOptions {
     outputDir: string;
     webp?: boolean;
     widths?: number[];
-    blur?: number;
     quality?: number;
     skipGeneration?: boolean;
     skipPlaceholder?: boolean;
@@ -25,7 +24,6 @@ export default async function generateComponentAttributes({
     outputDir,
     webp,
     widths,
-    blur,
     quality,
     skipGeneration,
     skipPlaceholder
@@ -52,9 +50,7 @@ export default async function generateComponentAttributes({
             skipGeneration,
             quality,
         }),
-        !skipPlaceholder ? createPlaceholder(inputFile, queue, {
-            blur,
-        }) : undefined,
+        !skipPlaceholder ? createPlaceholder(inputFile, queue) : undefined,
     ]);
 
     return getComponentAttributes({

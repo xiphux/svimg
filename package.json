@@ -53,9 +53,7 @@
   },
   "dependencies": {
     "md5-file": "^5.0.0",
-    "mini-svg-data-uri": "^1.2.3",
     "p-queue": "^6.4.0",
-    "sharp": "^0.25.3",
-    "uuid": "^8.0.0"
+    "sharp": "^0.25.3"
   }
 }

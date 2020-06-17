@@ -11,11 +11,10 @@
   export let width;
   export let aspectratio;
   export let immediate = false;
-  export let blur = "";
+  export let blur = 40;
   export let quality = "";
 
   const srcLocal = src; // suppress unused-export-let
-  const blurLocal = blur;
   const qualityLocal = quality;
 
   let clientWidth;
@@ -33,6 +32,7 @@
       : clientWidth;
   $: imageHeight = imageWidth / aspectratio;
   $: sizes = imageWidth ? `${imageWidth}px` : undefined;
+  $: placeholderStyle = `filter: url("data:image/svg+xml,%3csvg%20xmlns='http://www.w3.org/2000/svg'%20xmlns:xlink='http://www.w3.org/1999/xlink'%3e%3cfilter%20id='svimg-blur'%20filterUnits='userSpaceOnUse'%20color-interpolation-filters='sRGB'%3e%3cfeGaussianBlur%20stdDeviation='${blur}'%20edgeMode='duplicate'%20/%3e%3cfeComponentTransfer%3e%3cfeFuncA%20type='discrete'%20tableValues='1%201'%20/%3e%3c/feComponentTransfer%3e%3c/filter%3e%3c/svg%3e#svimg-blur");`;
 
   onMount(() => {
     tick().then(() => {
@@ -134,6 +134,7 @@
     <img
       class="placeholder"
       src={placeholder}
+      style={placeholderStyle}
       {alt}
       width={imageWidth}
       height={imageHeight} />

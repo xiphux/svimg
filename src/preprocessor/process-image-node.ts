@@ -34,7 +34,6 @@ export default async function processImageNode(
     }
 
     const width = getIntAttr(nodeAttr, 'width');
-    const blur = getIntAttr(nodeAttr, 'blur');
     const quality = getIntAttr(nodeAttr, 'quality');
     const immediate = !!(nodeAttr.immediate);
 
@@ -45,7 +44,6 @@ export default async function processImageNode(
         outputDir: options.outputDir,
         webp: options.webp,
         widths: width ? [width] : undefined,
-        blur,
         quality,
         skipPlaceholder: immediate || undefined,
     });

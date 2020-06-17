@@ -111,8 +111,7 @@ describe('generateComponentAttributes', () => {
         );
         expect(createPlaceholder).toHaveBeenCalledWith(
             join('static', 'assets', 'images', 'avatar.jpg'),
-            queue,
-            {}
+            queue
         );
     });
 
@@ -170,8 +169,7 @@ describe('generateComponentAttributes', () => {
         );
         expect(createPlaceholder).toHaveBeenCalledWith(
             join('static', 'assets', 'images', 'avatar.jpg'),
-            queue,
-            {}
+            queue
         );
         expect(Queue).not.toHaveBeenCalled();
     });
@@ -218,8 +216,7 @@ describe('generateComponentAttributes', () => {
         );
         expect(createPlaceholder).toHaveBeenCalledWith(
             join('static', 'assets', 'images', 'avatar.jpg'),
-            queue,
-            {}
+            queue
         );
         expect(Queue).not.toHaveBeenCalled();
     });
@@ -269,59 +266,7 @@ describe('generateComponentAttributes', () => {
         );
         expect(createPlaceholder).toHaveBeenCalledWith(
             join('static', 'assets', 'images', 'avatar.jpg'),
-            queue,
-            {}
-        );
-        expect(Queue).not.toHaveBeenCalled();
-    });
-
-    it('will process placeholder with custom blur', async () => {
-        const queue = jest.fn(() => ({ enqueue: jest.fn() }));
-        (processImage as jest.Mock).mockImplementation(() => Promise.resolve({
-            images: [
-                {
-                    path: 'static/g/assets/images/avatar.1.jpg',
-                    width: 150,
-                    height: 150,
-                },
-            ],
-            webpImages: [
-                {
-                    path: 'static/g/assets/images/avatar.1.webp',
-                    width: 150,
-                    height: 150,
-                },
-            ],
-            aspectRatio: 0.5,
-        }));
-        (createPlaceholder as jest.Mock).mockImplementation(() => Promise.resolve('<svg />'));
-
-        expect(await generateComponentAttributes({
-            src: 'assets/images/avatar.jpg',
-            queue: queue as any,
-            inputDir: 'static',
-            outputDir: 'static/g',
-            blur: 60,
-        })).toEqual({
-            srcset: 'g/assets/images/avatar.1.jpg 150w',
-            srcsetwebp: 'g/assets/images/avatar.1.webp 150w',
-            placeholder: '<svg />',
-            aspectratio: 0.5,
-        });
-
-        expect(processImage).toHaveBeenCalledWith(
-            join('static', 'assets', 'images', 'avatar.jpg'),
-            join('static', 'g', 'assets', 'images'),
-            queue as any,
-            {
-                webp: true,
-            },
-        );
-        expect(createPlaceholder).toHaveBeenCalledWith(
-            join('static', 'assets', 'images', 'avatar.jpg'),
-            queue, {
-            blur: 60,
-        }
+            queue
         );
         expect(Queue).not.toHaveBeenCalled();
     });
@@ -371,7 +316,7 @@ describe('generateComponentAttributes', () => {
         );
         expect(createPlaceholder).toHaveBeenCalledWith(
             join('static', 'assets', 'images', 'avatar.jpg'),
-            queue, {}
+            queue
         );
         expect(Queue).not.toHaveBeenCalled();
     });
@@ -430,8 +375,7 @@ describe('generateComponentAttributes', () => {
         );
         expect(createPlaceholder).toHaveBeenCalledWith(
             join('static', 'assets', 'images', 'avatar.jpg'),
-            { enqueue: true },
-            {}
+            { enqueue: true }
         );
         expect(Queue).toHaveBeenCalled();
     });
@@ -491,8 +435,7 @@ describe('generateComponentAttributes', () => {
         );
         expect(createPlaceholder).toHaveBeenCalledWith(
             join('static', 'assets', 'images', 'avatar.jpg'),
-            queue,
-            {}
+            queue
         );
         expect(Queue).not.toHaveBeenCalled();
     });

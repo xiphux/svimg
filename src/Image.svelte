@@ -23,8 +23,6 @@
   let container;
   let loaded = false;
 
-  let filterId = Math.floor(Math.random() * 10000000000000000);
-
   $: fixedWidth = !!(width && /^[0-9]+$/.test(width));
   $: imageWidth =
     fixedWidth && clientWidth
@@ -34,7 +32,6 @@
       : clientWidth;
   $: imageHeight = imageWidth / aspectratio;
   $: sizes = imageWidth ? `${imageWidth}px` : undefined;
-  $: placeholderSvg = `data:image/svg+xml,%3csvg%20xmlns='http://www.w3.org/2000/svg'%20xmlns:xlink='http://www.w3.org/1999/xlink'%20width='${imageWidth}'%20height='${imageHeight}'%20viewBox='0%200%20${imageWidth}%20${imageHeight}'%3e%3cfilter%20id='svimg-placeholder-${filterId}'%20filterUnits='userSpaceOnUse'%20color-interpolation-filters='sRGB'%3e%3cfeGaussianBlur%20stdDeviation='${blur}'%20edgeMode='duplicate'%20/%3e%3cfeComponentTransfer%3e%3cfeFuncA%20type='discrete'%20tableValues='1%201'%20/%3e%3c/feComponentTransfer%3e%3c/filter%3e%3cimage%20filter='url(%23svimg-placeholder-${filterId})'%20xlink:href='${placeholder}'%20x='0'%20y='0'%20height='100%25'%20width='100%25'%20/%3e%3c/svg%3e`;
 
   onMount(() => {
     tick().then(() => {
@@ -106,6 +103,7 @@
     width: 100%;
     display: block;
     z-index: -1;
+    filter: blur(var(--svimg-blur));
   }
 </style>
 
@@ -113,7 +111,7 @@
 
 <div
   bind:this={container}
-  style={fixedWidth ? `max-width:${width}px` : undefined}
+  style="{fixedWidth ? `max-width:${width}px;` : ''} --svimg-blur:{blur}px"
   class="wrapper {className}">
   <picture>
     {#if srcsetwebp}
@@ -135,7 +133,7 @@
   {#if !immediate}
     <img
       class="placeholder"
-      src={placeholderSvg}
+      src={placeholder}
       {alt}
       width={imageWidth}
       height={imageHeight} />

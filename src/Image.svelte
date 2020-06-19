@@ -90,9 +90,11 @@
   .wrapper > * {
     grid-area: 1 / 1 / 2 / 2;
   }
-  .image {
+  .wrapper img {
     width: 100%;
     display: block;
+  }
+  .image {
     opacity: 0;
     transition: opacity 0.25s ease-in;
   }
@@ -100,8 +102,6 @@
     opacity: 1;
   }
   .placeholder {
-    width: 100%;
-    display: block;
     z-index: -1;
     filter: blur(var(--svimg-blur));
   }

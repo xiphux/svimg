@@ -81,10 +81,9 @@
 <style>
   .wrapper {
     display: grid;
-    grid-template-columns: 1fr;
-    grid-template-rows: 1fr;
-    grid-column-gap: 0px;
-    grid-row-gap: 0px;
+    grid: 1fr / 1fr;
+    gap: 0px;
+    grid-gap: 0px; /* safari 10/11 doesn't support gap property */
     overflow: hidden;
   }
   .wrapper > * {

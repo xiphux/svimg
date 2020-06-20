@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.3.1
+
+* Reduce size of placeholder image in HTML
+* Suppress warnings when blur/quality attributes aren't passed
+* Preserve aspect ratio when loading placeholder
+
 ## 0.3.0
 
 * Allow specifying image placeholder blur amount

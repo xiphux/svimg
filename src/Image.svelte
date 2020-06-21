@@ -38,8 +38,7 @@
       let ro;
       if (window.ResizeObserver) {
         ro = new ResizeObserver(entries => {
-          const entry = entries[0];
-          clientWidth = entry.contentRect.width;
+          clientWidth = entries[0].contentRect.width;
         });
 
         ro.observe(container);

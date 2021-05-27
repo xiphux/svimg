@@ -18,6 +18,10 @@ describe('getMimeType', () => {
         expect(getMimeType('webp')).toEqual('image/webp');
     });
 
+    it('supports avif', () => {
+        expect(getMimeType('avif')).toEqual('image/avif');
+    });
+
     it('supports tiff', () => {
         expect(getMimeType('tiff')).toEqual('image/tiff');
     });

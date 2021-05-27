@@ -43,6 +43,7 @@ export default async function processImageNode(
         inputDir: options.inputDir,
         outputDir: options.outputDir,
         webp: options.webp,
+        avif: options.avif,
         widths: width ? [width] : undefined,
         quality,
         skipPlaceholder: immediate || undefined,

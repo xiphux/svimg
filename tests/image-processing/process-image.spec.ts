@@ -105,6 +105,7 @@ describe('processImage', () => {
             widths: [200, 300],
             quality: 85,
             webp: false,
+            avif: false,
         });
         (resizeImageMultiple as jest.Mock).mockImplementation(() => Promise.resolve([
             {
@@ -120,7 +121,7 @@ describe('processImage', () => {
         ]));
         (getOptionsHash as jest.Mock).mockReturnValue('optionshash');
 
-        expect(await processImage('/in/file.jpg', '/out/dir', { enqueue } as any, { widths: [100, 200], quality: 85, webp: false })).toEqual({
+        expect(await processImage('/in/file.jpg', '/out/dir', { enqueue } as any, { widths: [100, 200], quality: 85, webp: false, avif: false, })).toEqual({
             images: [
                 {
                     path: '/out/dir/file.1.jpg',
@@ -134,12 +135,13 @@ describe('processImage', () => {
                 }
             ],
             webpImages: [],
+            avifImages: [],
             aspectRatio: 1,
         });
 
         expect(enqueue).toHaveBeenCalledWith(getImageMetadata, '/in/file.jpg');
 
-        expect(getProcessImageOptions).toHaveBeenCalledWith(300, { widths: [100, 200], quality: 85, webp: false })
+        expect(getProcessImageOptions).toHaveBeenCalledWith(300, { widths: [100, 200], quality: 85, webp: false, avif: false, })
 
         expect(enqueue).toHaveBeenCalledWith(md5file, '/in/file.jpg');
         expect(resizeImageMultiple).toHaveBeenCalledTimes(1);
@@ -166,6 +168,7 @@ describe('processImage', () => {
             widths: [200, 300],
             quality: 85,
             webp: true,
+            avif: false,
         });
         (resizeImageMultiple as jest.Mock).mockImplementationOnce(() => Promise.resolve([
             {
@@ -192,7 +195,7 @@ describe('processImage', () => {
         ]));
         (getOptionsHash as jest.Mock).mockReturnValue('optionshash');
 
-        expect(await processImage('/in/file.jpg', '/out/dir', { enqueue } as any, { widths: [100, 200], quality: 85, webp: true })).toEqual({
+        expect(await processImage('/in/file.jpg', '/out/dir', { enqueue } as any, { widths: [100, 200], quality: 85, webp: true, avif: false, })).toEqual({
             images: [
                 {
                     path: '/out/dir/file.1.jpg',
@@ -217,12 +220,13 @@ describe('processImage', () => {
                     height: 300,
                 }
             ],
+            avifImages: [],
             aspectRatio: 1,
         });
 
         expect(enqueue).toHaveBeenCalledWith(getImageMetadata, '/in/file.jpg');
 
-        expect(getProcessImageOptions).toHaveBeenCalledWith(300, { widths: [100, 200], quality: 85, webp: true })
+        expect(getProcessImageOptions).toHaveBeenCalledWith(300, { widths: [100, 200], quality: 85, webp: true, avif: false })
 
         expect(enqueue).toHaveBeenCalledWith(md5file, '/in/file.jpg');
 
@@ -246,10 +250,107 @@ describe('processImage', () => {
         expect(filenameGeneratorWebp({ width: 300, quality: 85 })).toEqual('file.optionshash.filehash.webp');
     });
 
-    it('skips generation', async () => {
-        const enqueue = jest.fn().mockImplementationOnce(() => Promise.resolve({
+    it('generates avif images if requested', async () => {
+        const enqueue = jest.fn().mockImplementationOnce(
+            () => Promise.resolve(true)
+        ).mockImplementationOnce(() => Promise.resolve({
             width: 300,
-            height: 100,
+            height: 300,
+        })).mockImplementationOnce(
+            () => Promise.resolve('filehash'),
+        );
+        (getProcessImageOptions as jest.Mock).mockReturnValue({
+            widths: [200, 300],
+            quality: 85,
+            webp: false,
+            avif: true,
+        });
+        (resizeImageMultiple as jest.Mock).mockImplementationOnce(() => Promise.resolve([
+            {
+                path: '/out/dir/file.1.jpg',
+                width: 200,
+                height: 200,
+            },
+            {
+                path: '/out/dir/file.2.jpg',
+                width: 300,
+                height: 300,
+            }
+        ])).mockImplementationOnce(() => Promise.resolve([
+            {
+                path: '/out/dir/file.1.avif',
+                width: 200,
+                height: 200,
+            },
+            {
+                path: '/out/dir/file.2.avif',
+                width: 300,
+                height: 300,
+            }
+        ]));
+        (getOptionsHash as jest.Mock).mockReturnValue('optionshash');
+
+        expect(await processImage('/in/file.jpg', '/out/dir', { enqueue } as any, { widths: [100, 200], quality: 85, webp: false, avif: true, })).toEqual({
+            images: [
+                {
+                    path: '/out/dir/file.1.jpg',
+                    width: 200,
+                    height: 200,
+                },
+                {
+                    path: '/out/dir/file.2.jpg',
+                    width: 300,
+                    height: 300,
+                }
+            ],
+            webpImages: [],
+            avifImages: [
+                {
+                    path: '/out/dir/file.1.avif',
+                    width: 200,
+                    height: 200,
+                },
+                {
+                    path: '/out/dir/file.2.avif',
+                    width: 300,
+                    height: 300,
+                }
+            ],
+            aspectRatio: 1,
+        });
+
+        expect(enqueue).toHaveBeenCalledWith(getImageMetadata, '/in/file.jpg');
+
+        expect(getProcessImageOptions).toHaveBeenCalledWith(300, { widths: [100, 200], quality: 85, webp: false, avif: true })
+
+        expect(enqueue).toHaveBeenCalledWith(md5file, '/in/file.jpg');
+
+        expect(resizeImageMultiple).toHaveBeenCalledTimes(2);
+        expect(resizeImageMultiple).toHaveBeenCalledWith('/in/file.jpg', '/out/dir', { enqueue } as any, {
+            widths: [200, 300],
+            quality: 85,
+            filenameGenerator: expect.any(Function),
+            aspectRatio: 1,
+        });
+        const filenameGenerator = (resizeImageMultiple as jest.Mock).mock.calls[0][3].filenameGenerator;
+        expect(filenameGenerator({ width: 300, quality: 85 })).toEqual('file.optionshash.filehash.jpg');
+
+        expect(resizeImageMultiple).toHaveBeenCalledWith('/in/file.jpg', '/out/dir', { enqueue } as any, {
+            widths: [200, 300],
+            quality: 85,
+            filenameGenerator: expect.any(Function),
+            aspectRatio: 1,
+        });
+        const filenameGeneratorAvif = (resizeImageMultiple as jest.Mock).mock.calls[1][3].filenameGenerator;
+        expect(filenameGeneratorAvif({ width: 300, quality: 85 })).toEqual('file.optionshash.filehash.avif');
+    });
+
+    it('generates webp and avif images if requested', async () => {
+        const enqueue = jest.fn().mockImplementationOnce(
+            () => Promise.resolve(true)
+        ).mockImplementationOnce(() => Promise.resolve({
+            width: 300,
+            height: 300,
         })).mockImplementationOnce(
             () => Promise.resolve('filehash'),
         );
@@ -257,6 +358,7 @@ describe('processImage', () => {
             widths: [200, 300],
             quality: 85,
             webp: true,
+            avif: true,
         });
         (resizeImageMultiple as jest.Mock).mockImplementationOnce(() => Promise.resolve([
             {
@@ -280,10 +382,21 @@ describe('processImage', () => {
                 width: 300,
                 height: 300,
             }
+        ])).mockImplementationOnce(() => Promise.resolve([
+            {
+                path: '/out/dir/file.1.avif',
+                width: 200,
+                height: 200,
+            },
+            {
+                path: '/out/dir/file.2.avif',
+                width: 300,
+                height: 300,
+            }
         ]));
         (getOptionsHash as jest.Mock).mockReturnValue('optionshash');
 
-        expect(await processImage('/in/file.jpg', '/out/dir', { enqueue } as any, { widths: [100, 200], quality: 85, webp: true, skipGeneration: true })).toEqual({
+        expect(await processImage('/in/file.jpg', '/out/dir', { enqueue } as any, { widths: [100, 200], quality: 85, webp: true, avif: true, })).toEqual({
             images: [
                 {
                     path: '/out/dir/file.1.jpg',
@@ -308,16 +421,152 @@ describe('processImage', () => {
                     height: 300,
                 }
             ],
+            avifImages: [
+                {
+                    path: '/out/dir/file.1.avif',
+                    width: 200,
+                    height: 200,
+                },
+                {
+                    path: '/out/dir/file.2.avif',
+                    width: 300,
+                    height: 300,
+                }
+            ],
+            aspectRatio: 1,
+        });
+
+        expect(enqueue).toHaveBeenCalledWith(getImageMetadata, '/in/file.jpg');
+
+        expect(getProcessImageOptions).toHaveBeenCalledWith(300, { widths: [100, 200], quality: 85, webp: true, avif: true })
+
+        expect(enqueue).toHaveBeenCalledWith(md5file, '/in/file.jpg');
+
+        expect(resizeImageMultiple).toHaveBeenCalledTimes(3);
+        expect(resizeImageMultiple).toHaveBeenCalledWith('/in/file.jpg', '/out/dir', { enqueue } as any, {
+            widths: [200, 300],
+            quality: 85,
+            filenameGenerator: expect.any(Function),
+            aspectRatio: 1,
+        });
+        const filenameGenerator = (resizeImageMultiple as jest.Mock).mock.calls[0][3].filenameGenerator;
+        expect(filenameGenerator({ width: 300, quality: 85 })).toEqual('file.optionshash.filehash.jpg');
+
+        expect(resizeImageMultiple).toHaveBeenCalledWith('/in/file.jpg', '/out/dir', { enqueue } as any, {
+            widths: [200, 300],
+            quality: 85,
+            filenameGenerator: expect.any(Function),
+            aspectRatio: 1,
+        });
+        const filenameGeneratorWebp = (resizeImageMultiple as jest.Mock).mock.calls[1][3].filenameGenerator;
+        expect(filenameGeneratorWebp({ width: 300, quality: 85 })).toEqual('file.optionshash.filehash.webp');
+
+        expect(resizeImageMultiple).toHaveBeenCalledWith('/in/file.jpg', '/out/dir', { enqueue } as any, {
+            widths: [200, 300],
+            quality: 85,
+            filenameGenerator: expect.any(Function),
+            aspectRatio: 1,
+        });
+        const filenameGeneratorAvif = (resizeImageMultiple as jest.Mock).mock.calls[2][3].filenameGenerator;
+        expect(filenameGeneratorAvif({ width: 300, quality: 85 })).toEqual('file.optionshash.filehash.avif');
+    });
+
+    it('skips generation', async () => {
+        const enqueue = jest.fn().mockImplementationOnce(() => Promise.resolve({
+            width: 300,
+            height: 100,
+        })).mockImplementationOnce(
+            () => Promise.resolve('filehash'),
+        );
+        (getProcessImageOptions as jest.Mock).mockReturnValue({
+            widths: [200, 300],
+            quality: 85,
+            webp: true,
+            avif: true,
+        });
+        (resizeImageMultiple as jest.Mock).mockImplementationOnce(() => Promise.resolve([
+            {
+                path: '/out/dir/file.1.jpg',
+                width: 200,
+                height: 200,
+            },
+            {
+                path: '/out/dir/file.2.jpg',
+                width: 300,
+                height: 300,
+            }
+        ])).mockImplementationOnce(() => Promise.resolve([
+            {
+                path: '/out/dir/file.1.webp',
+                width: 200,
+                height: 200,
+            },
+            {
+                path: '/out/dir/file.2.webp',
+                width: 300,
+                height: 300,
+            }
+        ])).mockImplementationOnce(() => Promise.resolve([
+            {
+                path: '/out/dir/file.1.avif',
+                width: 200,
+                height: 200,
+            },
+            {
+                path: '/out/dir/file.2.avif',
+                width: 300,
+                height: 300,
+            }
+        ]));
+        (getOptionsHash as jest.Mock).mockReturnValue('optionshash');
+
+        expect(await processImage('/in/file.jpg', '/out/dir', { enqueue } as any, { widths: [100, 200], quality: 85, webp: true, avif: true, skipGeneration: true })).toEqual({
+            images: [
+                {
+                    path: '/out/dir/file.1.jpg',
+                    width: 200,
+                    height: 200,
+                },
+                {
+                    path: '/out/dir/file.2.jpg',
+                    width: 300,
+                    height: 300,
+                }
+            ],
+            webpImages: [
+                {
+                    path: '/out/dir/file.1.webp',
+                    width: 200,
+                    height: 200,
+                },
+                {
+                    path: '/out/dir/file.2.webp',
+                    width: 300,
+                    height: 300,
+                }
+            ],
+            avifImages: [
+                {
+                    path: '/out/dir/file.1.avif',
+                    width: 200,
+                    height: 200,
+                },
+                {
+                    path: '/out/dir/file.2.avif',
+                    width: 300,
+                    height: 300,
+                }
+            ],
             aspectRatio: 300 / 100,
         });
 
         expect(enqueue).toHaveBeenCalledWith(getImageMetadata, '/in/file.jpg');
 
-        expect(getProcessImageOptions).toHaveBeenCalledWith(300, { widths: [100, 200], quality: 85, webp: true })
+        expect(getProcessImageOptions).toHaveBeenCalledWith(300, { widths: [100, 200], quality: 85, webp: true, avif: true, })
 
         expect(enqueue).toHaveBeenCalledWith(md5file, '/in/file.jpg');
 
-        expect(resizeImageMultiple).toHaveBeenCalledTimes(2);
+        expect(resizeImageMultiple).toHaveBeenCalledTimes(3);
         expect(resizeImageMultiple).toHaveBeenCalledWith('/in/file.jpg', '/out/dir', { enqueue } as any, {
             widths: [200, 300],
             quality: 85,
@@ -337,6 +586,16 @@ describe('processImage', () => {
         });
         const filenameGeneratorWebp = (resizeImageMultiple as jest.Mock).mock.calls[1][3].filenameGenerator;
         expect(filenameGeneratorWebp({ width: 300, quality: 85 })).toEqual('file.optionshash.filehash.webp');
+
+        expect(resizeImageMultiple).toHaveBeenCalledWith('/in/file.jpg', '/out/dir', { enqueue } as any, {
+            widths: [200, 300],
+            quality: 85,
+            filenameGenerator: expect.any(Function),
+            aspectRatio: 300 / 100,
+            skipGeneration: true,
+        });
+        const filenameGeneratorAvif = (resizeImageMultiple as jest.Mock).mock.calls[2][3].filenameGenerator;
+        expect(filenameGeneratorAvif({ width: 300, quality: 85 })).toEqual('file.optionshash.filehash.avif');
     });
 
 });

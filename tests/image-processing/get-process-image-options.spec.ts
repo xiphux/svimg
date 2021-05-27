@@ -54,4 +54,22 @@ describe('getProcessImageOptions', () => {
         expect(opts2.webp).toEqual(true);
     });
 
+    it('returns passed avif', () => {
+        const opts = getProcessImageOptions(500, {
+            avif: true,
+        });
+        expect(opts.avif).toEqual(true);
+        const opts2 = getProcessImageOptions(500, {
+            avif: false,
+        });
+        expect(opts2.avif).toEqual(false);
+    });
+
+    it('defaults avif to true', () => {
+        const opts = getProcessImageOptions(500, {});
+        expect(opts.avif).toEqual(true);
+        const opts2 = getProcessImageOptions(500);
+        expect(opts2.avif).toEqual(true);
+    });
+
 });

@@ -13,12 +13,14 @@ export interface ProcessImageOptions {
     widths?: number[];
     quality?: number;
     webp?: boolean;
+    avif?: boolean;
     skipGeneration?: boolean;
 }
 
 export interface ProcessImageOutput {
     images: Image[];
     webpImages: Image[];
+    avifImages: Image[];
     aspectRatio: number;
 }
 
@@ -43,14 +45,14 @@ export default async function processImage(inputFile: string, outputDir: string,
     ]);
 
     const { skipGeneration, ...restOpts } = options || {};
-    const { widths, quality, webp } = getProcessImageOptions(metadata.width, restOpts);
+    const { widths, quality, webp, avif } = getProcessImageOptions(metadata.width, restOpts);
 
     const filename = basename(inputFile);
     const extension = extname(filename);
     const baseFilename = filename.substring(0, filename.length - extension.length);
     const aspectRatio = metadata.width / metadata.height;
 
-    const [images, webpImages] = await Promise.all([
+    const [images, webpImages, avifImages] = await Promise.all([
         resizeImageMultiple(inputFile, outputDir, queue, {
             widths,
             quality,
@@ -64,12 +66,20 @@ export default async function processImage(inputFile: string, outputDir: string,
             filenameGenerator: ({ width, quality }) => `${baseFilename}.${getOptionsHash({ width, quality }, 7)}.${fileHash}.webp`,
             aspectRatio,
             skipGeneration,
-        }) : []
+        }) : [],
+        avif ? resizeImageMultiple(inputFile, outputDir, queue, {
+            widths,
+            quality,
+            filenameGenerator: ({ width, quality }) => `${baseFilename}.${getOptionsHash({ width, quality }, 7)}.${fileHash}.avif`,
+            aspectRatio,
+            skipGeneration,
+        }) : [],
     ]);
 
     return {
         images,
         webpImages,
+        avifImages,
         aspectRatio,
     };
 }

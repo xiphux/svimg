@@ -28,6 +28,9 @@ async function resizeImage(inputFile: string, options: ResizeImageOptions, outpu
         }).webp({
             quality: options.quality,
             force: false,
+        }).avif({
+            quality: options.quality,
+            force: false,
         });
     }
 

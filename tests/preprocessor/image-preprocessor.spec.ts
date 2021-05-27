@@ -21,6 +21,7 @@ describe('imagePreprocessor', () => {
             inputDir: 'static',
             outputDir: 'static/g',
             webp: true,
+            avif: true,
         });
 
         expect(await processor.markup!({
@@ -49,6 +50,7 @@ describe('imagePreprocessor', () => {
             inputDir: 'static',
             outputDir: 'static/g',
             webp: true,
+            avif: true,
         });
 
         expect(await processor.markup!({
@@ -69,6 +71,7 @@ describe('imagePreprocessor', () => {
                 inputDir: 'static',
                 outputDir: 'static/g',
                 webp: true,
+                avif: true,
             }
         );
         expect(processImageNode).toHaveBeenNthCalledWith(
@@ -81,6 +84,7 @@ describe('imagePreprocessor', () => {
                 inputDir: 'static',
                 outputDir: 'static/g',
                 webp: true,
+                avif: true,
             }
         );
     });

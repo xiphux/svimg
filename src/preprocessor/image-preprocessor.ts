@@ -7,6 +7,7 @@ export interface ImagePreprocessorOptions {
     inputDir: string;
     outputDir: string;
     webp?: boolean;
+    avif?: boolean;
 }
 
 export default function imagePreprocessor(options?: ImagePreprocessorOptions): PreprocessorGroup {

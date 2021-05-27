@@ -6,6 +6,7 @@ export default function getMimeType(format: string): string {
         case 'jpeg':
         case 'png':
         case 'webp':
+        case 'avif':
         case 'tiff':
         case 'gif':
             return `image/${format}`;

@@ -10,6 +10,7 @@ describe('resizeImage', () => {
     let jpeg: jest.Mock;
     let png: jest.Mock;
     let webp: jest.Mock;
+    let avif: jest.Mock;
     let resize: jest.Mock;
     let toFile: jest.Mock;
     let toBuffer: jest.Mock;
@@ -19,6 +20,7 @@ describe('resizeImage', () => {
             jpeg,
             png,
             webp,
+            avif,
             resize,
             toFile,
             toBuffer,
@@ -27,6 +29,7 @@ describe('resizeImage', () => {
             jpeg,
             png,
             webp,
+            avif,
             resize,
             toFile,
             toBuffer,
@@ -35,6 +38,16 @@ describe('resizeImage', () => {
             jpeg,
             png,
             webp,
+            avif,
+            resize,
+            toFile,
+            toBuffer,
+        }));
+        avif = jest.fn(() => ({
+            jpeg,
+            png,
+            webp,
+            avif,
             resize,
             toFile,
             toBuffer,
@@ -43,6 +56,7 @@ describe('resizeImage', () => {
             jpeg,
             png,
             webp,
+            avif,
             resize,
             toFile,
             toBuffer,
@@ -53,6 +67,7 @@ describe('resizeImage', () => {
             jpeg,
             png,
             webp,
+            avif,
             resize,
             toFile,
             toBuffer,
@@ -107,6 +122,10 @@ describe('resizeImage', () => {
             quality: 75,
             force: false,
         });
+        expect(avif).toHaveBeenCalledWith({
+            quality: 75,
+            force: false,
+        });
         expect(resize).toHaveBeenCalledWith(300, 200);
         expect(toBuffer).toHaveBeenCalled();
         expect(toFile).not.toHaveBeenCalled();
@@ -131,6 +150,10 @@ describe('resizeImage', () => {
             force: false,
         });
         expect(webp).toHaveBeenCalledWith({
+            quality: 75,
+            force: false,
+        });
+        expect(avif).toHaveBeenCalledWith({
             quality: 75,
             force: false,
         });

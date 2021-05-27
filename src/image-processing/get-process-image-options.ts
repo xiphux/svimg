@@ -1,9 +1,10 @@
-import { DEFAULT_WIDTHS, DEFAULT_QUALITY, DEFAULT_WEBP } from '../constants/defaults';
+import { DEFAULT_WIDTHS, DEFAULT_QUALITY, DEFAULT_WEBP, DEFAULT_AVIF } from '../constants/defaults';
 
 interface ProcessImageOptions {
     widths: number[];
     quality: number;
     webp: boolean;
+    avif: boolean;
 }
 
 export default function getProcessImageOptions(imageWidth: number, options?: Partial<ProcessImageOptions>): ProcessImageOptions {
@@ -17,12 +18,13 @@ export default function getProcessImageOptions(imageWidth: number, options?: Par
     }
 
     const quality = options?.quality || DEFAULT_QUALITY;
-
     const webp = options?.webp ?? DEFAULT_WEBP;
+    const avif = options?.avif ?? DEFAULT_AVIF;
 
     return {
         widths,
         quality,
         webp,
+        avif,
     };
 }

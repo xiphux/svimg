@@ -1,18 +1,21 @@
+<svelte:options tag={null} />
+
 <script>
-  import { onMount, tick } from "svelte";
+  import { onMount, tick } from 'svelte';
 
   export let src;
   export let alt;
-  let className = "";
+  let className = '';
   export { className as class };
   export let srcset;
   export let srcsetwebp;
-  export let placeholder = "";
+  export let srcsetavif;
+  export let placeholder = '';
   export let width;
   export let aspectratio;
   export let immediate = false;
   export let blur = 40;
-  export let quality = "";
+  export let quality = '';
 
   const srcLocal = src; // suppress unused-export-let
   const qualityLocal = quality;
@@ -37,14 +40,14 @@
     tick().then(() => {
       let ro;
       if (window.ResizeObserver) {
-        ro = new ResizeObserver(entries => {
+        ro = new ResizeObserver((entries) => {
           clientWidth = entries[0].contentRect.width;
         });
 
         ro.observe(container);
       }
 
-      native = "loading" in HTMLImageElement.prototype;
+      native = 'loading' in HTMLImageElement.prototype;
       if (native || immediate) {
         return () => {
           if (ro) {
@@ -54,15 +57,15 @@
       }
 
       const io = new IntersectionObserver(
-        entries => {
+        (entries) => {
           intersecting = entries[0].isIntersecting;
           if (intersecting) {
             io.unobserve(container);
           }
         },
         {
-          rootMargin: `100px`
-        }
+          rootMargin: `100px`,
+        },
       );
 
       io.observe(container);
@@ -76,6 +79,48 @@
     });
   });
 </script>
+
+<div
+  bind:this={container}
+  style="{fixedWidth ? `max-width:${width}px;` : ''} --svimg-blur:{blur}px"
+  class="wrapper {className}"
+>
+  <picture>
+    {#if srcsetavif}
+      <source
+        type="image/avif"
+        srcset={intersecting || native || immediate ? srcsetavif : undefined}
+        {sizes}
+      />
+    {/if}
+    {#if srcsetwebp}
+      <source
+        type="image/webp"
+        srcset={intersecting || native || immediate ? srcsetwebp : undefined}
+        {sizes}
+      />
+    {/if}
+    <img
+      srcset={intersecting || native || immediate ? srcset : undefined}
+      {sizes}
+      alt={loaded || immediate ? alt : undefined}
+      width={imageWidth}
+      height={imageHeight}
+      loading={!immediate ? 'lazy' : undefined}
+      class="image {loaded || immediate ? 'loaded' : ''}"
+      on:load={() => (loaded = true)}
+    />
+  </picture>
+  {#if !immediate}
+    <img
+      class="placeholder"
+      src={placeholder}
+      {alt}
+      width={imageWidth}
+      height={imageHeight}
+    />
+  {/if}
+</div>
 
 <style>
   .wrapper {
@@ -105,36 +150,3 @@
     filter: blur(var(--svimg-blur));
   }
 </style>
-
-<svelte:options tag={null} />
-
-<div
-  bind:this={container}
-  style="{fixedWidth ? `max-width:${width}px;` : ''} --svimg-blur:{blur}px"
-  class="wrapper {className}">
-  <picture>
-    {#if srcsetwebp}
-      <source
-        type="image/webp"
-        srcset={intersecting || native || immediate ? srcsetwebp : undefined}
-        {sizes} />
-    {/if}
-    <img
-      srcset={intersecting || native || immediate ? srcset : undefined}
-      {sizes}
-      alt={loaded || immediate ? alt : undefined}
-      width={imageWidth}
-      height={imageHeight}
-      loading={!immediate ? 'lazy' : undefined}
-      class="image {loaded || immediate ? 'loaded' : ''}"
-      on:load={() => (loaded = true)} />
-  </picture>
-  {#if !immediate}
-    <img
-      class="placeholder"
-      src={placeholder}
-      {alt}
-      width={imageWidth}
-      height={imageHeight} />
-  {/if}
-</div>

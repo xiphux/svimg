@@ -2,7 +2,7 @@
 
 svimg is an image preprocessing and lazy loading component for [Svelte](https://svelte.dev). It consists of:
 
-* A Svelte preprocessor that automatically resizes your images to multiple resolutions in a `srcset`, creates additional [WebP](https://developers.google.com/speed/webp) versions, and generates blurred placeholder images
+* A Svelte preprocessor that automatically resizes your images to multiple resolutions in a `srcset`, creates additional [AVIF](https://en.wikipedia.org/wiki/AV1) and [WebP](https://developers.google.com/speed/webp) versions, and generates blurred placeholder images
 * A Svelte component that displays the blurred placeholder and automatically lazy loads the proper resolution image when it comes into view
 
 svimg uses native browser lazy loading with a fallback to IntersectionObserver, and automatically calculates the appropriate `sizes` attribute. Some other image components do not set a proper `sizes` attribute, which can cause the browser to download a much larger resolution image than necessary if you are resizing the image with CSS. svimg will also use a literal width if specified to control image preprocessing and only generate the necessary image files for that width.
@@ -29,7 +29,8 @@ export default {
                 imagePreprocessor({
                     inputDir: 'public',
                     outputDir: 'public/g',
-                    webp: true
+                    webp: true,
+                    avif: true
                 })
             ]
         })
@@ -46,7 +47,8 @@ const preprocess = [
     imagePreprocessor({
         inputDir: 'static',
         outputDir: 'static/g',
-        webp: true
+        webp: true,
+        avif: true
     })
 ];
 
@@ -82,13 +84,13 @@ import Image from 'svimg';
 <Image src="images/avatar.jpg" width="150" alt="Avatar" class="blue-border" quality="85" immediate />
 ```
 
-The `Image` component will render a blurred placeholder, a srcset with multiple resolutions, a sizes attribute, and a source of type `image/webp` with webp images.
+The `Image` component will render a blurred placeholder, a srcset with multiple resolutions, a sizes attribute, and sources of type `image/avif` with avif images and `image/webp` with webp images.
 
 #### Custom Element
 
 svimg is also exposed as a [custom element](https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_custom_elements), which means it can be used independently of Svelte with the `<s-image>` tag.
 
-Usage as a custom element expects that the attributes that would normally be filled in by the Svelte preprocessor (`srcset`, `srcsetwebp`, `placeholder`) are populated by another method.
+Usage as a custom element expects that the attributes that would normally be filled in by the Svelte preprocessor (`srcset`, `srcsetavif`, `srcsetwebp`, `placeholder`) are populated by another method.
 
 Generally, you'd use another tool to create these elements such as [rehype-svimg](https://github.com/xiphux/rehype-svimg) rather than using the custom element directly.
 
@@ -97,7 +99,7 @@ Generally, you'd use another tool to create these elements such as [rehype-svimg
 import 'svimg/dist/s-image';
 </script>
 
-<s-image srcset="images/splash-600.jpg 600w, images/splash-1200.jpg 1200w" srcsetwebp="images/splash-600.webp 600w, images/splash-1200.webp 1200w" />
+<s-image srcset="images/splash-600.jpg 600w, images/splash-1200.jpg 1200w" srcsetavif="images/splash-600.avif 600w, images/splash-1200.avif 1200w" srcsetwebp="images/splash-600.webp 600w, images/splash-1200.webp 1200w" />
 ```
 
 ### Configuration
@@ -119,6 +121,7 @@ The following properties will be automatically populated by the preprocessor:
 | Property    |         |
 | ----------- | ------- |
 | srcset      | Responsive images and widths |
+| srcsetavif  | Responsive AVIF images and widths |
 | srcsetwebp  | Responsive WebP images and widths |
 | placeholder | Blurred placeholder image |
 | aspectratio | Aspect ratio of image |
@@ -129,6 +132,7 @@ The following properties will be automatically populated by the preprocessor:
 | --------- | ---------- | ---------- |
 | inputDir | *required* | The static asset directory where image urls are retrieved from |
 | outputDir | *required* | The output directory where resized image files should be written to. This should usually be a subfolder within the normal static asset directory |
+| avif      | `true`     | Whether to generate AVIF versions of images in addition to the original image formats |
 | webp      | `true`     | Whether to generate WebP versions of images in addition to the original image formats |
 
 ## Built With

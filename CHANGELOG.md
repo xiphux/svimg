@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.4.0
+
+* Add AVIF generation support
+* Use sharp's default quality for each image format by default
+
 ## 0.3.1
 
 * Reduce size of placeholder image in HTML

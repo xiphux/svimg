@@ -6,7 +6,7 @@ import Queue from '../core/queue';
 
 interface ResizeImageOptions {
     width: number;
-    quality: number;
+    quality?: number;
 }
 
 export default async function ensureResizeImage(inputFile: string, outputFile: string, queue: Queue, options: ResizeImageOptions): Promise<Image> {

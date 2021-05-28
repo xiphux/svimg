@@ -24,9 +24,9 @@ describe('getProcessImageOptions', () => {
         expect(widths).toEqual([500, 1000, 1500, 2000]);
     });
 
-    it('returns default quality if not passed', () => {
+    it('returns undefined quality if not passed', () => {
         const { quality } = getProcessImageOptions(500);
-        expect(quality).toEqual(75);
+        expect(quality).toBeUndefined();
     });
 
     it('returns passed quality', () => {

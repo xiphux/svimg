@@ -114,7 +114,7 @@ import 'svimg/dist/s-image';
 | width     |            | Resize image to specified width in pixels. If not specified, generates images of widths 480, 1024, 1920, and 2560. |
 | immediate | `false`    | Set to `true` to disable lazy-loading |
 | blur      | `40`       | Amount of blur to apply to placeholder |
-| quality   | `75`       | Quality of the resized images |
+| quality   | *sharp default* | Quality of the resized images, defaults to sharp's default quality for each image format |
 
 The following properties will be automatically populated by the preprocessor:
 

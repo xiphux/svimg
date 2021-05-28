@@ -39,20 +39,20 @@
   },
   "license": "ISC",
   "devDependencies": {
-    "@types/jest": "^25.2.2",
+    "@types/jest": "^26.0.23",
     "@types/sharp": "^0.28.2",
-    "jest": "^26.0.1",
-    "rollup": "^2.10.2",
+    "jest": "^27.0.1",
+    "rollup": "^2.50.3",
     "rollup-plugin-node-resolve": "^5.2.0",
     "rollup-plugin-svelte": "^5.2.2",
-    "rollup-plugin-typescript2": "^0.27.1",
+    "rollup-plugin-typescript2": "^0.30.0",
     "svelte": "^3.22.3",
-    "ts-jest": "^26.0.0",
-    "typescript": "^3.9.2"
+    "ts-jest": "^27.0.1",
+    "typescript": "^4.3.2"
   },
   "dependencies": {
     "md5-file": "^5.0.0",
-    "p-queue": "^6.4.0",
+    "p-queue": "^6.6.2",
     "sharp": "^0.28.3"
   }
 }

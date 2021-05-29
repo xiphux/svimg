@@ -43,7 +43,9 @@ export default [
                 typescript: require('typescript'),
             }),
             svelte({
-                customElement: true,
+                compilerOptions: {
+                    customElement: true,
+                },
             }),
             resolve(),
         ],

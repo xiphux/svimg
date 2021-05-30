@@ -41,8 +41,8 @@
   "devDependencies": {
     "@types/jest": "^26.0.23",
     "@types/sharp": "^0.28.2",
-    "jest": "^27.0.1",
-    "rollup": "^2.50.3",
+    "jest": "^27.0.3",
+    "rollup": "^2.50.5",
     "rollup-plugin-node-resolve": "^5.2.0",
     "rollup-plugin-svelte": "^7.1.0",
     "rollup-plugin-typescript2": "^0.30.0",

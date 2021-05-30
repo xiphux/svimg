@@ -25,6 +25,7 @@
   let native = false;
   let container;
   let imgLoaded = false;
+  let hasResizeObserver = true;
 
   $: fixedWidth = !!(width && /^[0-9]+$/.test(width));
   $: imageWidth =
@@ -35,7 +36,8 @@
       : clientWidth;
   $: imageHeight = imageWidth / aspectratio;
   $: sizes = imageWidth ? `${imageWidth}px` : undefined;
-  $: setSrcset = intersecting || native || immediate;
+  $: setSrcset =
+    (intersecting || native || immediate) && (sizes || !hasResizeObserver);
   $: loaded = imgLoaded || immediate;
 
   onMount(() => {
@@ -47,6 +49,8 @@
         });
 
         ro.observe(container);
+      } else {
+        hasResizeObserver = false;
       }
 
       native = 'loading' in HTMLImageElement.prototype;

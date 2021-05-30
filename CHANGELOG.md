@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.4.1
+
+* Fix issue with Chrome downloading larger than necessary image sizes
+
 ## 0.4.0
 
 * Add AVIF generation support

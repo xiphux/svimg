@@ -24,7 +24,7 @@
   let intersecting = false;
   let native = false;
   let container;
-  let loaded = false;
+  let imgLoaded = false;
 
   $: fixedWidth = !!(width && /^[0-9]+$/.test(width));
   $: imageWidth =
@@ -35,6 +35,8 @@
       : clientWidth;
   $: imageHeight = imageWidth / aspectratio;
   $: sizes = imageWidth ? `${imageWidth}px` : undefined;
+  $: setSrcset = intersecting || native || immediate;
+  $: loaded = imgLoaded || immediate;
 
   onMount(() => {
     tick().then(() => {
@@ -89,26 +91,26 @@
     {#if srcsetavif}
       <source
         type="image/avif"
-        srcset={intersecting || native || immediate ? srcsetavif : undefined}
+        srcset={setSrcset ? srcsetavif : undefined}
         {sizes}
       />
     {/if}
     {#if srcsetwebp}
       <source
         type="image/webp"
-        srcset={intersecting || native || immediate ? srcsetwebp : undefined}
+        srcset={setSrcset ? srcsetwebp : undefined}
         {sizes}
       />
     {/if}
     <img
-      srcset={intersecting || native || immediate ? srcset : undefined}
+      srcset={setSrcset ? srcset : undefined}
       {sizes}
-      alt={loaded || immediate ? alt : undefined}
+      alt={loaded ? alt : undefined}
       width={imageWidth}
       height={imageHeight}
       loading={!immediate ? 'lazy' : undefined}
-      class="image {loaded || immediate ? 'loaded' : ''}"
-      on:load={() => (loaded = true)}
+      class="image {loaded ? 'loaded' : ''}"
+      on:load={() => (imgLoaded = true)}
     />
   </picture>
   {#if !immediate}

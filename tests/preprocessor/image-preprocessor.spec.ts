@@ -1,22 +1,20 @@
 import imagePreprocessor from '../../src/preprocessor/image-preprocessor';
-import getImageNodes from '../../src/preprocessor/get-image-nodes';
-import processImageNode from '../../src/preprocessor/process-image-node';
+import processImageElement from '../../src/preprocessor/process-image-element';
 import Queue from '../../src/core/queue';
 
-jest.mock('../../src/preprocessor/get-image-nodes');
-jest.mock('../../src/preprocessor/process-image-node');
+jest.mock('../../src/preprocessor/process-image-element');
 jest.mock('../../src/core/queue');
+jest.mock('string-replace-async', () => ({
+    default: jest.requireActual('string-replace-async'),
+}));
 
 describe('imagePreprocessor', () => {
 
     beforeEach(() => {
-        (getImageNodes as jest.Mock).mockReset();
-        (processImageNode as jest.Mock).mockReset();
+        (processImageElement as jest.Mock).mockReset();
     });
 
     it('returns content if there aren\'t any image nodes', async () => {
-        (getImageNodes as jest.Mock).mockReturnValue([]);
-
         const processor = imagePreprocessor({
             inputDir: 'static',
             outputDir: 'static/g',
@@ -31,21 +29,13 @@ describe('imagePreprocessor', () => {
             code: '<content>',
         });
 
-        expect(getImageNodes).toHaveBeenCalledWith('<content>');
-        expect(processImageNode).not.toHaveBeenCalled();
+        expect(processImageElement).not.toHaveBeenCalled();
     });
 
     it('processes image nodes', async () => {
-        (getImageNodes as jest.Mock).mockReturnValue([
-            { node: '1' },
-            { node: '2' }
-        ]);
-        (processImageNode as jest.Mock).mockImplementationOnce(
-            () => Promise.resolve({ content: '<content2>', offset: 5 })
-        ).mockImplementationOnce(
-            () => Promise.resolve({ content: '<content3>', offset: 15 })
+        (processImageElement as jest.Mock).mockImplementation(
+            (val: string) => Promise.resolve(val.substring(0, 6) + ' srcset="srcset"' + val.substring(6))
         );
-
         const processor = imagePreprocessor({
             inputDir: 'static',
             outputDir: 'static/g',
@@ -54,18 +44,25 @@ describe('imagePreprocessor', () => {
         });
 
         expect(await processor.markup!({
-            content: '<content>',
+            content: `
+                <div>
+                    <Image src="images/one.jpg" width="150" immediate />
+                </div>
+                <Image src="images/two.jpg" alt={altText}></Image>
+            `,
             filename: 'file',
         })).toEqual({
-            code: '<content3>',
+            code: `
+                <div>
+                    <Image srcset="srcset" src="images/one.jpg" width="150" immediate />
+                </div>
+                <Image srcset="srcset" src="images/two.jpg" alt={altText}></Image>
+            `,
         });
 
-        expect(processImageNode).toHaveBeenCalledTimes(2);
-        expect(processImageNode).toHaveBeenNthCalledWith(
-            1,
-            '<content>',
-            0,
-            { node: '1' },
+        expect(processImageElement).toHaveBeenCalledTimes(2);
+        expect(processImageElement).toHaveBeenCalledWith(
+            '<Image src="images/one.jpg" width="150" immediate />',
             expect.any(Queue),
             {
                 inputDir: 'static',
@@ -74,11 +71,8 @@ describe('imagePreprocessor', () => {
                 avif: true,
             }
         );
-        expect(processImageNode).toHaveBeenNthCalledWith(
-            2,
-            '<content2>',
-            5,
-            { node: '2' },
+        expect(processImageElement).toHaveBeenCalledWith(
+            '<Image src="images/two.jpg" alt={altText}>',
             expect.any(Queue),
             {
                 inputDir: 'static',

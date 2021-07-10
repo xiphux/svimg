@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.5.0
+
+* Replace preprocessor parser to better handle unrecognized script/style languages (eg TypeScript/SCSS)
+
 ## 0.4.1
 
 * Fix issue with Chrome downloading larger than necessary image sizes

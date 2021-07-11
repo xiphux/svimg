@@ -17,11 +17,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Cache NPM
+      - name: Cache PNPM
         uses: actions/cache@v2
         with:
-          path: ~/.npm
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          path: ~/.pnpm-store
+          key: ${{ runner.os }}-node-${{ hashFiles('**/pnpm-lock.yaml') }}
           restore-keys: |
             ${{ runner.os }}-node-
 
@@ -31,7 +31,11 @@ jobs:
           node-version: ${{ matrix.node-version }}
 
       - name: Installing packages
-        run: npm ci
+        uses: pnpm/action-setup@v2
+        with:
+          version: 6.x.x
+          run_install: |
+            - args: [--frozen-lockfile]
 
       - name: Run tests
-        run: npm run test
+        run: pnpm test

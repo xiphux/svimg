@@ -3,8 +3,6 @@ import getImageMetadata from '../../src/core/get-image-metadata';
 import { resizeImageToFile } from '../../src/core/resize-image';
 import exists from '../../src/core/exists';
 
-jest.mock('fs');
-
 describe('ensureResizeImage', () => {
 
     it('requires input file', async () => {

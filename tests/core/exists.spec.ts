@@ -1,14 +1,12 @@
 import exists from '../../src/core/exists';
-import fs from 'fs';
+import * as fs from 'fs';
 
 jest.mock('fs', () => ({
-    default: {
-        promises: {
-            access: jest.fn(),
-        },
-        constants: {
-            F_OK: 1,
-        }
+    promises: {
+        access: jest.fn(),
+    },
+    constants: {
+        F_OK: 1,
     }
 }));
 

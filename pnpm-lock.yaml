@@ -11,7 +11,7 @@ specifiers:
   rollup: ^2.53.0
   rollup-plugin-svelte: ^7.1.0
   rollup-plugin-typescript2: ^0.30.0
-  sharp: ^0.28.3
+  sharp: ^0.29.0
   string-replace-async: ^2.0.0
   svelte: ^3.38.3
   ts-jest: ^27.0.3
@@ -22,7 +22,7 @@ dependencies:
   md5-file: 5.0.0
   node-html-parser: 4.0.0
   p-queue: 6.6.2
-  sharp: 0.28.3
+  sharp: 0.29.0
   string-replace-async: 2.0.0
 
 devDependencies:
@@ -1089,32 +1089,33 @@ packages:
     resolution: {integrity: sha512-QfAUtd+vFdAtFQcC8CCyYt1fYWxSqAiK2cSD6zDB8N3cpsEBAvRxp9zOGg6G/SHHJYAT88/az/IuDGALsNVbGg==}
     dependencies:
       color-name: 1.1.3
+    dev: true
 
   /color-convert/2.0.1:
     resolution: {integrity: sha512-RRECPsj7iu/xb5oKYcsFHSppFNnsj/52OVTRKb4zP5onXwVF3zVmmToNcOfGC+CRDpfK/U584fMg38ZHCaElKQ==}
     engines: {node: '>=7.0.0'}
     dependencies:
       color-name: 1.1.4
-    dev: true
 
   /color-name/1.1.3:
     resolution: {integrity: sha1-p9BVi9icQveV3UIyj3QIMcpTvCU=}
+    dev: true
 
   /color-name/1.1.4:
     resolution: {integrity: sha512-dOy+3AuW3a2wNbZHIuMZpTcgjGuLU/uBL/ubcZF9OXbDo8ff4O8yVp5Bf0efS8uEoYo5q4Fx7dY9OgQGXgAsQA==}
 
-  /color-string/1.5.5:
-    resolution: {integrity: sha512-jgIoum0OfQfq9Whcfc2z/VhCNcmQjWbey6qBX0vqt7YICflUmBCh9E9CiQD5GSJ+Uehixm3NUwHVhqUAWRivZg==}
+  /color-string/1.6.0:
+    resolution: {integrity: sha512-c/hGS+kRWJutUBEngKKmk4iH3sD59MBkoxVapS/0wgpCz2u7XsNloxknyvBhzwEs1IbV36D9PwqLPJ2DTu3vMA==}
     dependencies:
       color-name: 1.1.4
       simple-swizzle: 0.2.2
     dev: false
 
-  /color/3.1.3:
-    resolution: {integrity: sha512-xgXAcTHa2HeFCGLE9Xs/R82hujGtu9Jd9x4NW3T34+OMs7VoPsjwzRczKHvTAHeJwWFwX5j15+MgAppE8ztObQ==}
+  /color/4.0.1:
+    resolution: {integrity: sha512-rpZjOKN5O7naJxkH2Rx1sZzzBgaiWECc6BYXjeCE6kF0kcASJYbUq02u7JqIHwCb/j3NhV+QhRL2683aICeGZA==}
     dependencies:
-      color-convert: 1.9.3
-      color-string: 1.5.5
+      color-convert: 2.0.1
+      color-string: 1.6.0
     dev: false
 
   /colorette/1.2.2:
@@ -2454,8 +2455,8 @@ packages:
       semver: 5.7.1
     dev: false
 
-  /node-addon-api/3.2.1:
-    resolution: {integrity: sha512-mmcei9JghVNDYydghQmeDX8KoAm0FAiYyIcUt/N4nhyAipB17pllZQDOJD2fotxABnt4Mdz+dKTO7eftLg4d0A==}
+  /node-addon-api/4.0.0:
+    resolution: {integrity: sha512-ALmRVBFzfwldBfk3SbKfl6+PVMXiCPKZBEfsJqB/EjXAMAI+MfFrEHR+GMRBuI162DihZ1QjEZ8ieYKuRCJ8Hg==}
     dev: false
 
   /node-html-parser/4.0.0:
@@ -2477,10 +2478,6 @@ packages:
   /node-releases/1.1.73:
     resolution: {integrity: sha512-uW7fodD6pyW2FZNZnp/Z3hvWKeEW1Y8R1+1CnErE8cXFXzl5blBOoVB41CvMer6P6Q0S5FXDwcHgFd1Wj0U9zg==}
     dev: true
-
-  /noop-logger/0.1.1:
-    resolution: {integrity: sha1-lKKxYzxPExdVMAfYlm/Q6EG2pMI=}
-    dev: false
 
   /normalize-path/3.0.0:
     resolution: {integrity: sha512-6eZs5Ls3WtCisHWp9S2GUy8dqkpGi4BVSz3GaqiE6ezub0512ESztXUwUB6C6IKbQkY2Pnb/mD4WYojCRwcwLA==}
@@ -2633,8 +2630,8 @@ packages:
       find-up: 4.1.0
     dev: true
 
-  /prebuild-install/6.1.2:
-    resolution: {integrity: sha512-PzYWIKZeP+967WuKYXlTOhYBgGOvTRSfaKI89XnfJ0ansRAH7hDU45X+K+FZeI1Wb/7p/NnuctPH3g0IqKUuSQ==}
+  /prebuild-install/6.1.4:
+    resolution: {integrity: sha512-Z4vpywnK1lBg+zdPCVCsKq0xO66eEV9rWo2zrROGGiRS4JtueBOdlB1FnY8lcy7JsUud/Q3ijUxyWN26Ika0vQ==}
     engines: {node: '>=6'}
     hasBin: true
     dependencies:
@@ -2645,7 +2642,6 @@ packages:
       mkdirp-classic: 0.5.3
       napi-build-utils: 1.0.2
       node-abi: 2.30.0
-      noop-logger: 0.1.1
       npmlog: 4.1.2
       pump: 3.0.0
       rc: 1.2.8
@@ -2854,15 +2850,15 @@ packages:
     resolution: {integrity: sha1-BF+XgtARrppoA93TgrJDkrPYkPc=}
     dev: false
 
-  /sharp/0.28.3:
-    resolution: {integrity: sha512-21GEP45Rmr7q2qcmdnjDkNP04Ooh5v0laGS5FDpojOO84D1DJwUijLiSq8XNNM6e8aGXYtoYRh3sVNdm8NodMA==}
-    engines: {node: '>=10'}
+  /sharp/0.29.0:
+    resolution: {integrity: sha512-mdN1Up0eN+SwyForPls59dWO0nx64J1XRQYy5ZiKSADAccGYCB10UAGJHSVG9VObzJdhHqrVJzQcq6gx8USyoA==}
+    engines: {node: '>=12.13.0'}
     requiresBuild: true
     dependencies:
-      color: 3.1.3
+      color: 4.0.1
       detect-libc: 1.0.3
-      node-addon-api: 3.2.1
-      prebuild-install: 6.1.2
+      node-addon-api: 4.0.0
+      prebuild-install: 6.1.4
       semver: 7.3.5
       simple-get: 3.1.0
       tar-fs: 2.1.1

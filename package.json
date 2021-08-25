@@ -55,7 +55,7 @@
     "md5-file": "^5.0.0",
     "node-html-parser": "^4.0.0",
     "p-queue": "^6.6.2",
-    "sharp": "^0.28.3",
+    "sharp": "^0.29.0",
     "string-replace-async": "^2.0.0"
   }
 }

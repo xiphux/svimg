@@ -26,6 +26,7 @@
   let container;
   let imgLoaded = false;
   let hasResizeObserver = true;
+  let hidePlaceholder = false;
 
   $: fixedWidth = !!(width && /^[0-9]+$/.test(width));
   $: imageWidth =
@@ -39,6 +40,15 @@
   $: setSrcset =
     (intersecting || native || immediate) && (sizes || !hasResizeObserver);
   $: loaded = imgLoaded || immediate;
+
+  function onImgLoad() {
+    imgLoaded = true;
+    if (!immediate) {
+      setTimeout(() => {
+        hidePlaceholder = true;
+      }, 250); // sync with opacity transition duration
+    }
+  }
 
   onMount(() => {
     tick().then(() => {
@@ -114,10 +124,10 @@
       height={imageHeight}
       loading={!immediate ? 'lazy' : undefined}
       class="image {loaded ? 'loaded' : ''}"
-      on:load={() => (imgLoaded = true)}
+      on:load={onImgLoad}
     />
   </picture>
-  {#if !immediate}
+  {#if !immediate && !hidePlaceholder}
     <img
       class="placeholder"
       src={placeholder}

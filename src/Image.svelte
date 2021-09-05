@@ -27,6 +27,7 @@
   let imgLoaded = false;
   let hasResizeObserver = true;
   let hidePlaceholder = false;
+  let supportsCssAspectRatio = true;
 
   $: fixedWidth = !!(width && /^[0-9]+$/.test(width));
   $: imageWidth =
@@ -40,6 +41,8 @@
   $: setSrcset =
     (intersecting || native || immediate) && (sizes || !hasResizeObserver);
   $: loaded = imgLoaded || immediate;
+  $: useAspectRatioFallback =
+    !supportsCssAspectRatio && aspectratio && (fixedWidth || hasResizeObserver);
 
   function onImgLoad() {
     imgLoaded = true;
@@ -62,6 +65,11 @@
       } else {
         hasResizeObserver = false;
       }
+
+      supportsCssAspectRatio = CSS.supports(
+        'aspect-ratio',
+        'var(--svimg-aspect-ratio)',
+      );
 
       native = 'loading' in HTMLImageElement.prototype;
       if (native || immediate) {
@@ -98,7 +106,11 @@
 
 <div
   bind:this={container}
-  style="{fixedWidth ? `max-width:${width}px;` : ''} --svimg-blur:{blur}px"
+  style="{fixedWidth
+    ? `max-width:${width}px;`
+    : ''} --svimg-blur:{blur}px; {aspectratio
+    ? `--svimg-aspect-ratio:${aspectratio};`
+    : ''}"
   class="wrapper {className}"
 >
   <picture>
@@ -134,6 +146,9 @@
       {alt}
       width={imageWidth}
       height={imageHeight}
+      style={useAspectRatioFallback
+        ? `width:${imageWidth}px; height:${imageHeight}px;`
+        : ''}
     />
   {/if}
 </div>
@@ -153,6 +168,7 @@
     width: 100%;
     height: auto;
     display: block;
+    aspect-ratio: var(--svimg-aspect-ratio);
   }
   .image {
     opacity: 0;

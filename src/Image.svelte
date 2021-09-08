@@ -8,10 +8,10 @@
   let className = '';
   export { className as class };
   export let srcset;
-  export let srcsetwebp;
-  export let srcsetavif;
+  export let srcsetwebp = '';
+  export let srcsetavif = '';
   export let placeholder = '';
-  export let width;
+  export let width = '';
   export let aspectratio;
   export let immediate = false;
   export let blur = 40;

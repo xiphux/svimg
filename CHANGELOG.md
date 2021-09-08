@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.0
+
+* Drop Node 10 support
+* Fix issue with placeholder image's aspect ratio being slightly off
+* Suppress warnings when optional parameters aren't passed
+
 ## 0.5.0
 
 * Replace preprocessor parser to better handle unrecognized script/style languages (eg TypeScript/SCSS)

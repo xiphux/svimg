@@ -5,82 +5,89 @@ import Queue from '../../src/core/queue';
 jest.mock('../../src/preprocessor/process-image-element');
 jest.mock('../../src/core/queue');
 jest.mock('string-replace-async', () => ({
-    default: jest.requireActual('string-replace-async'),
+  default: jest.requireActual('string-replace-async'),
 }));
 
 describe('imagePreprocessor', () => {
+  beforeEach(() => {
+    (processImageElement as jest.Mock).mockReset();
+  });
 
-    beforeEach(() => {
-        (processImageElement as jest.Mock).mockReset();
+  it("returns content if there aren't any image nodes", async () => {
+    const processor = imagePreprocessor({
+      inputDir: 'static',
+      outputDir: 'static/g',
+      webp: true,
+      avif: true,
     });
 
-    it('returns content if there aren\'t any image nodes', async () => {
-        const processor = imagePreprocessor({
-            inputDir: 'static',
-            outputDir: 'static/g',
-            webp: true,
-            avif: true,
-        });
-
-        expect(await processor.markup!({
-            content: '<content>',
-            filename: 'file',
-        })).toEqual({
-            code: '<content>',
-        });
-
-        expect(processImageElement).not.toHaveBeenCalled();
+    expect(
+      await processor.markup!({
+        content: '<content>',
+        filename: 'file',
+      }),
+    ).toEqual({
+      code: '<content>',
     });
 
-    it('processes image nodes', async () => {
-        (processImageElement as jest.Mock).mockImplementation(
-            (val: string) => Promise.resolve(val.substring(0, 6) + ' srcset="srcset"' + val.substring(6))
-        );
-        const processor = imagePreprocessor({
-            inputDir: 'static',
-            outputDir: 'static/g',
-            webp: true,
-            avif: true,
-        });
+    expect(processImageElement).not.toHaveBeenCalled();
+  });
 
-        expect(await processor.markup!({
-            content: `
+  it('processes image nodes', async () => {
+    (processImageElement as jest.Mock).mockImplementation((val: string) =>
+      Promise.resolve(
+        val.substring(0, 6) + ' srcset="srcset"' + val.substring(6),
+      ),
+    );
+    const processor = imagePreprocessor({
+      inputDir: 'static',
+      outputDir: 'static/g',
+      publicPath: '/',
+      webp: true,
+      avif: true,
+    });
+
+    expect(
+      await processor.markup!({
+        content: `
                 <div>
                     <Image src="images/one.jpg" width="150" immediate />
                 </div>
                 <Image src="images/two.jpg" alt={altText}></Image>
             `,
-            filename: 'file',
-        })).toEqual({
-            code: `
+        filename: 'file',
+      }),
+    ).toEqual({
+      code: `
                 <div>
                     <Image srcset="srcset" src="images/one.jpg" width="150" immediate />
                 </div>
                 <Image srcset="srcset" src="images/two.jpg" alt={altText}></Image>
             `,
-        });
-
-        expect(processImageElement).toHaveBeenCalledTimes(2);
-        expect(processImageElement).toHaveBeenCalledWith(
-            '<Image src="images/one.jpg" width="150" immediate />',
-            expect.any(Queue),
-            {
-                inputDir: 'static',
-                outputDir: 'static/g',
-                webp: true,
-                avif: true,
-            }
-        );
-        expect(processImageElement).toHaveBeenCalledWith(
-            '<Image src="images/two.jpg" alt={altText}>',
-            expect.any(Queue),
-            {
-                inputDir: 'static',
-                outputDir: 'static/g',
-                webp: true,
-                avif: true,
-            }
-        );
     });
 
+    expect(processImageElement).toHaveBeenCalledTimes(2);
+    expect(processImageElement).toHaveBeenCalledWith(
+      '<Image src="images/one.jpg" width="150" immediate />',
+      expect.any(Queue),
+      {
+        inputDir: 'static',
+        outputDir: 'static/g',
+        publicPath: '/',
+        webp: true,
+        avif: true,
+      },
+    );
+    expect(processImageElement).toHaveBeenCalledWith(
+      '<Image src="images/two.jpg" alt={altText}>',
+      expect.any(Queue),
+      {
+        inputDir: 'static',
+        outputDir: 'static/g',
+        publicPath: '/',
+        webp: true,
+        avif: true,
+      },
+    );
+  });
 });

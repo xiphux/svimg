@@ -6,37 +6,40 @@ import { ImagePreprocessorOptions } from './image-preprocessor';
 import parseAttributes from './parse-attributes';
 
 export default async function processImageElement(
-    element: string,
-    queue: Queue,
-    options: ImagePreprocessorOptions
+  element: string,
+  queue: Queue,
+  options: ImagePreprocessorOptions,
 ): Promise<string> {
-    if (!element) {
-        return element;
-    }
+  if (!element) {
+    return element;
+  }
 
-    const attrs = parseAttributes(element);
-    const src = attrs['src'];
-    if (!src) {
-        return element;
-    }
+  const attrs = parseAttributes(element);
+  const src = attrs['src'];
+  if (!src) {
+    return element;
+  }
 
-    const width = tryParseInt(attrs['width']);
-    const quality = tryParseInt(attrs['quality']);
-    const immediate = !!attrs['immediate'];
+  const width = tryParseInt(attrs['width']);
+  const quality = tryParseInt(attrs['quality']);
+  const immediate = !!attrs['immediate'];
 
-    const newAttrs = await generateComponentAttributes({
-        src,
-        queue,
-        inputDir: options.inputDir,
-        outputDir: options.outputDir,
-        webp: options.webp,
-        avif: options.avif,
-        widths: width ? [width] : undefined,
-        quality,
-        skipPlaceholder: immediate || undefined,
-    });
+  const newAttrs = await generateComponentAttributes({
+    src,
+    queue,
+    inputDir: options.inputDir,
+    outputDir: options.outputDir,
+    publicPath: options.publicPath || undefined,
+    webp: options.webp,
+    avif: options.avif,
+    widths: width ? [width] : undefined,
+    quality,
+    skipPlaceholder: immediate || undefined,
+  });
 
-    const attrString = Object.entries(newAttrs).map(([attr, val]) => formatAttribute(attr, val)).join(' ');
+  const attrString = Object.entries(newAttrs)
+    .map(([attr, val]) => formatAttribute(attr, val))
+    .join(' ');
 
-    return element.substring(0, 6) + ' ' + attrString + element.substring(6);
+  return element.substring(0, 6) + ' ' + attrString + element.substring(6);
 }

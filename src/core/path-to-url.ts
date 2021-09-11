@@ -1,8 +1,20 @@
 const pathSepPattern = /\\/g;
 
+function stripPrefix(path: string, prefix: string): string {
+  prefix = prefix.replace(pathSepPattern, '/');
+
+  if (!path.startsWith(prefix)) {
+    return path;
+  }
+
+  return path.substring(prefix.length + (prefix.endsWith('/') ? 0 : 1));
+}
+
 interface PathToUrlOptions {
   inputDir?: string;
   src?: string;
+  outputDir?: string;
+  publicPath?: string;
 }
 
 export default function pathToUrl(
@@ -15,14 +27,20 @@ export default function pathToUrl(
     return path;
   }
 
-  let { inputDir, src } = options;
+  let { inputDir, src, outputDir, publicPath } = options;
+
+  if (publicPath) {
+    if (outputDir) {
+      path = stripPrefix(path, outputDir);
+    }
+
+    path = publicPath + (publicPath.endsWith('/') ? '' : '/') + path;
+
+    return path;
+  }
 
   if (inputDir) {
-    inputDir = inputDir.replace(pathSepPattern, '/');
-
-    if (path.startsWith(inputDir)) {
-      path = path.substring(inputDir.length + (inputDir.endsWith('/') ? 0 : 1));
-    }
+    path = stripPrefix(path, inputDir);
   }
 
   if (src && !path.startsWith('/') && /^\/[^\/]/.test(src)) {

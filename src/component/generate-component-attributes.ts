@@ -12,6 +12,7 @@ interface GenerateComponentAttributesOptions {
   queue?: Queue;
   inputDir: string;
   outputDir: string;
+  publicPath?: string;
   webp?: boolean;
   avif?: boolean;
   widths?: number[];
@@ -25,6 +26,7 @@ export default async function generateComponentAttributes({
   queue,
   inputDir,
   outputDir,
+  publicPath,
   webp,
   avif,
   widths,
@@ -62,15 +64,15 @@ export default async function generateComponentAttributes({
   return getComponentAttributes({
     images: images.map((i) => ({
       ...i,
-      path: pathToUrl(i.path, { inputDir, src }),
+      path: pathToUrl(i.path, { inputDir, outputDir, src, publicPath }),
     })),
     webpImages: webpImages.map((i) => ({
       ...i,
-      path: pathToUrl(i.path, { inputDir, src }),
+      path: pathToUrl(i.path, { inputDir, outputDir, src, publicPath }),
     })),
     avifImages: avifImages.map((i) => ({
       ...i,
-      path: pathToUrl(i.path, { inputDir, src }),
+      path: pathToUrl(i.path, { inputDir, outputDir, src, publicPath }),
     })),
     placeholder,
     aspectRatio,

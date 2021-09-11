@@ -131,7 +131,8 @@ The following properties will be automatically populated by the preprocessor:
 | Option    | Default    |            |
 | --------- | ---------- | ---------- |
 | inputDir | *required* | The static asset directory where image urls are retrieved from |
-| outputDir | *required* | The output directory where resized image files should be written to. This should usually be a subfolder within the normal static asset directory |
+| outputDir | *required* | The output directory where resized image files should be written to. This should usually be a subdirectory within the normal static asset directory |
+| publicPath | The `outputDir` relative to the `inputDir` static asset directory | The public path that images will be served from. This will be prepended to the src url during preprocessing. The default behavior will work for most use cases, where the `outputDir` is a subdirectory of the `inputDir` static asset directory and the site is served from the root of the domain. This can be overridden for more advanced use cases, such as a site served from a subdirectory of the domain or for images served from a separate domain such as a CDN or static asset domain.
 | avif      | `true`     | Whether to generate AVIF versions of images in addition to the original image formats |
 | webp      | `true`     | Whether to generate WebP versions of images in addition to the original image formats |
 

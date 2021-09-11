@@ -2,6 +2,7 @@ const pathSepPattern = /\\/g;
 
 interface PathToUrlOptions {
   inputDir?: string;
+  src?: string;
 }
 
 export default function pathToUrl(
@@ -14,7 +15,7 @@ export default function pathToUrl(
     return path;
   }
 
-  let { inputDir } = options;
+  let { inputDir, src } = options;
 
   if (inputDir) {
     inputDir = inputDir.replace(pathSepPattern, '/');
@@ -22,6 +23,10 @@ export default function pathToUrl(
     if (path.startsWith(inputDir)) {
       path = path.substring(inputDir.length + (inputDir.endsWith('/') ? 0 : 1));
     }
+  }
+
+  if (src && !path.startsWith('/') && /^\/[^\/]/.test(src)) {
+    path = '/' + path;
   }
 
   return path;

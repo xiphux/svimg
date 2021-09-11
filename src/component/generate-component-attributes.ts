@@ -62,15 +62,15 @@ export default async function generateComponentAttributes({
   return getComponentAttributes({
     images: images.map((i) => ({
       ...i,
-      path: pathToUrl(i.path, { inputDir }),
+      path: pathToUrl(i.path, { inputDir, src }),
     })),
     webpImages: webpImages.map((i) => ({
       ...i,
-      path: pathToUrl(i.path, { inputDir }),
+      path: pathToUrl(i.path, { inputDir, src }),
     })),
     avifImages: avifImages.map((i) => ({
       ...i,
-      path: pathToUrl(i.path, { inputDir }),
+      path: pathToUrl(i.path, { inputDir, src }),
     })),
     placeholder,
     aspectRatio,

@@ -1,15 +1,28 @@
 const pathSepPattern = /\\/g;
 
-export default function pathToUrl(path: string, baseDir?: string): string {
-    path = path.replace(pathSepPattern, '/');
+interface PathToUrlOptions {
+  inputDir?: string;
+}
 
-    if (baseDir) {
-        baseDir = baseDir.replace(pathSepPattern, '/');
+export default function pathToUrl(
+  path: string,
+  options?: PathToUrlOptions,
+): string {
+  path = path.replace(pathSepPattern, '/');
 
-        if (path.startsWith(baseDir)) {
-            path = path.substring(baseDir.length + (baseDir.endsWith('/') ? 0 : 1));
-        }
-    }
-
+  if (!options) {
     return path;
+  }
+
+  let { inputDir } = options;
+
+  if (inputDir) {
+    inputDir = inputDir.replace(pathSepPattern, '/');
+
+    if (path.startsWith(inputDir)) {
+      path = path.substring(inputDir.length + (inputDir.endsWith('/') ? 0 : 1));
+    }
+  }
+
+  return path;
 }

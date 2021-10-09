@@ -6,7 +6,7 @@ specifiers:
   '@types/sharp': ^0.29.0
   jest: ^27.1.0
   md5-file: ^5.0.0
-  node-html-parser: ^4.1.4
+  node-html-parser: 4.1.4
   p-queue: ^6.6.2
   rollup: ^2.56.3
   rollup-plugin-svelte: ^7.1.0

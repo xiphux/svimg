@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.1.0
+
+* Add publicPath override option
+* Fix preprocessing of Image tags with line breaks
+
 ## 1.0.0
 
 * Drop Node 10 support

@@ -25,9 +25,11 @@
   let native = false;
   let container;
   let imgLoaded = false;
+  let imgError = false;
   let hasResizeObserver = true;
   let hidePlaceholder = false;
   let supportsCssAspectRatio = true;
+  let mounted = false;
 
   $: fixedWidth = !!(width && /^[0-9]+$/.test(width));
   $: imageWidth =
@@ -39,8 +41,9 @@
   $: imageHeight = imageWidth / aspectratio;
   $: sizes = imageWidth ? `${imageWidth}px` : undefined;
   $: setSrcset =
-    (intersecting || native || immediate) && (sizes || !hasResizeObserver);
-  $: loaded = imgLoaded || immediate;
+    (intersecting || native || immediate) &&
+    mounted &&
+    (sizes || !hasResizeObserver);
   $: useAspectRatioFallback =
     !supportsCssAspectRatio && aspectratio && (fixedWidth || hasResizeObserver);
 
@@ -54,6 +57,10 @@
   }
 
   onMount(() => {
+    // src attribute must be set after onload to ensure
+    // the onload handler still fires for immediate images
+    mounted = true;
+
     tick().then(() => {
       let ro;
       if (window.ResizeObserver) {
@@ -131,12 +138,13 @@
     <img
       srcset={setSrcset ? srcset : undefined}
       {sizes}
-      alt={loaded ? alt : undefined}
+      alt={imgLoaded || imgError ? alt : undefined}
       width={imageWidth}
       height={imageHeight}
       loading={!immediate ? 'lazy' : undefined}
-      class="image {loaded ? 'loaded' : ''}"
+      class="image {imgLoaded || immediate ? 'loaded' : ''}"
       on:load={onImgLoad}
+      on:error={() => (imgError = true)}
     />
   </picture>
   {#if !immediate && !hidePlaceholder}

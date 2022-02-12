@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.1.1
+
+* Avoid rendering alt text while an immediate image is still loading
+
 ## 1.1.0
 
 * Add publicPath override option

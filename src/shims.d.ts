@@ -6,5 +6,3 @@ declare module 'md5-file' {
 
   export = md5Promise;
 }
-
-declare module '*.svelte';

@@ -1,5 +1,12 @@
 # Changelog
 
+## 2.0.0
+
+* BREAKING: Image preprocessor is now a named export instead of a default export (`import { imagePreprocessor } from 'svimg'` instead of `import imagePreprocessor from 'svimg'`)
+* TypeScript definitions are now provided for the Image component
+* JSDoc has been added for the Image component and imagePreprocessor
+* Image preprocessor code now targets ES2017
+
 ## 1.1.1
 
 * Avoid rendering alt text while an immediate image is still loading

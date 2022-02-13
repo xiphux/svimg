@@ -4,9 +4,6 @@ import Queue from '../../src/core/queue';
 
 jest.mock('../../src/preprocessor/process-image-element');
 jest.mock('../../src/core/queue');
-jest.mock('string-replace-async', () => ({
-  default: jest.requireActual('string-replace-async'),
-}));
 
 describe('imagePreprocessor', () => {
   beforeEach(() => {

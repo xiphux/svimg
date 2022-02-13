@@ -20,7 +20,7 @@ npm install -D svimg
 In `rollup.config.js`, add `imagePreprocessor` as a preprocessor for `rollup-plugin-svelte`:
 
 ```js
-import imagePreprocessor from 'svimg';
+import { imagePreprocessor } from 'svimg';
 
 export default {
     plugins: [
@@ -41,7 +41,7 @@ export default {
 If you're using [Sapper](https://sapper.svelte.dev/), add the preprocessor to both the client and the server svelte plugins. Make sure to use the same instance of `imagePreprocessor` for both client and server, to avoid redundant double-processing of image files:
 
 ```js
-import imagePreprocessor from 'svimg';
+import { imagePreprocessor } from 'svimg';
 
 const preprocess = [
     imagePreprocessor({

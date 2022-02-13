@@ -3,65 +3,28 @@ import pkg from './package.json';
 import svelte from 'rollup-plugin-svelte';
 import resolve from '@rollup/plugin-node-resolve';
 
-export default [
-    {
-        input: 'src/index.ts',
-        output: [
-            {
-                file: pkg.main,
-                format: 'cjs',
-            },
-            {
-                file: pkg.module,
-                format: 'es',
-            },
-        ],
-        external: [
-            ...Object.keys(pkg.dependencies || {}),
-            ...Object.keys(pkg.peerDependencies || {}),
-        ],
-        plugins: [
-            typescript({
-                typescript: require('typescript'),
-            })
-        ],
-    },
-    {
-        input: 'src/s-image.ts',
-        output: [
-            {
-                file: 'dist/s-image.js',
-                format: 'iife',
-            },
-        ],
-        external: [
-            ...Object.keys(pkg.dependencies || {}),
-            ...Object.keys(pkg.peerDependencies || {}),
-        ],
-        plugins: [
-            typescript({
-                typescript: require('typescript'),
-            }),
+const entryPoints = [
+    { entry: 'index', formats: ['cjs', 'es'] },
+    { entry: 'process', formats: ['cjs', 'es'] },
+    { entry: 's-image', formats: ['iife'],
+        extraPlugins: [
             svelte({
                 compilerOptions: {
                     customElement: true,
                 },
             }),
             resolve(),
-        ],
-    },
-    {
-        input: 'src/process.ts',
-        output: [
-            {
-                file: 'dist/process.js',
-                format: 'cjs',
-            },
-            {
-                file: 'dist/process.es.js',
-                format: 'es',
-            },
-        ],
+        ]
+    }
+];
+
+export default [
+    ...entryPoints.map((entryPoint) => ({
+        input: `src/${entryPoint.entry}.ts`,
+        output: entryPoint.formats.map((format) => ({
+            file: `dist/${entryPoint.entry}.${format == 'es' ? 'es.js' : 'js'}`,
+            format,
+        })),
         external: [
             ...Object.keys(pkg.dependencies || {}),
             ...Object.keys(pkg.peerDependencies || {}),
@@ -69,7 +32,8 @@ export default [
         plugins: [
             typescript({
                 typescript: require('typescript'),
-            })
+            }),
+            ...(entryPoint.extraPlugins || [])
         ],
-    },
+    }))
 ];

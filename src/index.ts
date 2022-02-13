@@ -1,2 +1,2 @@
 import imagePreprocessor from './preprocessor/image-preprocessor';
-export default imagePreprocessor;
+export { imagePreprocessor };

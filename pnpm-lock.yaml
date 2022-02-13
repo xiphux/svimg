@@ -2,6 +2,7 @@ lockfileVersion: 5.3
 
 specifiers:
   '@rollup/plugin-node-resolve': ^13.0.4
+  '@tsconfig/svelte': ^3.0.0
   '@types/jest': ^27.0.1
   '@types/sharp': ^0.29.0
   jest: ^27.1.0
@@ -16,7 +17,7 @@ specifiers:
   svelte: ^3.42.4
   ts-jest: ^27.0.5
   tslib: ^2.3.1
-  typescript: ^4.4.2
+  typescript: ^4.5.5
 
 dependencies:
   md5-file: 5.0.0
@@ -27,16 +28,17 @@ dependencies:
 
 devDependencies:
   '@rollup/plugin-node-resolve': 13.0.4_rollup@2.56.3
+  '@tsconfig/svelte': 3.0.0
   '@types/jest': 27.0.1
   '@types/sharp': 0.29.0
   jest: 27.1.0
   rollup: 2.56.3
   rollup-plugin-svelte: 7.1.0_rollup@2.56.3+svelte@3.42.4
-  rollup-plugin-typescript2: 0.30.0_rollup@2.56.3+typescript@4.4.2
+  rollup-plugin-typescript2: 0.30.0_rollup@2.56.3+typescript@4.5.5
   svelte: 3.42.4
-  ts-jest: 27.0.5_d6279bcaf6e2c6aa91a58343d133ee67
+  ts-jest: 27.0.5_ac399fee53517a901dd63bd0856d871c
   tslib: 2.3.1
-  typescript: 4.4.2
+  typescript: 4.5.5
 
 packages:
 
@@ -652,6 +654,10 @@ packages:
   /@tootallnate/once/1.1.2:
     resolution: {integrity: sha512-RbzJvlNzmRq5c3O09UipeuXno4tA1FE6ikOjxZK0tuxVv3412l64l5t1W5pj4+rJq9vpkm/kwiR07aZXnsKPxw==}
     engines: {node: '>= 6'}
+    dev: true
+
+  /@tsconfig/svelte/3.0.0:
+    resolution: {integrity: sha512-pYrtLtOwku/7r1i9AMONsJMVYAtk3hzOfiGNekhtq5tYBGA7unMve8RvUclKLMT3PrihvJqUmzsRGh0RP84hKg==}
     dev: true
 
   /@types/babel__core/7.1.15:
@@ -2778,7 +2784,7 @@ packages:
       svelte: 3.42.4
     dev: true
 
-  /rollup-plugin-typescript2/0.30.0_rollup@2.56.3+typescript@4.4.2:
+  /rollup-plugin-typescript2/0.30.0_rollup@2.56.3+typescript@4.5.5:
     resolution: {integrity: sha512-NUFszIQyhgDdhRS9ya/VEmsnpTe+GERDMmFo0Y+kf8ds51Xy57nPNGglJY+W6x1vcouA7Au7nsTgsLFj2I0PxQ==}
     peerDependencies:
       rollup: '>=1.26.3'
@@ -2790,7 +2796,7 @@ packages:
       resolve: 1.20.0
       rollup: 2.56.3
       tslib: 2.1.0
-      typescript: 4.4.2
+      typescript: 4.5.5
     dev: true
 
   /rollup-pluginutils/2.8.2:
@@ -3109,7 +3115,7 @@ packages:
       punycode: 2.1.1
     dev: true
 
-  /ts-jest/27.0.5_d6279bcaf6e2c6aa91a58343d133ee67:
+  /ts-jest/27.0.5_ac399fee53517a901dd63bd0856d871c:
     resolution: {integrity: sha512-lIJApzfTaSSbtlksfFNHkWOzLJuuSm4faFAfo5kvzOiRAuoN4/eKxVJ2zEAho8aecE04qX6K1pAzfH5QHL1/8w==}
     engines: {node: ^10.13.0 || ^12.13.0 || ^14.15.0 || >=15.0.0}
     hasBin: true
@@ -3136,7 +3142,7 @@ packages:
       lodash: 4.17.21
       make-error: 1.3.6
       semver: 7.3.5
-      typescript: 4.4.2
+      typescript: 4.5.5
       yargs-parser: 20.2.7
     dev: true
 
@@ -3177,8 +3183,8 @@ packages:
       is-typedarray: 1.0.0
     dev: true
 
-  /typescript/4.4.2:
-    resolution: {integrity: sha512-gzP+t5W4hdy4c+68bfcv0t400HVJMMd2+H9B7gae1nQlBzCqvrXX+6GL/b3GAgyTH966pzrZ70/fRjwAtZksSQ==}
+  /typescript/4.5.5:
+    resolution: {integrity: sha512-TCTIul70LyWe6IJWT8QSYeA54WQe8EjQFU4wY52Fasj5UKx88LNYKCgBEHcOMOrFF1rKGbD8v/xcNWVUq9SymA==}
     engines: {node: '>=4.2.0'}
     hasBin: true
     dev: true

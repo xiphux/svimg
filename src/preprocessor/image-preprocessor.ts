@@ -1,4 +1,7 @@
-import { PreprocessorGroup, Processed } from 'svelte/types/compiler/preprocess';
+import type {
+  PreprocessorGroup,
+  Processed,
+} from 'svelte/types/compiler/preprocess';
 import Queue from '../core/queue';
 import replaceAsync from 'string-replace-async';
 import processImageElement from './process-image-element';

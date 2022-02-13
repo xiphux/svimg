@@ -1,6 +1,5 @@
-import getComponentAttributes, {
-  GetComponentAttributesOutput,
-} from './get-component-attributes';
+import getComponentAttributes from './get-component-attributes';
+import type { GetComponentAttributesOutput } from './get-component-attributes';
 import { join, dirname } from 'path';
 import pathToUrl from '../core/path-to-url';
 import Queue from '../core/queue';

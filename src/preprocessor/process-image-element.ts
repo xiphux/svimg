@@ -1,8 +1,8 @@
 import generateComponentAttributes from '../component/generate-component-attributes';
 import formatAttribute from '../core/format-attribute';
-import Queue from '../core/queue';
+import type Queue from '../core/queue';
 import tryParseInt from '../core/try-parse-int';
-import { ImagePreprocessorOptions } from './image-preprocessor';
+import type { ImagePreprocessorOptions } from './image-preprocessor';
 import parseAttributes from './parse-attributes';
 
 export default async function processImageElement(

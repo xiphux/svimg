@@ -40,6 +40,7 @@
   "license": "ISC",
   "devDependencies": {
     "@rollup/plugin-node-resolve": "^13.0.4",
+    "@tsconfig/svelte": "^3.0.0",
     "@types/jest": "^27.0.1",
     "@types/sharp": "^0.29.0",
     "jest": "^27.1.0",
@@ -49,7 +50,7 @@
     "svelte": "^3.42.4",
     "ts-jest": "^27.0.5",
     "tslib": "^2.3.1",
-    "typescript": "^4.4.2"
+    "typescript": "^4.5.5"
   },
   "dependencies": {
     "md5-file": "^5.0.0",

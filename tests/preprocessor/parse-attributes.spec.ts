@@ -27,7 +27,7 @@ describe('parseAttributes', () => {
   });
 
   it('parses an expression attribute', () => {
-    expect(parseAttributes('<Image alt={altText}>')).toEqual({
+    expect(parseAttributes('<Image alt={altText} />')).toEqual({
       alt: '{altText}',
     });
   });

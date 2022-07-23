@@ -1,5 +1,10 @@
 # Changelog
 
+## 3.0.0
+
+* BREAKING: Drop Node 12 support
+* Export ImagePreprocessorOptions type
+
 ## 2.0.0
 
 * BREAKING: Image preprocessor is now a named export instead of a default export (`import { imagePreprocessor } from 'svimg'` instead of `import imagePreprocessor from 'svimg'`)

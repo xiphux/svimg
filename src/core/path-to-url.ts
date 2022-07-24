@@ -1,3 +1,5 @@
+import { deprecate } from 'util';
+
 const pathSepPattern = /\\/g;
 
 function stripPrefix(path: string, prefix: string): string {
@@ -18,9 +20,12 @@ export interface SrcGeneratorInfo {
 
 export type SrcGenerator = (path: string, info?: SrcGeneratorInfo) => string;
 
-function createPublicPathSrcGenerator(publicPath: string): SrcGenerator {
+const createPublicPathSrcGenerator = deprecate(function (
+  publicPath: string,
+): SrcGenerator {
   return (path) => publicPath + (publicPath.endsWith('/') ? '' : '/') + path;
-}
+},
+'publicPath is deprecated, please use srcGenerator instead');
 
 function defaultSrcGenerator(
   path: string,

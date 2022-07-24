@@ -55,6 +55,21 @@ export interface ImagePreprocessorOptions {
    */
   avif?: boolean;
 
+  /**
+   * An optional function to override the logic of
+   * how src URLs are generated for the srcset.
+   *
+   * This is called once per generated image file,
+   * and can be used to customize the generated
+   * image URLs - for example, to add or remove
+   * path components or to specify a CDN domain.
+   *
+   * The default behavior without this parameter
+   * will work for common use cases, where the
+   * outputDir is a subdirectory of the inputDir
+   * static asset directory and the site is served
+   * from the root of the domain.
+   */
   srcGenerator?: SrcGenerator;
 }
 

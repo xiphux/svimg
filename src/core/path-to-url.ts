@@ -10,10 +10,37 @@ function stripPrefix(path: string, prefix: string): string {
   return path.substring(prefix.length + (prefix.endsWith('/') ? 0 : 1));
 }
 
+interface SrcGeneratorInfo {
+  inputDir: string;
+  outputDir: string;
+  src: string;
+}
+
+type SrcGenerator = (path: string, info?: SrcGeneratorInfo) => string;
+
+function createPublicPathSrcGenerator(publicPath: string): SrcGenerator {
+  return (path) => publicPath + (publicPath.endsWith('/') ? '' : '/') + path;
+}
+
+function defaultSrcGenerator(
+  path: string,
+  { inputDir, src }: SrcGeneratorInfo,
+) {
+  if (inputDir) {
+    path = stripPrefix(path, inputDir);
+  }
+
+  if (src && !path.startsWith('/') && /^\/[^\/]/.test(src)) {
+    path = '/' + path;
+  }
+
+  return path;
+}
+
 interface PathToUrlOptions {
-  inputDir?: string;
-  src?: string;
-  outputDir?: string;
+  inputDir: string;
+  src: string;
+  outputDir: string;
   publicPath?: string;
 }
 
@@ -27,25 +54,21 @@ export default function pathToUrl(
     return path;
   }
 
-  let { inputDir, src, outputDir, publicPath } = options;
+  const { publicPath, ...info } = options;
+
+  let srcGenerator: SrcGenerator;
 
   if (publicPath) {
-    if (outputDir) {
-      path = stripPrefix(path, outputDir);
+    srcGenerator = createPublicPathSrcGenerator(publicPath);
+  }
+
+  if (srcGenerator) {
+    if (info.outputDir) {
+      path = stripPrefix(path, info.outputDir);
     }
 
-    path = publicPath + (publicPath.endsWith('/') ? '' : '/') + path;
-
-    return path;
+    return srcGenerator(path, info);
   }
 
-  if (inputDir) {
-    path = stripPrefix(path, inputDir);
-  }
-
-  if (src && !path.startsWith('/') && /^\/[^\/]/.test(src)) {
-    path = '/' + path;
-  }
-
-  return path;
+  return defaultSrcGenerator(path, info);
 }

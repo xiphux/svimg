@@ -14,12 +14,14 @@ describe('pathToUrl', () => {
       pathToUrl('static/g/url/to/file.jpg', {
         src: 'url/to/infile.jpg',
         inputDir: 'static',
+        outputDir: 'static/g',
       }),
     ).toEqual('g/url/to/file.jpg');
     expect(
       pathToUrl('static/g/url/to/file.jpg', {
         src: 'url/to/infile.jpg',
         inputDir: 'static/',
+        outputDir: 'static/g',
       }),
     ).toEqual('g/url/to/file.jpg');
   });
@@ -29,18 +31,21 @@ describe('pathToUrl', () => {
       pathToUrl('static\\g\\url\\to\\file.jpg', {
         src: 'url/to/infile.jpg',
         inputDir: 'static',
+        outputDir: 'static/g',
       }),
     ).toEqual('g/url/to/file.jpg');
     expect(
       pathToUrl('static\\g\\url\\to\\file.jpg', {
         src: 'url/to/infile.jpg',
         inputDir: 'static/',
+        outputDir: 'static/g',
       }),
     ).toEqual('g/url/to/file.jpg');
     expect(
       pathToUrl('static\\g\\url\\to\\file.jpg', {
         src: 'url/to/infile.jpg',
         inputDir: 'static\\',
+        outputDir: 'static\\g',
       }),
     ).toEqual('g/url/to/file.jpg');
   });
@@ -50,12 +55,14 @@ describe('pathToUrl', () => {
       pathToUrl('other/g/url/to/file.jpg', {
         src: 'url/to/infile.jpg',
         inputDir: 'static',
+        outputDir: 'static/g',
       }),
     ).toEqual('other/g/url/to/file.jpg');
     expect(
       pathToUrl('other/g/url/to/file.jpg', {
         src: 'url/to/infile.jpg',
         inputDir: 'static/',
+        outputDir: 'static/g',
       }),
     ).toEqual('other/g/url/to/file.jpg');
   });
@@ -65,36 +72,42 @@ describe('pathToUrl', () => {
       pathToUrl('static/g/url/to/file.jpg', {
         src: '/url/to/infile.jpg',
         inputDir: 'static',
+        outputDir: 'static/g',
       }),
     ).toEqual('/g/url/to/file.jpg');
     expect(
       pathToUrl('static/g/url/to/file.jpg', {
         src: '/url/to/infile.jpg',
         inputDir: 'static/',
+        outputDir: 'static/g',
       }),
     ).toEqual('/g/url/to/file.jpg');
     expect(
       pathToUrl('static\\g\\url\\to\\file.jpg', {
         src: '/url/to/infile.jpg',
         inputDir: 'static/',
+        outputDir: 'static/g',
       }),
     ).toEqual('/g/url/to/file.jpg');
     expect(
       pathToUrl('static\\g\\url\\to\\file.jpg', {
         src: '/url/to/infile.jpg',
         inputDir: 'static\\',
+        outputDir: 'static\\g',
       }),
     ).toEqual('/g/url/to/file.jpg');
     expect(
       pathToUrl('other/g/url/to/file.jpg', {
         src: '/url/to/infile.jpg',
         inputDir: 'static/',
+        outputDir: 'static/g',
       }),
     ).toEqual('/other/g/url/to/file.jpg');
     expect(
       pathToUrl('static/g/url/to/file.jpg', {
         src: '//url/to/infile.jpg',
         inputDir: 'static',
+        outputDir: 'static/g',
       }),
     ).toEqual('g/url/to/file.jpg');
   });

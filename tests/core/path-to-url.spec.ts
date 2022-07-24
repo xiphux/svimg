@@ -1,4 +1,5 @@
 import pathToUrl from '../../src/core/path-to-url';
+import { basename } from 'path';
 
 describe('pathToUrl', () => {
   it('returns url if nothing needs to be normalized', () => {
@@ -263,5 +264,86 @@ describe('pathToUrl', () => {
         publicPath: 'http://example.com/images',
       }),
     ).toEqual('http://example.com/images/other/g/url/to/file.jpg');
+  });
+
+  it('can use a custom src generator to add a custom path', () => {
+    const generator = jest.fn((path, info) => '/test/' + path);
+
+    expect(
+      pathToUrl('static/g/url/to/file.jpg', {
+        src: 'url/to/infile.jpg',
+        inputDir: 'static/',
+        outputDir: 'static/g',
+        srcGenerator: generator,
+      }),
+    ).toEqual('/test/url/to/file.jpg');
+
+    expect(generator).toHaveBeenCalledWith('url/to/file.jpg', {
+      src: 'url/to/infile.jpg',
+      inputDir: 'static/',
+      outputDir: 'static/g',
+    });
+  });
+
+  it('can use a custom src generator to add a custom domain', () => {
+    const generator = jest.fn(
+      (path, info) => 'https://static.example.com/images/' + path,
+    );
+
+    expect(
+      pathToUrl('static/g/url/to/file.jpg', {
+        src: 'url/to/infile.jpg',
+        inputDir: 'static/',
+        outputDir: 'static/g',
+        srcGenerator: generator,
+      }),
+    ).toEqual('https://static.example.com/images/url/to/file.jpg');
+
+    expect(generator).toHaveBeenCalledWith('url/to/file.jpg', {
+      src: 'url/to/infile.jpg',
+      inputDir: 'static/',
+      outputDir: 'static/g',
+    });
+  });
+
+  it('can use a custom src generator to rewrite paths', () => {
+    const generator = jest.fn(
+      (path, info) => 'some/other/path/' + basename(path),
+    );
+
+    expect(
+      pathToUrl('static/g/url/to/file.jpg', {
+        src: 'url/to/infile.jpg',
+        inputDir: 'static/',
+        outputDir: 'static/g',
+        srcGenerator: generator,
+      }),
+    ).toEqual('some/other/path/file.jpg');
+
+    expect(generator).toHaveBeenCalledWith('url/to/file.jpg', {
+      src: 'url/to/infile.jpg',
+      inputDir: 'static/',
+      outputDir: 'static/g',
+    });
+  });
+
+  it('will prioritize src generator over public path', () => {
+    const generator = jest.fn((path, info) => '/test/' + path);
+
+    expect(
+      pathToUrl('static/g/url/to/file.jpg', {
+        src: 'url/to/infile.jpg',
+        inputDir: 'static/',
+        outputDir: 'static/g',
+        srcGenerator: generator,
+        publicPath: 'http://example.com/images',
+      }),
+    ).toEqual('/test/url/to/file.jpg');
+
+    expect(generator).toHaveBeenCalledWith('url/to/file.jpg', {
+      src: 'url/to/infile.jpg',
+      inputDir: 'static/',
+      outputDir: 'static/g',
+    });
   });
 });

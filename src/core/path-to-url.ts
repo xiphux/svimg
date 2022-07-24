@@ -10,13 +10,13 @@ function stripPrefix(path: string, prefix: string): string {
   return path.substring(prefix.length + (prefix.endsWith('/') ? 0 : 1));
 }
 
-interface SrcGeneratorInfo {
+export interface SrcGeneratorInfo {
   inputDir: string;
   outputDir: string;
   src: string;
 }
 
-type SrcGenerator = (path: string, info?: SrcGeneratorInfo) => string;
+export type SrcGenerator = (path: string, info?: SrcGeneratorInfo) => string;
 
 function createPublicPathSrcGenerator(publicPath: string): SrcGenerator {
   return (path) => publicPath + (publicPath.endsWith('/') ? '' : '/') + path;
@@ -42,6 +42,7 @@ interface PathToUrlOptions {
   src: string;
   outputDir: string;
   publicPath?: string;
+  srcGenerator?: SrcGenerator;
 }
 
 export default function pathToUrl(
@@ -54,11 +55,9 @@ export default function pathToUrl(
     return path;
   }
 
-  const { publicPath, ...info } = options;
+  let { publicPath, srcGenerator, ...info } = options;
 
-  let srcGenerator: SrcGenerator;
-
-  if (publicPath) {
+  if (!srcGenerator && publicPath) {
     srcGenerator = createPublicPathSrcGenerator(publicPath);
   }
 
@@ -67,7 +66,13 @@ export default function pathToUrl(
       path = stripPrefix(path, info.outputDir);
     }
 
-    return srcGenerator(path, info);
+    const url = srcGenerator(path, info);
+    if (!url) {
+      throw new Error(
+        `srcGenerator function returned an empty src for path ${path}`,
+      );
+    }
+    return url;
   }
 
   return defaultSrcGenerator(path, info);

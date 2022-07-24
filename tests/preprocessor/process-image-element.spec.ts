@@ -482,4 +482,40 @@ describe('processImageElement', () => {
       avif: false,
     });
   });
+
+  it('processes element with src generator', async () => {
+    (generateComponentAttributes as jest.Mock).mockImplementation(() =>
+      Promise.resolve({
+        srcset: 'https://static.example.com/img/test1.jpg 300w',
+        placeholder: '<svg />',
+      }),
+    );
+    const queue = { process: jest.fn() };
+
+    const generator = (path: string) => 'https://static.example.com/' + path;
+
+    expect(
+      await processImageElement('<Image src="img/test.jpg" />', queue as any, {
+        inputDir: 'static',
+        outputDir: 'static/g',
+        publicPath: '/',
+        webp: false,
+        avif: false,
+        srcGenerator: generator,
+      }),
+    ).toEqual(
+      '<Image srcset="https://static.example.com/img/test1.jpg 300w" placeholder="<svg />" src="img/test.jpg" />',
+    );
+
+    expect(generateComponentAttributes).toHaveBeenCalledWith({
+      src: 'img/test.jpg',
+      queue,
+      inputDir: 'static',
+      outputDir: 'static/g',
+      publicPath: '/',
+      webp: false,
+      avif: false,
+      srcGenerator: generator,
+    });
+  });
 });

@@ -5,6 +5,7 @@ import type {
 import Queue from '../core/queue';
 import replaceAsync from 'string-replace-async';
 import processImageElement from './process-image-element';
+import type { SrcGenerator } from '../core/path-to-url';
 
 export interface ImagePreprocessorOptions {
   /**
@@ -53,6 +54,8 @@ export interface ImagePreprocessorOptions {
    * @default true
    */
   avif?: boolean;
+
+  srcGenerator?: SrcGenerator;
 }
 
 /**

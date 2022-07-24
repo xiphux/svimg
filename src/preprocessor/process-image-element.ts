@@ -35,6 +35,7 @@ export default async function processImageElement(
     widths: width ? [width] : undefined,
     quality,
     skipPlaceholder: immediate || undefined,
+    srcGenerator: options.srcGenerator,
   });
 
   const attrString = Object.entries(newAttrs)

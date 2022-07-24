@@ -5,6 +5,7 @@ import pathToUrl from '../core/path-to-url';
 import Queue from '../core/queue';
 import createPlaceholder from '../placeholder/create-placeholder';
 import processImage from '../image-processing/process-image';
+import type { SrcGenerator } from '../core/path-to-url';
 
 interface GenerateComponentAttributesOptions {
   src: string;
@@ -18,6 +19,7 @@ interface GenerateComponentAttributesOptions {
   quality?: number;
   skipGeneration?: boolean;
   skipPlaceholder?: boolean;
+  srcGenerator?: SrcGenerator;
 }
 
 export default async function generateComponentAttributes({
@@ -32,6 +34,7 @@ export default async function generateComponentAttributes({
   quality,
   skipGeneration,
   skipPlaceholder,
+  srcGenerator,
 }: GenerateComponentAttributesOptions): Promise<GetComponentAttributesOutput> {
   if (!src) {
     throw new Error('Src is required');
@@ -63,15 +66,33 @@ export default async function generateComponentAttributes({
   return getComponentAttributes({
     images: images.map((i) => ({
       ...i,
-      path: pathToUrl(i.path, { inputDir, outputDir, src, publicPath }),
+      path: pathToUrl(i.path, {
+        inputDir,
+        outputDir,
+        src,
+        publicPath,
+        srcGenerator,
+      }),
     })),
     webpImages: webpImages.map((i) => ({
       ...i,
-      path: pathToUrl(i.path, { inputDir, outputDir, src, publicPath }),
+      path: pathToUrl(i.path, {
+        inputDir,
+        outputDir,
+        src,
+        publicPath,
+        srcGenerator,
+      }),
     })),
     avifImages: avifImages.map((i) => ({
       ...i,
-      path: pathToUrl(i.path, { inputDir, outputDir, src, publicPath }),
+      path: pathToUrl(i.path, {
+        inputDir,
+        outputDir,
+        src,
+        publicPath,
+        srcGenerator,
+      }),
     })),
     placeholder,
     aspectRatio,

@@ -1,5 +1,11 @@
 # Changelog
 
+## 3.1.0
+
+* Add `srcGenerator` option for more flexibility of src transformation
+* Deprecate `publicPath` option in favor of `srcGenerator`
+* Fix image generation when an explicit width larger than the original image width is specified
+
 ## 3.0.0
 
 * BREAKING: Drop Node 12 support

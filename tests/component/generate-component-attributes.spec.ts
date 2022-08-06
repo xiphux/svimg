@@ -1138,4 +1138,404 @@ describe('generateComponentAttributes', () => {
       queue,
     );
   });
+
+  it('will generate placeholder files', async () => {
+    const queue = jest.fn(() => ({ enqueue: jest.fn() }));
+    (processImage as jest.Mock)
+      .mockImplementationOnce(() =>
+        Promise.resolve({
+          images: [
+            {
+              path: 'static/g/assets/images/avatar.1.jpg',
+              width: 300,
+              height: 300,
+            },
+            {
+              path: 'static/g/assets/images/avatar.2.jpg',
+              width: 500,
+              height: 500,
+            },
+          ],
+          webpImages: [
+            {
+              path: 'static/g/assets/images/avatar.1.webp',
+              width: 300,
+              height: 300,
+            },
+            {
+              path: 'static/g/assets/images/avatar.2.webp',
+              width: 500,
+              height: 500,
+            },
+          ],
+          avifImages: [
+            {
+              path: 'static/g/assets/images/avatar.1.avif',
+              width: 300,
+              height: 300,
+            },
+            {
+              path: 'static/g/assets/images/avatar.2.avif',
+              width: 500,
+              height: 500,
+            },
+          ],
+          aspectRatio: 0.5,
+        }),
+      )
+      .mockImplementationOnce(() =>
+        Promise.resolve({
+          images: [
+            {
+              path: 'static/g/assets/images/placeholder.jpg',
+              width: 64,
+              height: 64,
+            },
+          ],
+          webpImages: [
+            {
+              path: 'static/g/assets/images/placeholder.webp',
+              width: 64,
+              height: 64,
+            },
+          ],
+          avifImages: [
+            {
+              path: 'static/g/assets/images/placeholder.avif',
+              width: 64,
+              height: 64,
+            },
+          ],
+          aspectRatio: 0.5,
+        }),
+      );
+    (createPlaceholder as jest.Mock).mockImplementation(() =>
+      Promise.resolve('<svg />'),
+    );
+
+    expect(
+      await generateComponentAttributes({
+        src: 'assets/images/avatar.jpg',
+        queue: queue as any,
+        inputDir: 'static',
+        outputDir: 'static/g',
+        embedPlaceholder: false,
+      }),
+    ).toEqual({
+      srcset:
+        'g/assets/images/avatar.1.jpg 300w, g/assets/images/avatar.2.jpg 500w',
+      srcsetwebp:
+        'g/assets/images/avatar.1.webp 300w, g/assets/images/avatar.2.webp 500w',
+      srcsetavif:
+        'g/assets/images/avatar.1.avif 300w, g/assets/images/avatar.2.avif 500w',
+      aspectratio: 0.5,
+      placeholdersrc: 'g/assets/images/placeholder.jpg',
+      placeholderwebp: 'g/assets/images/placeholder.webp',
+      placeholderavif: 'g/assets/images/placeholder.avif',
+    });
+
+    expect(processImage).toHaveBeenNthCalledWith(
+      1,
+      join('static', 'assets', 'images', 'avatar.jpg'),
+      join('static', 'g', 'assets', 'images'),
+      queue as any,
+      {
+        webp: true,
+        avif: true,
+      },
+    );
+    expect(createPlaceholder).not.toHaveBeenCalled();
+    expect(processImage).toHaveBeenNthCalledWith(
+      2,
+      join('static', 'assets', 'images', 'avatar.jpg'),
+      join('static', 'g', 'assets', 'images'),
+      queue as any,
+      {
+        webp: true,
+        avif: true,
+        widths: [64],
+      },
+    );
+  });
+
+  it('will generate placeholder files without avif', async () => {
+    const queue = jest.fn(() => ({ enqueue: jest.fn() }));
+    (processImage as jest.Mock)
+      .mockImplementationOnce(() =>
+        Promise.resolve({
+          images: [
+            {
+              path: 'static/g/assets/images/avatar.1.jpg',
+              width: 300,
+              height: 300,
+            },
+            {
+              path: 'static/g/assets/images/avatar.2.jpg',
+              width: 500,
+              height: 500,
+            },
+          ],
+          webpImages: [
+            {
+              path: 'static/g/assets/images/avatar.1.webp',
+              width: 300,
+              height: 300,
+            },
+            {
+              path: 'static/g/assets/images/avatar.2.webp',
+              width: 500,
+              height: 500,
+            },
+          ],
+          avifImages: [],
+          aspectRatio: 0.5,
+        }),
+      )
+      .mockImplementationOnce(() =>
+        Promise.resolve({
+          images: [
+            {
+              path: 'static/g/assets/images/placeholder.jpg',
+              width: 64,
+              height: 64,
+            },
+          ],
+          webpImages: [
+            {
+              path: 'static/g/assets/images/placeholder.webp',
+              width: 64,
+              height: 64,
+            },
+          ],
+          avifImages: [],
+          aspectRatio: 0.5,
+        }),
+      );
+    (createPlaceholder as jest.Mock).mockImplementation(() =>
+      Promise.resolve('<svg />'),
+    );
+
+    expect(
+      await generateComponentAttributes({
+        src: 'assets/images/avatar.jpg',
+        queue: queue as any,
+        inputDir: 'static',
+        outputDir: 'static/g',
+        embedPlaceholder: false,
+        avif: false,
+      }),
+    ).toEqual({
+      srcset:
+        'g/assets/images/avatar.1.jpg 300w, g/assets/images/avatar.2.jpg 500w',
+      srcsetwebp:
+        'g/assets/images/avatar.1.webp 300w, g/assets/images/avatar.2.webp 500w',
+      aspectratio: 0.5,
+      placeholdersrc: 'g/assets/images/placeholder.jpg',
+      placeholderwebp: 'g/assets/images/placeholder.webp',
+    });
+
+    expect(processImage).toHaveBeenNthCalledWith(
+      1,
+      join('static', 'assets', 'images', 'avatar.jpg'),
+      join('static', 'g', 'assets', 'images'),
+      queue as any,
+      {
+        webp: true,
+        avif: false,
+      },
+    );
+    expect(createPlaceholder).not.toHaveBeenCalled();
+    expect(processImage).toHaveBeenNthCalledWith(
+      2,
+      join('static', 'assets', 'images', 'avatar.jpg'),
+      join('static', 'g', 'assets', 'images'),
+      queue as any,
+      {
+        webp: true,
+        avif: false,
+        widths: [64],
+      },
+    );
+  });
+
+  it('will generate placeholder files without webp', async () => {
+    const queue = jest.fn(() => ({ enqueue: jest.fn() }));
+    (processImage as jest.Mock)
+      .mockImplementationOnce(() =>
+        Promise.resolve({
+          images: [
+            {
+              path: 'static/g/assets/images/avatar.1.jpg',
+              width: 300,
+              height: 300,
+            },
+            {
+              path: 'static/g/assets/images/avatar.2.jpg',
+              width: 500,
+              height: 500,
+            },
+          ],
+          webpImages: [],
+          avifImages: [
+            {
+              path: 'static/g/assets/images/avatar.1.avif',
+              width: 300,
+              height: 300,
+            },
+            {
+              path: 'static/g/assets/images/avatar.2.avif',
+              width: 500,
+              height: 500,
+            },
+          ],
+          aspectRatio: 0.5,
+        }),
+      )
+      .mockImplementationOnce(() =>
+        Promise.resolve({
+          images: [
+            {
+              path: 'static/g/assets/images/placeholder.jpg',
+              width: 64,
+              height: 64,
+            },
+          ],
+          webpImages: [],
+          avifImages: [
+            {
+              path: 'static/g/assets/images/placeholder.avif',
+              width: 64,
+              height: 64,
+            },
+          ],
+          aspectRatio: 0.5,
+        }),
+      );
+    (createPlaceholder as jest.Mock).mockImplementation(() =>
+      Promise.resolve('<svg />'),
+    );
+
+    expect(
+      await generateComponentAttributes({
+        src: 'assets/images/avatar.jpg',
+        queue: queue as any,
+        inputDir: 'static',
+        outputDir: 'static/g',
+        embedPlaceholder: false,
+        webp: false,
+      }),
+    ).toEqual({
+      srcset:
+        'g/assets/images/avatar.1.jpg 300w, g/assets/images/avatar.2.jpg 500w',
+      srcsetavif:
+        'g/assets/images/avatar.1.avif 300w, g/assets/images/avatar.2.avif 500w',
+      aspectratio: 0.5,
+      placeholdersrc: 'g/assets/images/placeholder.jpg',
+      placeholderavif: 'g/assets/images/placeholder.avif',
+    });
+
+    expect(processImage).toHaveBeenNthCalledWith(
+      1,
+      join('static', 'assets', 'images', 'avatar.jpg'),
+      join('static', 'g', 'assets', 'images'),
+      queue as any,
+      {
+        webp: false,
+        avif: true,
+      },
+    );
+    expect(createPlaceholder).not.toHaveBeenCalled();
+    expect(processImage).toHaveBeenNthCalledWith(
+      2,
+      join('static', 'assets', 'images', 'avatar.jpg'),
+      join('static', 'g', 'assets', 'images'),
+      queue as any,
+      {
+        webp: false,
+        avif: true,
+        widths: [64],
+      },
+    );
+  });
+
+  it('will generate placeholder files without webp or avif', async () => {
+    const queue = jest.fn(() => ({ enqueue: jest.fn() }));
+    (processImage as jest.Mock)
+      .mockImplementationOnce(() =>
+        Promise.resolve({
+          images: [
+            {
+              path: 'static/g/assets/images/avatar.1.jpg',
+              width: 300,
+              height: 300,
+            },
+            {
+              path: 'static/g/assets/images/avatar.2.jpg',
+              width: 500,
+              height: 500,
+            },
+          ],
+          webpImages: [],
+          avifImages: [],
+          aspectRatio: 0.5,
+        }),
+      )
+      .mockImplementationOnce(() =>
+        Promise.resolve({
+          images: [
+            {
+              path: 'static/g/assets/images/placeholder.jpg',
+              width: 64,
+              height: 64,
+            },
+          ],
+          webpImages: [],
+          avifImages: [],
+          aspectRatio: 0.5,
+        }),
+      );
+    (createPlaceholder as jest.Mock).mockImplementation(() =>
+      Promise.resolve('<svg />'),
+    );
+
+    expect(
+      await generateComponentAttributes({
+        src: 'assets/images/avatar.jpg',
+        queue: queue as any,
+        inputDir: 'static',
+        outputDir: 'static/g',
+        embedPlaceholder: false,
+        webp: false,
+        avif: false,
+      }),
+    ).toEqual({
+      srcset:
+        'g/assets/images/avatar.1.jpg 300w, g/assets/images/avatar.2.jpg 500w',
+      aspectratio: 0.5,
+      placeholdersrc: 'g/assets/images/placeholder.jpg',
+    });
+
+    expect(processImage).toHaveBeenNthCalledWith(
+      1,
+      join('static', 'assets', 'images', 'avatar.jpg'),
+      join('static', 'g', 'assets', 'images'),
+      queue as any,
+      {
+        webp: false,
+        avif: false,
+      },
+    );
+    expect(createPlaceholder).not.toHaveBeenCalled();
+    expect(processImage).toHaveBeenNthCalledWith(
+      2,
+      join('static', 'assets', 'images', 'avatar.jpg'),
+      join('static', 'g', 'assets', 'images'),
+      queue as any,
+      {
+        webp: false,
+        avif: false,
+        widths: [64],
+      },
+    );
+  });
 });

@@ -7,6 +7,9 @@ export interface GetComponentAttributesOutput {
   srcsetavif?: string;
   placeholder?: string;
   aspectratio: number;
+  placeholdersrc?: string;
+  placeholderwebp?: string;
+  placeholderavif?: string;
 }
 
 interface GetComponentAttributesInput {
@@ -15,6 +18,9 @@ interface GetComponentAttributesInput {
   avifImages: Image[];
   placeholder?: string;
   aspectRatio: number;
+  placeholderImage?: Image;
+  placeholderWebp?: Image;
+  placeholderAvif?: Image;
 }
 
 export default function getComponentAttributes(
@@ -30,5 +36,14 @@ export default function getComponentAttributes(
       : undefined,
     placeholder: input.placeholder,
     aspectratio: input.aspectRatio,
+    placeholdersrc: input.placeholderImage
+      ? getSrcset([input.placeholderImage], { pathOnly: true })
+      : undefined,
+    placeholderwebp: input.placeholderWebp
+      ? getSrcset([input.placeholderWebp], { pathOnly: true })
+      : undefined,
+    placeholderavif: input.placeholderAvif
+      ? getSrcset([input.placeholderAvif], { pathOnly: true })
+      : undefined,
   };
 }

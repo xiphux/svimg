@@ -11,6 +11,9 @@
   export let srcsetwebp = '';
   export let srcsetavif = '';
   export let placeholder = '';
+  export let placeholdersrc = '';
+  export let placeholderwebp = '';
+  export let placeholderavif = '';
   export let width = '';
   export let aspectratio;
   export let immediate = false;
@@ -148,16 +151,30 @@
     />
   </picture>
   {#if !immediate && !hidePlaceholder}
-    <img
-      class="placeholder"
-      src={placeholder}
-      {alt}
-      width={imageWidth}
-      height={imageHeight}
-      style={useAspectRatioFallback
-        ? `width:${imageWidth}px; height:${imageHeight}px;`
-        : ''}
-    />
+    {#if placeholdersrc}
+      <picture>
+        {#if placeholderavif}
+          <source type="image/avif" srcset={placeholderavif} />
+        {/if}
+        {#if placeholderwebp}
+          <source type="image/webp" srcset={placeholderwebp} />
+        {/if}
+        <img class="placeholder" srcset={placeholdersrc} {alt} width={imageWidth} height={imageHeight} style={useAspectRatioFallback
+          ? `width:${imageWidth}px; height:${imageHeight}px;`
+          : ''} />
+      </picture>
+    {:else}
+      <img
+        class="placeholder"
+        src={placeholder}
+        {alt}
+        width={imageWidth}
+        height={imageHeight}
+        style={useAspectRatioFallback
+          ? `width:${imageWidth}px; height:${imageHeight}px;`
+          : ''}
+      />
+    {/if}
   {/if}
 </div>
 

@@ -67,6 +67,8 @@ export interface ImagePreprocessorOptions {
    * from the root of the domain.
    */
   srcGenerator?: SrcGenerator;
+
+  embedPlaceholder?: boolean;
 }
 
 /**

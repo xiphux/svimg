@@ -2,8 +2,7 @@ import getMimeType from '../core/get-mime-type';
 import resizeImage from '../core/resize-image';
 import getImageMetadata from '../core/get-image-metadata';
 import type Queue from '../core/queue';
-
-const BLUR_WIDTH = 64;
+import { PLACEHOLDER_WIDTH } from '../constants/defaults';
 
 export default async function createPlaceholder(
   inputFile: string,
@@ -15,7 +14,7 @@ export default async function createPlaceholder(
 
   const [{ format }, blurData] = await Promise.all([
     queue.enqueue(getImageMetadata, inputFile),
-    queue.enqueue(resizeImage, inputFile, { width: BLUR_WIDTH }),
+    queue.enqueue(resizeImage, inputFile, { width: PLACEHOLDER_WIDTH }),
   ]);
   const blur64 = blurData.toString('base64');
   const mime = getMimeType(format);

@@ -68,6 +68,13 @@ export interface ImagePreprocessorOptions {
    */
   srcGenerator?: SrcGenerator;
 
+  /**
+   * Set to false to generate placeholder images
+   * as separate image files, rather than
+   * embedding them into the document.
+   *
+   * @default true
+   */
   embedPlaceholder?: boolean;
 }
 

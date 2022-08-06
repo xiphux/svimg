@@ -125,6 +125,9 @@ The following properties will be automatically populated by the preprocessor:
 | srcsetwebp  | Responsive WebP images and widths |
 | placeholder | Blurred placeholder image |
 | aspectratio | Aspect ratio of image |
+| placeholdersrc | Placeholder file src |
+| placeholderwebp | Placeholder webp file src |
+| placeholderavif | Placeholder avif file src |
 
 #### Preprocessor Options
 
@@ -136,6 +139,7 @@ The following properties will be automatically populated by the preprocessor:
 | publicPath | The `outputDir` relative to the `inputDir` static asset directory | **DEPRECATED** `publicPath` is deprecated and will be removed in the next major version. Use a `srcGenerator` function instead: `(path) => '/my/public/path' + path`<br />The public path that images will be served from. This will be prepended to the src url during preprocessing.
 | avif      | `true`     | Whether to generate AVIF versions of images in addition to the original image formats |
 | webp      | `true`     | Whether to generate WebP versions of images in addition to the original image formats |
+| embedPlaceholder | `true` | Set to false to generate placeholder images as separate image files, rather than embedding them into the document. This will save network traffic since standalone image files are noticeably smaller than ones embedded in the HTML document, will allow the placeholder to be served in next-gen image formats like avif/webp with fallbacks like the main image is, and will allow the browser to better optimize caching of the files. However, as a separate network request, there is the potential for a slight delay in render of the placeholder, particularly if the image is above-the fold (consider using `immediate` to disable lazy-loading for known above-the-fold images, which will perform better). Non-embedded placeholders are likely to become the default in a future major release.
 
 ## Built With
 

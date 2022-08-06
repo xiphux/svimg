@@ -17,10 +17,21 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
+      - name: Install PNPM
+        uses: pnpm/action-setup@v2
+        with:
+          version: 7
+          run_install: false
+
+      - name: Get PNPM store directory
+        id: pnpm-cache
+        run: |
+          echo "::set-output name=pnpm_cache_dir::$(pnpm store path)"
+
       - name: Cache PNPM
         uses: actions/cache@v3
         with:
-          path: ~/.pnpm-store
+          path: ${{ steps.pnpm-cache.outputs.pnpm_cache_dir }}
           key: ${{ runner.os }}-node-${{ hashFiles('**/pnpm-lock.yaml') }}
           restore-keys: |
             ${{ runner.os }}-node-
@@ -31,11 +42,7 @@ jobs:
           node-version: ${{ matrix.node-version }}
 
       - name: Installing packages
-        uses: pnpm/action-setup@v2
-        with:
-          version: 7.x.x
-          run_install: |
-            - args: [--frozen-lockfile]
+        run: pnpm install --frozen-lockfile
 
       - name: Run tests
         run: pnpm test
@@ -48,10 +55,21 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
+      - name: Install PNPM
+        uses: pnpm/action-setup@v2
+        with:
+          version: 7
+          run_install: false
+
+      - name: Get PNPM store directory
+        id: pnpm-cache
+        run: |
+          echo "::set-output name=pnpm_cache_dir::$(pnpm store path)"
+
       - name: Cache PNPM
         uses: actions/cache@v3
         with:
-          path: ~/.pnpm-store
+          path: ${{ steps.pnpm-cache.outputs.pnpm_cache_dir }}
           key: ${{ runner.os }}-node-${{ hashFiles('**/pnpm-lock.yaml') }}
           restore-keys: |
             ${{ runner.os }}-node-
@@ -63,11 +81,7 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
 
       - name: Installing packages
-        uses: pnpm/action-setup@v2
-        with:
-          version: 7.x.x
-          run_install: |
-            - args: [--frozen-lockfile]
+        run: pnpm install --frozen-lockfile
 
       - name: Build
         run: pnpm run build

@@ -11,13 +11,34 @@ svimg uses native browser lazy loading with a fallback to IntersectionObserver, 
 
 ### Installation
 
-Since svimg is an external Svelte component, you'll want to make sure it gets bundled by Svelte during compile by installing it as a dev dependency (or modifying your rollup/webpack config to not treat it as an external). 
+Since svimg is an external Svelte component, you'll want to make sure it gets bundled by Svelte during compile by installing it as a dev dependency (or modifying your bundler config to not treat it as an external).
 
 ```bash
 npm install -D svimg
 ```
 
-In `rollup.config.js`, add `imagePreprocessor` as a preprocessor for `rollup-plugin-svelte`:
+In `svelte.config.js`, add `imagePreprocessor` as a preprocessor:
+```js
+import preprocess from 'svelte-preprocess';
+import { imagePreprocessor } from 'svimg';
+
+/** @type {import('@sveltejs/kit').Config} */
+const config = {
+    preprocess: [
+        imagePreprocessor({
+            inputDir: 'static',
+            outputDir: 'static/g',
+            webp: true,
+            avif: true
+        }), 
+        preprocess()
+    ]
+};
+
+export default config;
+```
+
+`rollup-plugin-svelte` does not yet have support for `svelte.config.js`, so if you're using it you must pass the options inline. In `rollup.config.js`, add `imagePreprocessor` as a preprocessor for `rollup-plugin-svelte`:
 
 ```js
 import { imagePreprocessor } from 'svimg';
@@ -35,38 +56,6 @@ export default {
             ]
         })
     ]
-};
-```
-
-If you're using [Sapper](https://sapper.svelte.dev/), add the preprocessor to both the client and the server svelte plugins. Make sure to use the same instance of `imagePreprocessor` for both client and server, to avoid redundant double-processing of image files:
-
-```js
-import { imagePreprocessor } from 'svimg';
-
-const preprocess = [
-    imagePreprocessor({
-        inputDir: 'static',
-        outputDir: 'static/g',
-        webp: true,
-        avif: true
-    })
-];
-
-export default {
-    client: {
-        plugins: [
-            svelte({
-                preprocess
-            })
-        ]
-    },
-    server: {
-        plugins: [
-            svelte({
-                preprocess
-            })
-        ]
-    }
 };
 ```
 

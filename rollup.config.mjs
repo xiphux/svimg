@@ -29,6 +29,7 @@ export default [
     output: entryPoint.formats.map((format) => ({
       file: `dist/${entryPoint.entry}.${format == 'es' ? 'es.js' : 'js'}`,
       format,
+      interop: 'compat',
     })),
     external: [
       ...Object.keys(pkg.dependencies || {}),

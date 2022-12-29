@@ -1,6 +1,6 @@
-import * as fs from 'fs';
+import * as fs from 'node:fs';
 import md5file from 'md5-file';
-import { basename, extname } from 'path';
+import { basename, extname } from 'node:path';
 import resizeImageMultiple from './resize-image-multiple';
 import getOptionsHash from './get-options-hash';
 import getProcessImageOptions from './get-process-image-options';

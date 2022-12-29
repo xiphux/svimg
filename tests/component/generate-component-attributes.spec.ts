@@ -1,5 +1,5 @@
 import generateComponentAttributes from '../../src/component/generate-component-attributes';
-import { join, basename, extname } from 'path';
+import { join, basename, extname } from 'node:path';
 import Queue from '../../src/core/queue';
 import createPlaceholder from '../../src/placeholder/create-placeholder';
 import processImage from '../../src/image-processing/process-image';

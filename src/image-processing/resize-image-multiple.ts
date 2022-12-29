@@ -1,5 +1,5 @@
 import ensureResizeImage from './ensure-resize-image';
-import { join } from 'path';
+import { join } from 'node:path';
 import type Image from './image';
 import type Queue from '../core/queue';
 

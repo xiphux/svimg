@@ -1,4 +1,4 @@
-import * as fs from 'fs';
+import * as fs from 'node:fs';
 
 export default async function exists(file: string): Promise<boolean> {
     if (!file) {

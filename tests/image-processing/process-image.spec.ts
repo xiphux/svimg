@@ -5,7 +5,7 @@ import resizeImageMultiple from '../../src/image-processing/resize-image-multipl
 import getOptionsHash from '../../src/image-processing/get-options-hash';
 import getImageMetadata from '../../src/core/get-image-metadata';
 import exists from '../../src/core/exists';
-import * as fs from 'fs';
+import * as fs from 'node:fs';
 
 jest.mock('../../src/image-processing/get-process-image-options');
 jest.mock('../../src/image-processing/resize-image-multiple');

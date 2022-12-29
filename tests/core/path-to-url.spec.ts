@@ -1,5 +1,5 @@
 import pathToUrl from '../../src/core/path-to-url';
-import { basename } from 'path';
+import { basename } from 'node:path';
 
 describe('pathToUrl', () => {
   it('returns url if nothing needs to be normalized', () => {

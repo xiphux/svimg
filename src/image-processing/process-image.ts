@@ -1,4 +1,4 @@
-import * as fs from 'node:fs';
+import { mkdir } from 'node:fs/promises';
 import md5file from 'md5-file';
 import { basename, extname } from 'node:path';
 import resizeImageMultiple from './resize-image-multiple';
@@ -41,7 +41,7 @@ export default async function processImage(
     (async () => {
       if (!options?.skipGeneration) {
         if (!(await queue.enqueue(exists, outputDir))) {
-          await queue.enqueue(fs.promises.mkdir, outputDir, {
+          await queue.enqueue(mkdir, outputDir, {
             recursive: true,
           });
         }

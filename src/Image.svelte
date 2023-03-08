@@ -59,58 +59,71 @@
     }
   }
 
-  onMount(() => {
-    // src attribute must be set after onload to ensure
-    // the onload handler still fires for immediate images
-    mounted = true;
+  function initialize() {
+    let ro;
+    if (window.ResizeObserver) {
+      ro = new ResizeObserver((entries) => {
+        clientWidth = entries[0].contentRect.width;
+      });
 
-    tick().then(() => {
-      let ro;
-      if (window.ResizeObserver) {
-        ro = new ResizeObserver((entries) => {
-          clientWidth = entries[0].contentRect.width;
-        });
+      ro.observe(container);
+    } else {
+      hasResizeObserver = false;
+    }
 
-        ro.observe(container);
-      } else {
-        hasResizeObserver = false;
-      }
+    supportsCssAspectRatio = CSS.supports(
+      'aspect-ratio',
+      'var(--svimg-aspect-ratio)',
+    );
 
-      supportsCssAspectRatio = CSS.supports(
-        'aspect-ratio',
-        'var(--svimg-aspect-ratio)',
-      );
-
-      native = 'loading' in HTMLImageElement.prototype;
-      if (native || immediate) {
-        return () => {
-          if (ro) {
-            ro.unobserve(container);
-          }
-        };
-      }
-
-      const io = new IntersectionObserver(
-        (entries) => {
-          intersecting = entries[0].isIntersecting;
-          if (intersecting) {
-            io.unobserve(container);
-          }
-        },
-        {
-          rootMargin: `100px`,
-        },
-      );
-
-      io.observe(container);
-
+    native = 'loading' in HTMLImageElement.prototype;
+    if (native || immediate) {
       return () => {
-        io.unobserve(container);
         if (ro) {
           ro.unobserve(container);
         }
       };
-    });
+    }
+
+    const io = new IntersectionObserver(
+      (entries) => {
+        intersecting = entries[0].isIntersecting;
+        if (intersecting) {
+          io.unobserve(container);
+        }
+      },
+      {
+        rootMargin: `100px`,
+      },
+    );
+
+    io.observe(container);
+
+    return () => {
+      io.unobserve(container);
+      if (ro) {
+        ro.unobserve(container);
+      }
+    };
+  }
+
+  onMount(async () => {
+    // src attribute must be set after onload to ensure
+    // the onload handler still fires for immediate images
+    mounted = true;
+
+    if (container) {
+      return initialize();
+    }
+
+    // older versions of Svelte need to wait for the DOM
+    // to be updated before bind:this references are available
+    await tick();
+
+    // the component may have been unmounted by this point
+    if (container) {
+      return initialize();
+    }
   });
 </script>
 

@@ -1,5 +1,10 @@
 # Changelog
 
+## 3.2.0
+
+* Add `embedPlaceholder` option to support placeholders as separate images files rather than embedded content
+* Fix ResizeObserver error on dynamically hidden images
+
 ## 3.1.0
 
 * Add `srcGenerator` option for more flexibility of src transformation

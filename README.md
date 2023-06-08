@@ -19,7 +19,7 @@ npm install -D svimg
 
 In `svelte.config.js`, add `imagePreprocessor` as a preprocessor:
 ```js
-import preprocess from 'svelte-preprocess';
+import { vitePreprocess } from '@sveltejs/kit/vite';
 import { imagePreprocessor } from 'svimg';
 
 /** @type {import('@sveltejs/kit').Config} */
@@ -31,7 +31,7 @@ const config = {
             webp: true,
             avif: true
         }), 
-        preprocess()
+        vitePreprocess()
     ]
 };
 

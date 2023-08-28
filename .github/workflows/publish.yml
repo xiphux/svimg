@@ -11,7 +11,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest]
-        node-version: [14, 16, 18, 19]
+        node-version: [16, 18, 19, 20]
     defaults:
       run:
         shell: bash

@@ -1,4 +1,4 @@
-<svelte:options tag={null} />
+<svelte:options customElement={null} />
 
 <script>
   import { onMount, tick } from 'svelte';

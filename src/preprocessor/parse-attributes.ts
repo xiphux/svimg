@@ -1,4 +1,4 @@
-import { HTMLElement, parse } from 'node-html-parser';
+import { type HTMLElement, parse } from 'node-html-parser';
 
 export default function parseAttributes(
   element: string,

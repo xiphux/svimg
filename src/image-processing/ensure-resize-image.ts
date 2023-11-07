@@ -22,8 +22,8 @@ export default async function ensureResizeImage(
     throw new Error('Output file is required');
   }
 
-  let width: number;
-  let height: number;
+  let width: number | undefined;
+  let height: number | undefined;
   if (await queue.enqueue(exists, outputFile)) {
     ({ width, height } = await queue.enqueue(getImageMetadata, outputFile));
   } else {
@@ -36,6 +36,9 @@ export default async function ensureResizeImage(
       },
       outputFile,
     ));
+  }
+  if (!width || !height) {
+    throw new Error('Image dimensions could not be determined');
   }
   return {
     path: outputFile,

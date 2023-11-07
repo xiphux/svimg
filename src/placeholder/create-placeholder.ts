@@ -16,6 +16,11 @@ export default async function createPlaceholder(
     queue.enqueue(getImageMetadata, inputFile),
     queue.enqueue(resizeImage, inputFile, { width: PLACEHOLDER_WIDTH }),
   ]);
+
+  if (!format) {
+    throw new Error('Image format could not be determined');
+  }
+
   const blur64 = blurData.toString('base64');
   const mime = getMimeType(format);
   const href = `data:${mime};base64,${blur64}`;

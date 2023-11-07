@@ -51,6 +51,10 @@ export default async function processImage(
     queue.enqueue(md5file, inputFile),
   ]);
 
+  if (!metadata.width || !metadata.height) {
+    throw new Error('Image dimensions could not be determined');
+  }
+
   const { skipGeneration, ...restOpts } = options || {};
   const { widths, quality, webp, avif } = getProcessImageOptions(
     metadata.width,

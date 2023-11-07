@@ -86,7 +86,7 @@ export interface ImagePreprocessorOptions {
  * @returns Svelte preprocessor
  */
 export default function imagePreprocessor(
-  options?: ImagePreprocessorOptions,
+  options: ImagePreprocessorOptions,
 ): PreprocessorGroup {
   const queue = new Queue();
 

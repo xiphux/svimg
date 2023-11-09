@@ -1,5 +1,6 @@
 import pathToUrl from '../../src/core/path-to-url';
 import { basename } from 'node:path';
+import { describe, it, expect, jest } from '@jest/globals';
 
 describe('pathToUrl', () => {
   it('returns url if nothing needs to be normalized', () => {
@@ -307,9 +308,12 @@ describe('pathToUrl', () => {
   });
 
   it('can use a custom src generator to rewrite paths', () => {
-    const generator = jest.fn(
-      (path, info) => 'some/other/path/' + basename(path),
-    );
+    const generator = jest.fn<
+      (
+        path: string,
+        info?: { src: string; inputDir: string; outputDir: string },
+      ) => string
+    >((path, info) => 'some/other/path/' + basename(path));
 
     expect(
       pathToUrl('static/g/url/to/file.jpg', {

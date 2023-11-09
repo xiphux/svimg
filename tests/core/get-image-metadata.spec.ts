@@ -1,5 +1,6 @@
 import getImageMetadata from '../../src/core/get-image-metadata';
 import sharp from 'sharp';
+import { describe, it, expect, beforeEach, jest } from '@jest/globals';
 
 jest.mock('sharp');
 

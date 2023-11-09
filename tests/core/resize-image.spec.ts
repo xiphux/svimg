@@ -1,5 +1,6 @@
 import resizeImage from '../../src/core/resize-image';
 import sharp from 'sharp';
+import { describe, it, expect, beforeEach, jest } from '@jest/globals';
 
 jest.mock('sharp');
 

@@ -1,4 +1,5 @@
 import getProcessImageOptions from '../../src/image-processing/get-process-image-options';
+import { describe, it, expect } from '@jest/globals';
 
 describe('getProcessImageOptions', () => {
   it('returns default widths less than or equal to the original width', () => {

@@ -1,6 +1,7 @@
 import resizeImageMultiple from '../../src/image-processing/resize-image-multiple';
 import ensureResizeImage from '../../src/image-processing/ensure-resize-image';
 import { join, sep } from 'node:path';
+import { describe, it, expect, beforeEach, jest } from '@jest/globals';
 
 jest.mock('../../src/image-processing/ensure-resize-image');
 

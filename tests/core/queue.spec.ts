@@ -1,5 +1,6 @@
 import Queue from '../../src/core/queue';
 import PQueue from 'p-queue';
+import { describe, it, expect, jest, beforeEach } from '@jest/globals';
 
 jest.mock('p-queue');
 
@@ -23,7 +24,7 @@ describe('Queue', () => {
 
   beforeEach(() => {
     (PQueue as any as jest.Mock).mockReturnValue({
-      add: jest.fn((f) => f()),
+      add: jest.fn<(f: () => void) => void>((f) => f()),
     });
     func1CallCount = 0;
     func2CallCount = 0;

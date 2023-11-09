@@ -3,6 +3,7 @@ import { join, basename, extname } from 'node:path';
 import Queue from '../../src/core/queue';
 import createPlaceholder from '../../src/placeholder/create-placeholder';
 import processImage from '../../src/image-processing/process-image';
+import { describe, expect, it, jest, beforeEach } from '@jest/globals';
 
 jest.mock('../../src/core/queue');
 jest.mock('../../src/placeholder/create-placeholder');

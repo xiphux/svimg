@@ -1,6 +1,7 @@
 import exists from '../../src/core/exists';
 import { access } from 'node:fs/promises';
 import { constants } from 'node:fs';
+import { describe, it, expect, beforeEach, jest } from '@jest/globals';
 
 jest.mock('node:fs/promises', () => ({
   access: jest.fn(),

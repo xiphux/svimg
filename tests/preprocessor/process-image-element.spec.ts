@@ -1,5 +1,6 @@
 import processImageElement from '../../src/preprocessor/process-image-element';
 import generateComponentAttributes from '../../src/component/generate-component-attributes';
+import { describe, it, expect, beforeEach, jest } from '@jest/globals';
 
 jest.mock('../../src/component/generate-component-attributes');
 

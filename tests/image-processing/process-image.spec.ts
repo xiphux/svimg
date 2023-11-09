@@ -6,6 +6,7 @@ import getOptionsHash from '../../src/image-processing/get-options-hash';
 import getImageMetadata from '../../src/core/get-image-metadata';
 import exists from '../../src/core/exists';
 import { mkdir } from 'node:fs/promises';
+import { describe, it, expect, beforeEach, jest } from '@jest/globals';
 
 jest.mock('../../src/image-processing/get-process-image-options');
 jest.mock('../../src/image-processing/resize-image-multiple');
@@ -182,9 +183,9 @@ describe('processImage', () => {
         aspectRatio: 1,
       },
     );
-    const filenameGenerator = (resizeImageMultiple as jest.Mock).mock
-      .calls[0][3].filenameGenerator;
-    expect(filenameGenerator({ width: 300, quality: 85 })).toEqual(
+    const filenameGenerator =
+      jest.mocked(resizeImageMultiple).mock.calls[0][3].filenameGenerator;
+    expect(filenameGenerator({ width: 300, quality: 85 } as any)).toEqual(
       'file.optionshash.filehash.jpg',
     );
   });
@@ -296,9 +297,9 @@ describe('processImage', () => {
         aspectRatio: 1,
       },
     );
-    const filenameGenerator = (resizeImageMultiple as jest.Mock).mock
-      .calls[0][3].filenameGenerator;
-    expect(filenameGenerator({ width: 300, quality: 85 })).toEqual(
+    const filenameGenerator =
+      jest.mocked(resizeImageMultiple).mock.calls[0][3].filenameGenerator;
+    expect(filenameGenerator({ width: 300, quality: 85 } as any)).toEqual(
       'file.optionshash.filehash.jpg',
     );
 
@@ -313,9 +314,9 @@ describe('processImage', () => {
         aspectRatio: 1,
       },
     );
-    const filenameGeneratorWebp = (resizeImageMultiple as jest.Mock).mock
-      .calls[1][3].filenameGenerator;
-    expect(filenameGeneratorWebp({ width: 300, quality: 85 })).toEqual(
+    const filenameGeneratorWebp =
+      jest.mocked(resizeImageMultiple).mock.calls[1][3].filenameGenerator;
+    expect(filenameGeneratorWebp({ width: 300, quality: 85 } as any)).toEqual(
       'file.optionshash.filehash.webp',
     );
   });
@@ -427,9 +428,9 @@ describe('processImage', () => {
         aspectRatio: 1,
       },
     );
-    const filenameGenerator = (resizeImageMultiple as jest.Mock).mock
-      .calls[0][3].filenameGenerator;
-    expect(filenameGenerator({ width: 300, quality: 85 })).toEqual(
+    const filenameGenerator =
+      jest.mocked(resizeImageMultiple).mock.calls[0][3].filenameGenerator;
+    expect(filenameGenerator({ width: 300, quality: 85 } as any)).toEqual(
       'file.optionshash.filehash.jpg',
     );
 
@@ -444,9 +445,9 @@ describe('processImage', () => {
         aspectRatio: 1,
       },
     );
-    const filenameGeneratorAvif = (resizeImageMultiple as jest.Mock).mock
-      .calls[1][3].filenameGenerator;
-    expect(filenameGeneratorAvif({ width: 300, quality: 85 })).toEqual(
+    const filenameGeneratorAvif =
+      jest.mocked(resizeImageMultiple).mock.calls[1][3].filenameGenerator;
+    expect(filenameGeneratorAvif({ width: 300, quality: 85 } as any)).toEqual(
       'file.optionshash.filehash.avif',
     );
   });
@@ -583,9 +584,9 @@ describe('processImage', () => {
         aspectRatio: 1,
       },
     );
-    const filenameGenerator = (resizeImageMultiple as jest.Mock).mock
-      .calls[0][3].filenameGenerator;
-    expect(filenameGenerator({ width: 300, quality: 85 })).toEqual(
+    const filenameGenerator =
+      jest.mocked(resizeImageMultiple).mock.calls[0][3].filenameGenerator;
+    expect(filenameGenerator({ width: 300, quality: 85 } as any)).toEqual(
       'file.optionshash.filehash.jpg',
     );
 
@@ -600,9 +601,9 @@ describe('processImage', () => {
         aspectRatio: 1,
       },
     );
-    const filenameGeneratorWebp = (resizeImageMultiple as jest.Mock).mock
-      .calls[1][3].filenameGenerator;
-    expect(filenameGeneratorWebp({ width: 300, quality: 85 })).toEqual(
+    const filenameGeneratorWebp =
+      jest.mocked(resizeImageMultiple).mock.calls[1][3].filenameGenerator;
+    expect(filenameGeneratorWebp({ width: 300, quality: 85 } as any)).toEqual(
       'file.optionshash.filehash.webp',
     );
 
@@ -617,9 +618,9 @@ describe('processImage', () => {
         aspectRatio: 1,
       },
     );
-    const filenameGeneratorAvif = (resizeImageMultiple as jest.Mock).mock
-      .calls[2][3].filenameGenerator;
-    expect(filenameGeneratorAvif({ width: 300, quality: 85 })).toEqual(
+    const filenameGeneratorAvif =
+      jest.mocked(resizeImageMultiple).mock.calls[2][3].filenameGenerator;
+    expect(filenameGeneratorAvif({ width: 300, quality: 85 } as any)).toEqual(
       'file.optionshash.filehash.avif',
     );
   });
@@ -757,9 +758,9 @@ describe('processImage', () => {
         skipGeneration: true,
       },
     );
-    const filenameGenerator = (resizeImageMultiple as jest.Mock).mock
-      .calls[0][3].filenameGenerator;
-    expect(filenameGenerator({ width: 300, quality: 85 })).toEqual(
+    const filenameGenerator =
+      jest.mocked(resizeImageMultiple).mock.calls[0][3].filenameGenerator;
+    expect(filenameGenerator({ width: 300, quality: 85 } as any)).toEqual(
       'file.optionshash.filehash.jpg',
     );
 
@@ -775,9 +776,9 @@ describe('processImage', () => {
         skipGeneration: true,
       },
     );
-    const filenameGeneratorWebp = (resizeImageMultiple as jest.Mock).mock
-      .calls[1][3].filenameGenerator;
-    expect(filenameGeneratorWebp({ width: 300, quality: 85 })).toEqual(
+    const filenameGeneratorWebp =
+      jest.mocked(resizeImageMultiple).mock.calls[1][3].filenameGenerator;
+    expect(filenameGeneratorWebp({ width: 300, quality: 85 } as any)).toEqual(
       'file.optionshash.filehash.webp',
     );
 
@@ -793,9 +794,9 @@ describe('processImage', () => {
         skipGeneration: true,
       },
     );
-    const filenameGeneratorAvif = (resizeImageMultiple as jest.Mock).mock
-      .calls[2][3].filenameGenerator;
-    expect(filenameGeneratorAvif({ width: 300, quality: 85 })).toEqual(
+    const filenameGeneratorAvif =
+      jest.mocked(resizeImageMultiple).mock.calls[2][3].filenameGenerator;
+    expect(filenameGeneratorAvif({ width: 300, quality: 85 } as any)).toEqual(
       'file.optionshash.filehash.avif',
     );
   });

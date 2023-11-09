@@ -1,6 +1,7 @@
 import imagePreprocessor from '../../src/preprocessor/image-preprocessor';
 import processImageElement from '../../src/preprocessor/process-image-element';
 import Queue from '../../src/core/queue';
+import { describe, it, expect, beforeEach, jest } from '@jest/globals';
 
 jest.mock('../../src/preprocessor/process-image-element');
 jest.mock('../../src/core/queue');
@@ -31,11 +32,13 @@ describe('imagePreprocessor', () => {
   });
 
   it('processes image nodes', async () => {
-    (processImageElement as jest.Mock).mockImplementation((val: string) =>
-      Promise.resolve(
-        val.substring(0, 6) + ' srcset="srcset"' + val.substring(6),
-      ),
-    );
+    jest
+      .mocked(processImageElement)
+      .mockImplementation((val: string) =>
+        Promise.resolve(
+          val.substring(0, 6) + ' srcset="srcset"' + val.substring(6),
+        ),
+      );
     const processor = imagePreprocessor({
       inputDir: 'static',
       outputDir: 'static/g',

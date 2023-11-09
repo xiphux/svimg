@@ -76,8 +76,8 @@
   "dependencies": {
     "md5-file": "^5.0.0",
     "node-html-parser": "^6.1.11",
-    "p-queue": "^6.6.2",
+    "p-queue": "^7.4.1",
     "sharp": "^0.32.6",
-    "string-replace-async": "^2.0.0"
+    "string-replace-async": "^3.0.2"
   }
 }

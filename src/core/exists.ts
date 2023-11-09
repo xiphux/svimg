@@ -2,7 +2,7 @@ import { access } from 'node:fs/promises';
 import { constants } from 'node:fs';
 
 function isError(error: any): error is NodeJS.ErrnoException {
-  return error instanceof Error;
+  return 'code' in error;
 }
 
 export default async function exists(file: string): Promise<boolean> {

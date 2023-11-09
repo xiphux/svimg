@@ -20,6 +20,16 @@
     "dist",
     "src/Image.svelte"
   ],
+  "typesVersions": {
+    ">4.0": {
+      "index.d.ts": [
+        "./dist/index.d.ts"
+      ],
+      "Image.svelte": [
+        "./dist/Image.d.ts"
+      ]
+    }
+  },
   "types": "dist/index.d.ts",
   "scripts": {
     "test": "jest",

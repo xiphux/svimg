@@ -1,5 +1,14 @@
 # Changelog
 
+## 4.0.0
+
+* BREAKING: svimg is now pure ESM for Svelte 4. CommonJS is no longer supported
+* BREAKING: Entry points have changed
+    * The Image svelte component is now at the `/Image.svelte` entry point (`import Image from 'svimg/Image.svelte'` instead of `import Image from 'svelte'`)
+    * The s-image custom element is now at the `/s-image` entry point (`import 'svimg/s-image'` instead of `import 'svimg/dist/s-image'`)
+    * The process entry point's contents are now just part of the default `'svimg'` entry point
+* BREAKING: Drop Node 14 support
+
 ## 3.2.0
 
 * Add `embedPlaceholder` option to support placeholders as separate images files rather than embedded content

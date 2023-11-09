@@ -37,7 +37,7 @@
     "watch": "rollup -cw"
   },
   "engines": {
-    "pnpm": ">=7.0.0",
+    "pnpm": ">=8.0.0",
     "node": ">=16"
   },
   "keywords": [

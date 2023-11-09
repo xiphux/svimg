@@ -7,3 +7,10 @@ export type { SrcGenerator, SrcGeneratorInfo } from './core/path-to-url';
 
 import Image from './Image';
 export default Image;
+
+import Queue from './core/queue';
+export { Queue };
+import processImage from './image-processing/process-image';
+export { processImage };
+import generateComponentAttributes from './component/generate-component-attributes';
+export { generateComponentAttributes };

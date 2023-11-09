@@ -13,10 +13,6 @@
       "types": "./dist/Image.d.ts",
       "svelte": "./src/Image.svelte"
     },
-    "./process": {
-      "default": "./dist/process.js",
-      "types": "./dist/process.d.ts"
-    },
     "./s-image": "./dist/s-image.js"
   },
   "svelte": "src/Image.svelte",

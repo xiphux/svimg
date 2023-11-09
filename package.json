@@ -3,8 +3,22 @@
   "version": "3.2.0",
   "private": false,
   "description": "Svelte image component with image preprocessing and lazy loading",
-  "main": "dist/index.js",
-  "module": "dist/index.es.js",
+  "type": "module",
+  "exports": {
+    ".": {
+      "default": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./Image.svelte": {
+      "types": "./dist/Image.d.ts",
+      "svelte": "./src/Image.svelte"
+    },
+    "./process": {
+      "default": "./dist/process.js",
+      "types": "./dist/process.d.ts"
+    },
+    "./s-image": "./dist/s-image.js"
+  },
   "svelte": "src/Image.svelte",
   "files": [
     "dist",

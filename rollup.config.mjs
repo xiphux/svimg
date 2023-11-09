@@ -7,8 +7,7 @@ const require = createRequire(import.meta.url);
 const pkg = require('./package.json');
 
 const entryPoints = [
-  { entry: 'index', formats: ['cjs', 'es'] },
-  { entry: 'process', formats: ['cjs', 'es'] },
+  { entry: 'index', formats: ['es'] },
   {
     entry: 's-image',
     formats: ['iife'],
@@ -27,13 +26,14 @@ export default [
   ...entryPoints.map((entryPoint) => ({
     input: `src/${entryPoint.entry}.ts`,
     output: entryPoint.formats.map((format) => ({
-      file: `dist/${entryPoint.entry}.${format == 'es' ? 'es.js' : 'js'}`,
+      file: `dist/${entryPoint.entry}.${format == 'cjs' ? 'cjs' : 'js'}`,
       format,
       interop: 'compat',
     })),
     external: [
       ...Object.keys(pkg.dependencies || {}),
       ...Object.keys(pkg.peerDependencies || {}),
+      /^node:.*/,
     ],
     plugins: [
       typescript({

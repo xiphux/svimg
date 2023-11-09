@@ -65,7 +65,7 @@ export default {
 
 ```html
 <script>
-import Image from 'svimg';
+import Image from 'svimg/Image.svelte';
 </script>
 
 <Image src="images/splash.jpg" />
@@ -85,7 +85,7 @@ Generally, you'd use another tool to create these elements such as [rehype-svimg
 
 ```html
 <script>
-import 'svimg/dist/s-image';
+import 'svimg/s-image';
 </script>
 
 <s-image srcset="images/splash-600.jpg 600w, images/splash-1200.jpg 1200w" srcsetavif="images/splash-600.avif 600w, images/splash-1200.avif 1200w" srcsetwebp="images/splash-600.webp 600w, images/splash-1200.webp 1200w" />

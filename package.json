@@ -65,7 +65,6 @@
   "devDependencies": {
     "@rollup/plugin-node-resolve": "^15.2.3",
     "@tsconfig/svelte": "^5.0.2",
-    "@types/bluebird": "^3.5.41",
     "@types/node": "^18.18.8",
     "@types/sharp": "^0.32.0",
     "@vitest/coverage-v8": "^0.34.6",
@@ -73,8 +72,6 @@
     "rollup-plugin-svelte": "^7.1.6",
     "rollup-plugin-typescript2": "^0.36.0",
     "svelte": "^4.2.2",
-    "ts-toolbelt": "^9.6.0",
-    "tslib": "^2.6.2",
     "typescript": "^5.2.2",
     "vitest": "^0.34.6"
   },

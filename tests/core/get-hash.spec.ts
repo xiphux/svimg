@@ -1,18 +1,18 @@
 import getHash from '../../src/core/get-hash';
 import { createHash } from 'node:crypto';
-import { describe, it, expect, beforeEach, jest } from '@jest/globals';
+import { describe, it, expect, beforeEach, vi, type Mock } from 'vitest';
 
-jest.mock('node:crypto');
+vi.mock('node:crypto');
 
 describe('getHash', () => {
-  let update: jest.Mock;
-  let digest: jest.Mock;
+  let update: Mock;
+  let digest: Mock;
   beforeEach(() => {
-    digest = jest.fn();
-    update = jest.fn();
+    digest = vi.fn();
+    update = vi.fn();
     update.mockReturnValue({ digest });
-    (createHash as jest.Mock).mockReset();
-    (createHash as jest.Mock).mockReturnValue({ update });
+    (createHash as Mock).mockReset();
+    (createHash as Mock).mockReturnValue({ update });
   });
 
   it('returns an md5 hex hash', () => {

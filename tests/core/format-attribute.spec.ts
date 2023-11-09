@@ -1,5 +1,5 @@
 import formatAttribute from '../../src/core/format-attribute';
-import { describe, it, expect } from '@jest/globals';
+import { describe, it, expect } from 'vitest';
 
 describe('formatAttribute', () => {
   it("won't format unnecessary attributes", () => {

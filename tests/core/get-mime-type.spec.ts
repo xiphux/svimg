@@ -1,5 +1,5 @@
 import getMimeType from '../../src/core/get-mime-type';
-import { describe, it, expect } from '@jest/globals';
+import { describe, it, expect } from 'vitest';
 
 describe('getMimeType', () => {
   it('returns blank for an unknown format', () => {

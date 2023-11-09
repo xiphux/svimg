@@ -1,19 +1,12 @@
 import parseAttributes from '../../src/preprocessor/parse-attributes';
 import * as parser from 'node-html-parser';
-import {
-  describe,
-  it,
-  expect,
-  beforeEach,
-  jest,
-  afterEach,
-} from '@jest/globals';
+import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
 
 describe('parseAttributes', () => {
-  let parseSpy: jest.SpiedFunction<typeof parser.parse>;
+  let parseSpy: any;
 
   beforeEach(() => {
-    parseSpy = jest.spyOn(parser, 'parse');
+    parseSpy = vi.spyOn(parser, 'parse');
   });
 
   afterEach(() => {

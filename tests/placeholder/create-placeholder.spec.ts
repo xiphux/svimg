@@ -2,27 +2,27 @@ import createPlaceholder from '../../src/placeholder/create-placeholder';
 import getImageMetadata from '../../src/core/get-image-metadata';
 import resizeImage from '../../src/core/resize-image';
 import getMimeType from '../../src/core/get-mime-type';
-import { describe, it, expect, beforeEach, jest } from '@jest/globals';
+import { describe, it, expect, beforeEach, vi, type Mock } from 'vitest';
 
-jest.mock('../../src/core/get-image-metadata');
-jest.mock('../../src/core/resize-image');
-jest.mock('../../src/core/get-mime-type');
+vi.mock('../../src/core/get-image-metadata');
+vi.mock('../../src/core/resize-image');
+vi.mock('../../src/core/get-mime-type');
 
 describe('createPlaceholder', () => {
   beforeEach(() => {
-    (getImageMetadata as jest.Mock).mockReset();
-    (resizeImage as jest.Mock).mockReset();
-    (getMimeType as jest.Mock).mockReset();
+    (getImageMetadata as Mock).mockReset();
+    (resizeImage as Mock).mockReset();
+    (getMimeType as Mock).mockReset();
   });
 
   it('requires input file', async () => {
     await expect(
-      createPlaceholder('', { enqueue: jest.fn() } as any),
+      createPlaceholder('', { enqueue: vi.fn() } as any),
     ).rejects.toThrow();
   });
 
   it('creates a placeholder', async () => {
-    const enqueue = jest
+    const enqueue = vi
       .fn()
       .mockImplementationOnce(() =>
         Promise.resolve({
@@ -33,10 +33,10 @@ describe('createPlaceholder', () => {
       )
       .mockImplementationOnce(() =>
         Promise.resolve({
-          toString: jest.fn(() => 'base64data'),
+          toString: vi.fn(() => 'base64data'),
         }),
       );
-    (getMimeType as jest.Mock).mockReturnValue('image/jpeg');
+    (getMimeType as Mock).mockReturnValue('image/jpeg');
 
     expect(await createPlaceholder('/in/file.jpg', { enqueue } as any)).toEqual(
       'data:image/jpeg;base64,base64data',

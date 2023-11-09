@@ -1,17 +1,17 @@
 import resizeImageMultiple from '../../src/image-processing/resize-image-multiple';
 import ensureResizeImage from '../../src/image-processing/ensure-resize-image';
 import { join, sep } from 'node:path';
-import { describe, it, expect, beforeEach, jest } from '@jest/globals';
+import { describe, it, expect, beforeEach, vi, type Mock } from 'vitest';
 
-jest.mock('../../src/image-processing/ensure-resize-image');
+vi.mock('../../src/image-processing/ensure-resize-image');
 
 describe('resizeImageMultiple', () => {
   beforeEach(() => {
-    (ensureResizeImage as jest.Mock).mockReset();
+    (ensureResizeImage as Mock).mockReset();
   });
 
   it('requires input file', async () => {
-    const enqueue = jest.fn();
+    const enqueue = vi.fn();
     await expect(
       resizeImageMultiple('', '/out/dir', { enqueue } as any, {
         widths: [100, 200],
@@ -25,7 +25,7 @@ describe('resizeImageMultiple', () => {
   });
 
   it('requires output dir', async () => {
-    const enqueue = jest.fn();
+    const enqueue = vi.fn();
     await expect(
       resizeImageMultiple('/in/file', '', { enqueue } as any, {
         widths: [100, 200],
@@ -39,7 +39,7 @@ describe('resizeImageMultiple', () => {
   });
 
   it("doesn't generate without widths", async () => {
-    const enqueue = jest.fn();
+    const enqueue = vi.fn();
     expect(
       await resizeImageMultiple('/in/file', '/out/dir', { enqueue } as any, {
         widths: [],
@@ -53,7 +53,7 @@ describe('resizeImageMultiple', () => {
   });
 
   it('requires filename generator to return filenames', async () => {
-    const enqueue = jest.fn();
+    const enqueue = vi.fn();
     await expect(
       resizeImageMultiple('/in/file', '/out/dir', { enqueue } as any, {
         widths: [100, 200],
@@ -67,8 +67,8 @@ describe('resizeImageMultiple', () => {
   });
 
   it('generates filenames and resizes', async () => {
-    const enqueue = jest.fn();
-    (ensureResizeImage as jest.Mock)
+    const enqueue = vi.fn();
+    (ensureResizeImage as Mock)
       .mockReturnValueOnce({
         path: '/out/dir/100.75.jpg',
         width: 100,
@@ -116,7 +116,7 @@ describe('resizeImageMultiple', () => {
   });
 
   it('skips generation', async () => {
-    const enqueue = jest.fn();
+    const enqueue = vi.fn();
     expect(
       await resizeImageMultiple('/in/file', '/out/dir', { enqueue } as any, {
         widths: [100, 200],

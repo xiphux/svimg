@@ -1,16 +1,16 @@
 import processImageElement from '../../src/preprocessor/process-image-element';
 import generateComponentAttributes from '../../src/component/generate-component-attributes';
-import { describe, it, expect, beforeEach, jest } from '@jest/globals';
+import { describe, it, expect, beforeEach, vi, type Mock } from 'vitest';
 
-jest.mock('../../src/component/generate-component-attributes');
+vi.mock('../../src/component/generate-component-attributes');
 
 describe('processImageElement', () => {
   beforeEach(() => {
-    (generateComponentAttributes as jest.Mock).mockReset();
+    (generateComponentAttributes as Mock).mockReset();
   });
 
   it('returns unmodified if nothing is passed', async () => {
-    const queue = { process: jest.fn() };
+    const queue = { process: vi.fn() };
 
     expect(
       await processImageElement('', queue as any, {
@@ -25,7 +25,7 @@ describe('processImageElement', () => {
   });
 
   it('returns unmodified if invalid data is passed', async () => {
-    const queue = { process: jest.fn() };
+    const queue = { process: vi.fn() };
 
     expect(
       await processImageElement('garbage', queue as any, {
@@ -40,7 +40,7 @@ describe('processImageElement', () => {
   });
 
   it('returns unmodified without a src', async () => {
-    const queue = { process: jest.fn() };
+    const queue = { process: vi.fn() };
 
     expect(
       await processImageElement('<Image />', queue as any, {
@@ -55,13 +55,13 @@ describe('processImageElement', () => {
   });
 
   it('processes element', async () => {
-    (generateComponentAttributes as jest.Mock).mockImplementation(() =>
+    (generateComponentAttributes as Mock).mockImplementation(() =>
       Promise.resolve({
         srcset: 'g/img/test1.jpg 300w',
         placeholder: '<svg />',
       }),
     );
-    const queue = { process: jest.fn() };
+    const queue = { process: vi.fn() };
 
     expect(
       await processImageElement('<Image src="img/test.jpg" />', queue as any, {
@@ -85,14 +85,14 @@ describe('processImageElement', () => {
   });
 
   it('processes element with webp', async () => {
-    (generateComponentAttributes as jest.Mock).mockImplementation(() =>
+    (generateComponentAttributes as Mock).mockImplementation(() =>
       Promise.resolve({
         srcset: 'g/img/test1.jpg 300w',
         srcsetwebp: 'g/img/test1.webp 300w',
         placeholder: '<svg />',
       }),
     );
-    const queue = { process: jest.fn() };
+    const queue = { process: vi.fn() };
 
     expect(
       await processImageElement('<Image src="img/test.jpg" />', queue as any, {
@@ -116,14 +116,14 @@ describe('processImageElement', () => {
   });
 
   it('processes element with avif', async () => {
-    (generateComponentAttributes as jest.Mock).mockImplementation(() =>
+    (generateComponentAttributes as Mock).mockImplementation(() =>
       Promise.resolve({
         srcset: 'g/img/test1.jpg 300w',
         srcsetavif: 'g/img/test1.avif 300w',
         placeholder: '<svg />',
       }),
     );
-    const queue = { process: jest.fn() };
+    const queue = { process: vi.fn() };
 
     expect(
       await processImageElement('<Image src="img/test.jpg" />', queue as any, {
@@ -147,7 +147,7 @@ describe('processImageElement', () => {
   });
 
   it('processes element with webp and avif', async () => {
-    (generateComponentAttributes as jest.Mock).mockImplementation(() =>
+    (generateComponentAttributes as Mock).mockImplementation(() =>
       Promise.resolve({
         srcset: 'g/img/test1.jpg 300w',
         srcsetwebp: 'g/img/test1.webp 300w',
@@ -155,7 +155,7 @@ describe('processImageElement', () => {
         placeholder: '<svg />',
       }),
     );
-    const queue = { process: jest.fn() };
+    const queue = { process: vi.fn() };
 
     expect(
       await processImageElement('<Image src="img/test.jpg" />', queue as any, {
@@ -179,13 +179,13 @@ describe('processImageElement', () => {
   });
 
   it('processes element with forced pixel width', async () => {
-    (generateComponentAttributes as jest.Mock).mockImplementation(() =>
+    (generateComponentAttributes as Mock).mockImplementation(() =>
       Promise.resolve({
         srcset: 'g/img/test1.jpg 300w',
         placeholder: '<svg />',
       }),
     );
-    const queue = { process: jest.fn() };
+    const queue = { process: vi.fn() };
 
     expect(
       await processImageElement(
@@ -214,13 +214,13 @@ describe('processImageElement', () => {
   });
 
   it('ignores non pixel width', async () => {
-    (generateComponentAttributes as jest.Mock).mockImplementation(() =>
+    (generateComponentAttributes as Mock).mockImplementation(() =>
       Promise.resolve({
         srcset: 'g/img/test1.jpg 300w',
         placeholder: '<svg />',
       }),
     );
-    const queue = { process: jest.fn() };
+    const queue = { process: vi.fn() };
 
     expect(
       await processImageElement(
@@ -248,13 +248,13 @@ describe('processImageElement', () => {
   });
 
   it('ignores dynamic width', async () => {
-    (generateComponentAttributes as jest.Mock).mockImplementation(() =>
+    (generateComponentAttributes as Mock).mockImplementation(() =>
       Promise.resolve({
         srcset: 'g/img/test1.jpg 300w',
         placeholder: '<svg />',
       }),
     );
-    const queue = { process: jest.fn() };
+    const queue = { process: vi.fn() };
 
     expect(
       await processImageElement(
@@ -282,13 +282,13 @@ describe('processImageElement', () => {
   });
 
   it('processes node with specified quality', async () => {
-    (generateComponentAttributes as jest.Mock).mockImplementation(() =>
+    (generateComponentAttributes as Mock).mockImplementation(() =>
       Promise.resolve({
         srcset: 'g/img/test1.jpg 300w',
         placeholder: '<svg />',
       }),
     );
-    const queue = { process: jest.fn() };
+    const queue = { process: vi.fn() };
 
     expect(
       await processImageElement(
@@ -317,13 +317,13 @@ describe('processImageElement', () => {
   });
 
   it('ignores negative quality', async () => {
-    (generateComponentAttributes as jest.Mock).mockImplementation(() =>
+    (generateComponentAttributes as Mock).mockImplementation(() =>
       Promise.resolve({
         srcset: 'g/img/test1.jpg 300w',
         placeholder: '<svg />',
       }),
     );
-    const queue = { process: jest.fn() };
+    const queue = { process: vi.fn() };
 
     expect(
       await processImageElement(
@@ -351,13 +351,13 @@ describe('processImageElement', () => {
   });
 
   it('ignores a non number quality', async () => {
-    (generateComponentAttributes as jest.Mock).mockImplementation(() =>
+    (generateComponentAttributes as Mock).mockImplementation(() =>
       Promise.resolve({
         srcset: 'g/img/test1.jpg 300w',
         placeholder: '<svg />',
       }),
     );
-    const queue = { process: jest.fn() };
+    const queue = { process: vi.fn() };
 
     expect(
       await processImageElement(
@@ -385,13 +385,13 @@ describe('processImageElement', () => {
   });
 
   it('ignores a dynamic quality', async () => {
-    (generateComponentAttributes as jest.Mock).mockImplementation(() =>
+    (generateComponentAttributes as Mock).mockImplementation(() =>
       Promise.resolve({
         srcset: 'g/img/test1.jpg 300w',
         placeholder: '<svg />',
       }),
     );
-    const queue = { process: jest.fn() };
+    const queue = { process: vi.fn() };
 
     expect(
       await processImageElement(
@@ -419,12 +419,12 @@ describe('processImageElement', () => {
   });
 
   it('skips placeholder if immediate', async () => {
-    (generateComponentAttributes as jest.Mock).mockImplementation(() =>
+    (generateComponentAttributes as Mock).mockImplementation(() =>
       Promise.resolve({
         srcset: 'g/img/test1.jpg 300w',
       }),
     );
-    const queue = { process: jest.fn() };
+    const queue = { process: vi.fn() };
 
     expect(
       await processImageElement(
@@ -453,13 +453,13 @@ describe('processImageElement', () => {
   });
 
   it('processes element with public path', async () => {
-    (generateComponentAttributes as jest.Mock).mockImplementation(() =>
+    (generateComponentAttributes as Mock).mockImplementation(() =>
       Promise.resolve({
         srcset: 'g/img/test1.jpg 300w',
         placeholder: '<svg />',
       }),
     );
-    const queue = { process: jest.fn() };
+    const queue = { process: vi.fn() };
 
     expect(
       await processImageElement('<Image src="img/test.jpg" />', queue as any, {
@@ -485,13 +485,13 @@ describe('processImageElement', () => {
   });
 
   it('processes element with src generator', async () => {
-    (generateComponentAttributes as jest.Mock).mockImplementation(() =>
+    (generateComponentAttributes as Mock).mockImplementation(() =>
       Promise.resolve({
         srcset: 'https://static.example.com/img/test1.jpg 300w',
         placeholder: '<svg />',
       }),
     );
-    const queue = { process: jest.fn() };
+    const queue = { process: vi.fn() };
 
     const generator = (path: string) => 'https://static.example.com/' + path;
 

@@ -1,6 +1,6 @@
-import pathToUrl from '../../src/core/path-to-url';
+import pathToUrl, { SrcGenerator } from '../../src/core/path-to-url';
 import { basename } from 'node:path';
-import { describe, it, expect, jest } from '@jest/globals';
+import { describe, it, expect, vi } from 'vitest';
 
 describe('pathToUrl', () => {
   it('returns url if nothing needs to be normalized', () => {
@@ -268,7 +268,7 @@ describe('pathToUrl', () => {
   });
 
   it('can use a custom src generator to add a custom path', () => {
-    const generator = jest.fn((path, info) => '/test/' + path);
+    const generator = vi.fn((path, info) => '/test/' + path);
 
     expect(
       pathToUrl('static/g/url/to/file.jpg', {
@@ -287,7 +287,7 @@ describe('pathToUrl', () => {
   });
 
   it('can use a custom src generator to add a custom domain', () => {
-    const generator = jest.fn(
+    const generator = vi.fn(
       (path, info) => 'https://static.example.com/images/' + path,
     );
 
@@ -308,12 +308,9 @@ describe('pathToUrl', () => {
   });
 
   it('can use a custom src generator to rewrite paths', () => {
-    const generator = jest.fn<
-      (
-        path: string,
-        info?: { src: string; inputDir: string; outputDir: string },
-      ) => string
-    >((path, info) => 'some/other/path/' + basename(path));
+    const generator = vi.fn(
+      (path, info) => 'some/other/path/' + basename(path),
+    );
 
     expect(
       pathToUrl('static/g/url/to/file.jpg', {
@@ -332,7 +329,7 @@ describe('pathToUrl', () => {
   });
 
   it('will prioritize src generator over public path', () => {
-    const generator = jest.fn((path, info) => '/test/' + path);
+    const generator = vi.fn((path, info) => '/test/' + path);
 
     expect(
       pathToUrl('static/g/url/to/file.jpg', {

@@ -1,14 +1,14 @@
 import getImageMetadata from '../../src/core/get-image-metadata';
 import sharp from 'sharp';
-import { describe, it, expect, beforeEach, jest } from '@jest/globals';
+import { describe, it, expect, beforeEach, vi, type Mock } from 'vitest';
 
-jest.mock('sharp');
+vi.mock('sharp');
 
 describe('getImageMetadata', () => {
-  let metadata: jest.Mock;
+  let metadata: Mock;
   beforeEach(() => {
-    metadata = jest.fn();
-    (sharp as any as jest.Mock).mockReset().mockReturnValue({
+    metadata = vi.fn();
+    (sharp as any as Mock).mockReset().mockReturnValue({
       metadata,
     });
   });

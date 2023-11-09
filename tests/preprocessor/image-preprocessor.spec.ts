@@ -1,14 +1,14 @@
 import imagePreprocessor from '../../src/preprocessor/image-preprocessor';
 import processImageElement from '../../src/preprocessor/process-image-element';
 import Queue from '../../src/core/queue';
-import { describe, it, expect, beforeEach, jest } from '@jest/globals';
+import { describe, it, expect, beforeEach, vi, type Mock } from 'vitest';
 
-jest.mock('../../src/preprocessor/process-image-element');
-jest.mock('../../src/core/queue');
+vi.mock('../../src/preprocessor/process-image-element');
+vi.mock('../../src/core/queue');
 
 describe('imagePreprocessor', () => {
   beforeEach(() => {
-    (processImageElement as jest.Mock).mockReset();
+    (processImageElement as Mock).mockReset();
   });
 
   it("returns content if there aren't any image nodes", async () => {
@@ -32,13 +32,11 @@ describe('imagePreprocessor', () => {
   });
 
   it('processes image nodes', async () => {
-    jest
-      .mocked(processImageElement)
-      .mockImplementation((val: string) =>
-        Promise.resolve(
-          val.substring(0, 6) + ' srcset="srcset"' + val.substring(6),
-        ),
-      );
+    vi.mocked(processImageElement).mockImplementation((val: string) =>
+      Promise.resolve(
+        val.substring(0, 6) + ' srcset="srcset"' + val.substring(6),
+      ),
+    );
     const processor = imagePreprocessor({
       inputDir: 'static',
       outputDir: 'static/g',

@@ -1,20 +1,20 @@
 import resizeImage from '../../src/core/resize-image';
 import sharp from 'sharp';
-import { describe, it, expect, beforeEach, jest } from '@jest/globals';
+import { describe, it, expect, beforeEach, vi, type Mock } from 'vitest';
 
-jest.mock('sharp');
+vi.mock('sharp');
 
 describe('resizeImage', () => {
-  let jpeg: jest.Mock;
-  let png: jest.Mock;
-  let webp: jest.Mock;
-  let avif: jest.Mock;
-  let resize: jest.Mock;
-  let toFile: jest.Mock;
-  let toBuffer: jest.Mock;
+  let jpeg: Mock;
+  let png: Mock;
+  let webp: Mock;
+  let avif: Mock;
+  let resize: Mock;
+  let toFile: Mock;
+  let toBuffer: Mock;
   beforeEach(() => {
-    (sharp as any as jest.Mock).mockReset();
-    jpeg = jest.fn(() => ({
+    (sharp as any as Mock).mockReset();
+    jpeg = vi.fn(() => ({
       jpeg,
       png,
       webp,
@@ -23,7 +23,7 @@ describe('resizeImage', () => {
       toFile,
       toBuffer,
     }));
-    png = jest.fn(() => ({
+    png = vi.fn(() => ({
       jpeg,
       png,
       webp,
@@ -32,7 +32,7 @@ describe('resizeImage', () => {
       toFile,
       toBuffer,
     }));
-    webp = jest.fn(() => ({
+    webp = vi.fn(() => ({
       jpeg,
       png,
       webp,
@@ -41,7 +41,7 @@ describe('resizeImage', () => {
       toFile,
       toBuffer,
     }));
-    avif = jest.fn(() => ({
+    avif = vi.fn(() => ({
       jpeg,
       png,
       webp,
@@ -50,7 +50,7 @@ describe('resizeImage', () => {
       toFile,
       toBuffer,
     }));
-    resize = jest.fn(() => ({
+    resize = vi.fn(() => ({
       jpeg,
       png,
       webp,
@@ -59,9 +59,9 @@ describe('resizeImage', () => {
       toFile,
       toBuffer,
     }));
-    toFile = jest.fn();
-    toBuffer = jest.fn();
-    (sharp as any as jest.Mock).mockReturnValue({
+    toFile = vi.fn();
+    toBuffer = vi.fn();
+    (sharp as any as Mock).mockReturnValue({
       jpeg,
       png,
       webp,

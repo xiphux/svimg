@@ -2,11 +2,11 @@ import ensureResizeImage from '../../src/image-processing/ensure-resize-image';
 import getImageMetadata from '../../src/core/get-image-metadata';
 import { resizeImageToFile } from '../../src/core/resize-image';
 import exists from '../../src/core/exists';
-import { describe, it, expect, jest } from '@jest/globals';
+import { describe, it, expect, vi } from 'vitest';
 
 describe('ensureResizeImage', () => {
   it('requires input file', async () => {
-    const enqueue = jest.fn();
+    const enqueue = vi.fn();
     await expect(
       ensureResizeImage('', '/out/file.jpg', { enqueue } as any, {
         width: 300,
@@ -18,7 +18,7 @@ describe('ensureResizeImage', () => {
   });
 
   it('requires output file', async () => {
-    const enqueue = jest.fn();
+    const enqueue = vi.fn();
     await expect(
       ensureResizeImage('/in/file.jpg', '', { enqueue } as any, {
         width: 300,
@@ -30,7 +30,7 @@ describe('ensureResizeImage', () => {
   });
 
   it('returns metadata if the file exists', async () => {
-    const enqueue = jest
+    const enqueue = vi
       .fn()
       .mockImplementationOnce(() => Promise.resolve(true))
       .mockImplementationOnce(() =>
@@ -67,7 +67,7 @@ describe('ensureResizeImage', () => {
   });
 
   it("converts to specified width and quality if file doesn't exist", async () => {
-    const enqueue = jest
+    const enqueue = vi
       .fn()
       .mockImplementationOnce(() => Promise.resolve(false))
       .mockImplementationOnce(() =>

@@ -1,15 +1,15 @@
 import exists from '../../src/core/exists';
 import { access } from 'node:fs/promises';
 import { constants } from 'node:fs';
-import { describe, it, expect, beforeEach, jest } from '@jest/globals';
+import { describe, it, expect, beforeEach, vi, type Mock } from 'vitest';
 
-jest.mock('node:fs/promises', () => ({
-  access: jest.fn(),
+vi.mock('node:fs/promises', () => ({
+  access: vi.fn(),
 }));
 
 describe('exists', () => {
   beforeEach(() => {
-    (access as jest.Mock).mockReset();
+    (access as Mock).mockReset();
   });
 
   it('returns false without file', async () => {
@@ -18,13 +18,13 @@ describe('exists', () => {
   });
 
   it('returns true if file exists', async () => {
-    (access as jest.Mock).mockImplementation(() => Promise.resolve());
+    (access as Mock).mockImplementation(() => Promise.resolve());
     expect(await exists('test/file.jpg')).toEqual(true);
     expect(access).toHaveBeenCalledWith('test/file.jpg', constants.F_OK);
   });
 
   it("returns false if file doesn't exist", async () => {
-    (access as jest.Mock).mockImplementation(() =>
+    (access as Mock).mockImplementation(() =>
       Promise.reject({
         code: 'ENOENT',
       }),
@@ -34,7 +34,7 @@ describe('exists', () => {
   });
 
   it('throws error if encountered', async () => {
-    (access as jest.Mock).mockImplementation(() =>
+    (access as Mock).mockImplementation(() =>
       Promise.reject({
         code: 'EPERM',
       }),

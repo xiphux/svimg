@@ -1,5 +1,5 @@
 import getSrcset from '../../src/component/get-srcset';
-import { describe, it, expect } from '@jest/globals';
+import { describe, it, expect } from 'vitest';
 
 describe('getSrcset', () => {
   it('builds an empty srcset', () => {

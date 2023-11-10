@@ -8,6 +8,7 @@
     * The s-image custom element is now at the `/s-image` entry point (`import 'svimg/s-image'` instead of `import 'svimg/dist/s-image'`)
     * The process entry point's contents are now just part of the default `'svimg'` entry point
 * BREAKING: Drop Node 14 support
+* BREAKING: Target ES2021. Support modern browsers and Node versions, but not older browsers like IE
 
 ## 3.2.0
 

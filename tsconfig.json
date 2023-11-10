@@ -1,15 +1,12 @@
 {
-    "extends": "@tsconfig/svelte/tsconfig.json",
-    "compilerOptions": {
-        "declaration": true,
-        "declarationDir": "./dist",
-        "noImplicitAny": true,
-        "outDir": "./dist"
-    },
-    "include": [
-        "src/**/*"
-    ],
-    "exclude": [
-        "node_modules"
-    ]
+  "extends": "@tsconfig/svelte/tsconfig.json",
+  "compilerOptions": {
+    "declaration": true,
+    "declarationDir": "./dist",
+    "noImplicitAny": true,
+    "outDir": "./dist",
+    "target": "ES2021"
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules"]
 }

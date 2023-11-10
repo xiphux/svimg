@@ -1,5 +1,3 @@
-import { deprecate } from 'node:util';
-
 const pathSepPattern = /\\/g;
 
 function stripPrefix(path: string, prefix: string): string {
@@ -20,13 +18,6 @@ export interface SrcGeneratorInfo {
 
 export type SrcGenerator = (path: string, info?: SrcGeneratorInfo) => string;
 
-const createPublicPathSrcGenerator = deprecate(function (
-  publicPath: string,
-): SrcGenerator {
-  return (path) => publicPath + (publicPath.endsWith('/') ? '' : '/') + path;
-},
-'publicPath is deprecated, please use srcGenerator instead');
-
 function defaultSrcGenerator(
   path: string,
   { inputDir, src }: SrcGeneratorInfo,
@@ -46,7 +37,6 @@ interface PathToUrlOptions {
   inputDir: string;
   src: string;
   outputDir: string;
-  publicPath?: string;
   srcGenerator?: SrcGenerator;
 }
 
@@ -60,11 +50,7 @@ export default function pathToUrl(
     return path;
   }
 
-  let { publicPath, srcGenerator, ...info } = options;
-
-  if (!srcGenerator && publicPath) {
-    srcGenerator = createPublicPathSrcGenerator(publicPath);
-  }
+  let { srcGenerator, ...info } = options;
 
   if (srcGenerator) {
     if (info.outputDir) {

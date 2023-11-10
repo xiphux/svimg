@@ -465,7 +465,6 @@ describe('processImageElement', () => {
       await processImageElement('<Image src="img/test.jpg" />', queue as any, {
         inputDir: 'static',
         outputDir: 'static/g',
-        publicPath: '/',
         webp: false,
         avif: false,
       }),
@@ -478,7 +477,6 @@ describe('processImageElement', () => {
       queue,
       inputDir: 'static',
       outputDir: 'static/g',
-      publicPath: '/',
       webp: false,
       avif: false,
     });
@@ -499,7 +497,6 @@ describe('processImageElement', () => {
       await processImageElement('<Image src="img/test.jpg" />', queue as any, {
         inputDir: 'static',
         outputDir: 'static/g',
-        publicPath: '/',
         webp: false,
         avif: false,
         srcGenerator: generator,
@@ -513,7 +510,6 @@ describe('processImageElement', () => {
       queue,
       inputDir: 'static',
       outputDir: 'static/g',
-      publicPath: '/',
       webp: false,
       avif: false,
       srcGenerator: generator,

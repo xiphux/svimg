@@ -29,7 +29,6 @@ export default async function processImageElement(
     queue,
     inputDir: options.inputDir,
     outputDir: options.outputDir,
-    publicPath: options.publicPath || undefined,
     webp: options.webp,
     avif: options.avif,
     widths: width ? [width] : undefined,

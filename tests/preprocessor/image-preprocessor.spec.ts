@@ -40,7 +40,6 @@ describe('imagePreprocessor', () => {
     const processor = imagePreprocessor({
       inputDir: 'static',
       outputDir: 'static/g',
-      publicPath: '/',
       webp: true,
       avif: true,
     });
@@ -71,7 +70,6 @@ describe('imagePreprocessor', () => {
       {
         inputDir: 'static',
         outputDir: 'static/g',
-        publicPath: '/',
         webp: true,
         avif: true,
       },
@@ -82,7 +80,6 @@ describe('imagePreprocessor', () => {
       {
         inputDir: 'static',
         outputDir: 'static/g',
-        publicPath: '/',
         webp: true,
         avif: true,
       },

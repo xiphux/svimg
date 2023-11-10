@@ -14,7 +14,6 @@ interface GenerateComponentAttributesOptions {
   queue?: Queue;
   inputDir: string;
   outputDir: string;
-  publicPath?: string;
   webp?: boolean;
   avif?: boolean;
   widths?: number[];
@@ -31,7 +30,6 @@ function transformImagePath(
     inputDir,
     outputDir,
     src,
-    publicPath,
     srcGenerator,
   }: GenerateComponentAttributesOptions,
 ): Image {
@@ -41,7 +39,6 @@ function transformImagePath(
       inputDir,
       outputDir,
       src,
-      publicPath,
       srcGenerator,
     }),
   };

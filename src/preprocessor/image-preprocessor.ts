@@ -22,20 +22,6 @@ export interface ImagePreprocessorOptions {
   outputDir: string;
 
   /**
-   * The public path that images will be served from.
-   * This will be prepended to the src url during preprocessing.
-   *
-   * This can be overridden for more advanced use cases, such as
-   * a site served from a subdirectory of the domain or for
-   * images served from a separate domain such as a CDN or
-   * static asset domain.
-   *
-   * @default The outputDir relative to the inputDir static asset directory
-   * @deprecated Use a srcGenerator instead: (path) => '/my/public/path' + path
-   */
-  publicPath?: string;
-
-  /**
    * Whether to generate WebP versions of images
    * in addition to the original image formats
    *
